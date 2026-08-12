@@ -195,7 +195,7 @@
   ],
   "appearance": {
     "solidColor": "#1e4179",
-    "texture": "kumiko-pale.texture.json",
+    "texture": "weird-white.texture.json",
     "grainAxis": "x"
   },
   "preview": {
