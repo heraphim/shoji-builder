@@ -298,16 +298,70 @@ const WATERCOLOR: ShowcaseLook = {
   facet: 0,
 };
 
+/**
+ * Ink wash: grey on grey, one brush, no colour at all.
+ *
+ * Sumi-e is the watercolour with the pigment taken away and the *tone* asked to
+ * do all of the work, which turns out to change almost every number. With no
+ * hue left, two objects can only be told apart by how dark they are — so the
+ * bands come down from five to four and the boundaries harden, because a wash
+ * that shades smoothly from one grey to another in a monochrome picture is a
+ * picture in which nothing has an edge.
+ *
+ * The lift is the heaviest of any style here and it has to be. Sumi is a dilute
+ * ink: the darkest thing on the paper is one loaded stroke and everything else
+ * is water, so the whole range lives in the top half and the black is spent on
+ * the *line* rather than on the shadows. A monochrome picture with black
+ * shadows is a photograph in black and white, which is a different medium.
+ *
+ * The warmth in the tint is the paper rather than a colour: the saturation is
+ * flat zero, so what the multiply does is decide what shade of white the sheet
+ * is, and it is not a blue one.
+ */
+const INK_WASH: ShowcaseLook = {
+  background: "#e8e2d6",
+  paint: {
+    ...NO_PAINT,
+    exposure: 2.7,
+    bands: 4,
+    bandSoft: 0.4,
+    ink: 0.8,
+    inkColor: "#221f1b",
+    inkWidth: 2.1,
+    inkFromDepth: 1.15,
+    inkFromLuma: 0.4,
+    bleed: 0.42,
+    paper: 0.52,
+    paperScale: 2.6,
+    paperColor: "#f4eee1",
+    wobble: 4,
+    wobbleScale: 48,
+    saturation: 0,
+    tint: "#f7f1e4",
+    lift: 0.22,
+    contrast: 1.22,
+  },
+  bloom: { intensity: 0.6, threshold: 0.6, smoothing: 0.6 },
+  vignette: null,
+  ambient: 2.6,
+  ambientColor: { sky: "#b9b6ae", ground: "#7a776f" },
+  fill: 0.34,
+  fillColor: "#eceae4",
+  bulb: 1,
+  detail: 0.3,
+  facet: 0,
+};
+
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   realistic: REALISTIC,
   anime: ANIME,
   cartoon: CARTOON,
   ghibli: GHIBLI,
   watercolor: WATERCOLOR,
+  inkWash: INK_WASH,
   // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
   // menu offering them. Pointed at the photograph rather than left out so that
   // this stays a total record and nothing has to check for a hole in it.
-  inkWash: REALISTIC,
   minimalist: REALISTIC,
   lowPoly: REALISTIC,
 };

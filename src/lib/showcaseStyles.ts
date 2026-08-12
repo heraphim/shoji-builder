@@ -81,7 +81,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     id: "inkWash",
     label: "Ink wash (sumi-e)",
     note: "Grey on grey, one brush, no colour at all.",
-    built: false,
+    built: true,
   },
   { id: "minimalist", label: "Minimalist", note: "The lamp, and as little else.", built: false },
   { id: "lowPoly", label: "Low poly 3D", note: "Faceted everything, flat shaded.", built: false },

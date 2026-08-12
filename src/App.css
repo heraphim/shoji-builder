@@ -2201,6 +2201,33 @@ select.view-mode option:disabled {
   --sc-thumb-shadow: none;
 }
 
+/* Ink wash (sumi-e).
+
+   There is no colour in the picture, so there is one colour on the page and it
+   is the seal's. Everything else is the ink and the paper: a hairline in sumi,
+   text in sumi, a panel that is the sheet. The vermilion is on the accent
+   alone — the caret, a lit switch, the thumb of a slider — which is exactly
+   where the one red mark goes on a scroll. */
+.showcase[data-style="inkWash"] {
+  --sc-page: #e8e2d6;
+  --sc-panel: rgba(244, 238, 225, 0.78);
+  --sc-panel-lit: rgba(232, 224, 208, 0.92);
+  --sc-border: rgba(34, 31, 27, 0.42);
+  --sc-border-lit: #221f1b;
+  --sc-text: #221f1b;
+  --sc-text-dim: #6d675e;
+  --sc-accent: #a8362c;
+  --sc-radius: 4px;
+  --sc-pill: 3px;
+  --sc-blur: blur(2px) saturate(0);
+  --sc-shadow: none;
+  --sc-inset: none;
+  --sc-track: rgba(34, 31, 27, 0.3);
+  --sc-track-shadow: none;
+  --sc-thumb: #a8362c;
+  --sc-thumb-shadow: none;
+}
+
 .showcase {
   position: absolute;
   inset: 0;
