@@ -34,12 +34,12 @@
       "name": "beam.stl (2)",
       "size": {
         "x": "#beamDepth",
-        "y": "7.5",
+        "y": "(#beamHeight) - (1/2*#beamHeight)",
         "z": "#beamDepth"
       },
       "sizeSource": {
         "x": "set",
-        "y": "literal",
+        "y": "implied",
         "z": "set"
       },
       "origin": [
@@ -91,12 +91,12 @@
       "name": "beam.stl (5)",
       "size": {
         "x": "#beamDepth",
-        "y": "7.5",
+        "y": "(#beamHeight) - (1/2*#beamHeight)",
         "z": "#beamDepth"
       },
       "sizeSource": {
         "x": "set",
-        "y": "literal",
+        "y": "implied",
         "z": "set"
       },
       "origin": [
@@ -283,6 +283,108 @@
             30,
             18,
             0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d8dfe8a6-f310-4286-aab5-6163f834d720",
+      "formula": "1/2*#beamHeight",
+      "edges": [
+        {
+          "start": [
+            20,
+            15,
+            0
+          ],
+          "end": [
+            20,
+            7.5,
+            0
+          ]
+        },
+        {
+          "start": [
+            240,
+            7.5,
+            0
+          ],
+          "end": [
+            240,
+            15,
+            0
+          ]
+        },
+        {
+          "start": [
+            230,
+            15,
+            0
+          ],
+          "end": [
+            230,
+            7.5,
+            0
+          ]
+        },
+        {
+          "start": [
+            30,
+            7.5,
+            0
+          ],
+          "end": [
+            30,
+            15,
+            0
+          ]
+        },
+        {
+          "start": [
+            20,
+            7.5,
+            10
+          ],
+          "end": [
+            20,
+            15,
+            10
+          ]
+        },
+        {
+          "start": [
+            240,
+            15,
+            10
+          ],
+          "end": [
+            240,
+            7.5,
+            10
+          ]
+        },
+        {
+          "start": [
+            230,
+            7.5,
+            10
+          ],
+          "end": [
+            230,
+            15,
+            10
+          ]
+        },
+        {
+          "start": [
+            30,
+            15,
+            10
+          ],
+          "end": [
+            30,
+            7.5,
+            10
           ]
         }
       ]
