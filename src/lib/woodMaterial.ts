@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { WOOD_ENV_LEVEL } from "./woodEnvironment";
 import {
   sanitizeWoodParams,
   seedOffset,
@@ -682,6 +683,10 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
       color: 0xffffff,
       metalness: 0,
       roughness: 0.9,
+      // How much of the room the finish reflects. The room itself is a property
+      // of the renderer and so is attached later, in `useWoodMaterial`; this is
+      // only the dial, and it is harmless while there is nothing to turn it on.
+      envMapIntensity: WOOD_ENV_LEVEL,
       // the same half-unit nudge the editor's solid fill uses, so the edge
       // overlay drawn on the surface does not z-fight with it
       polygonOffset: true,

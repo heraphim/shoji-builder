@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useThree } from "@react-three/fiber";
 import { WoodMaterial } from "../lib/woodMaterial";
+import { woodEnvironment } from "../lib/woodEnvironment";
 import type { GrainAxis, WoodParams } from "../lib/wood";
 import {
   resolveTexture,
@@ -27,6 +29,7 @@ import {
  */
 export function useWoodMaterial(params: WoodParams | null): WoodMaterial | null {
   const held = useRef<WoodMaterial | null>(null);
+  const renderer = useThree((state) => state.gl);
 
   // Built on first use rather than up front: every view calls this, most of them
   // are not showing a texture at any given moment, and a material that is never
@@ -34,6 +37,18 @@ export function useWoodMaterial(params: WoodParams | null): WoodMaterial | null 
   if (params) {
     if (held.current) held.current.setParams(params);
     else held.current = new WoodMaterial(params);
+
+    // The room the finish reflects, which is a property of the renderer rather
+    // than of the timber — hence here, where there is one, and not in the
+    // material's own constructor, which has never needed one. Assigned rather
+    // than compared away because the environment is built once per renderer and
+    // handed back identical afterwards; the guard is for the recompile, since
+    // three only emits the envMap chunks when there is one at compile time.
+    const environment = woodEnvironment(renderer);
+    if (held.current.envMap !== environment) {
+      held.current.envMap = environment;
+      held.current.needsUpdate = true;
+    }
   }
 
   // A material holds a compiled program and its uniform buffers, and React
