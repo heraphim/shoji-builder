@@ -84,7 +84,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     built: true,
   },
   { id: "minimalist", label: "Minimalist", note: "The lamp, and as little else.", built: true },
-  { id: "lowPoly", label: "Low poly 3D", note: "Faceted everything, flat shaded.", built: false },
+  { id: "lowPoly", label: "Low poly 3D", note: "Faceted everything, flat shaded.", built: true },
 ];
 
 export const DEFAULT_SHOWCASE_STYLE: ShowcaseStyleId = "realistic";

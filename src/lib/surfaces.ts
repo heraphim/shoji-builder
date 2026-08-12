@@ -133,6 +133,12 @@ vec3 surfPerturbNormal(vec3 normal, vec3 surfacePosition, float height, float sc
   vec3 r1 = cross(dpdy, normal);
   vec3 r2 = cross(normal, dpdx);
   float det = dot(dpdx, r1);
+
+  // A triangle that covers no area on screen — see woodPerturbNormal, which has
+  // the same guard for the same reason. The determinant is zero, the normalise
+  // at the bottom returns NaN, and a NaN does not stay where it was made.
+  if (abs(det) < 1e-12) return normal;
+
   // No global fade here: every term in the height field band-limits itself, and
   // fading twice takes the large features out along with the small ones.
   vec3 gradient = sign(det) * (dFdx(height) * r1 + dFdy(height) * r2) * scale;

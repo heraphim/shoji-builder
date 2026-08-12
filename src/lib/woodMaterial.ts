@@ -445,6 +445,21 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
   vec3 r2 = cross(normal, dpdx);
   float det = dot(dpdx, r1);
 
+  // A triangle that covers no area on screen.
+  //
+  // Everything below builds a frame out of the two screen derivatives of
+  // position, and on a collapsed triangle those are parallel: the determinant
+  // is zero and the normalise at the bottom returns NaN. It matters more than a
+  // stray pixel would, because a NaN travels — anything that averages it with
+  // its neighbours afterwards, a bloom's mip chain most of all, carries it
+  // across the frame.
+  //
+  // Nothing here had this until the low-poly style started snapping vertices to
+  // a lattice, which welds triangles down to nothing and leaves slivers of them
+  // still rastering. The surface has no relief here because it has no extent
+  // here, so hand back the normal it came with.
+  if (abs(det) < 1e-12) return normal;
+
   // Faded against the **ring pitch** rather than against a fixed number of
   // millimetres.
   //

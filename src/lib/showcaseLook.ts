@@ -415,6 +415,56 @@ const MINIMALIST: ShowcaseLook = {
   bareScroll: true,
 };
 
+/**
+ * Low poly 3D: faceted everything, flat shaded.
+ *
+ * The one style that cannot be done to the picture after the fact. Faceting is
+ * a property of the *surface* — no filter reading a finished frame can tell a
+ * curved thing from a many-sided one — so this is the only look here that
+ * reaches into the geometry, and the only reason `facet` exists. Everything in
+ * this room except the bed and the nightstand is already boxes and cylinders
+ * and needs nothing done to it; those two arrive smooth and are cut to a 42 mm
+ * lattice. See `facetGeometry` in `ShowcaseProps`.
+ *
+ * `detail` is flat zero, which is the other half of it. Grain, weave, plaster
+ * tooth and paper fibre are all *bump*, and bump is a lie about the surface
+ * being finer than the geometry — which is the exact claim this style is built
+ * to deny. A faceted bed with a woven bedspread on it is neither thing.
+ *
+ * The line is thin and only silhouettes, which is what makes the facets read.
+ * Without it a low-poly render at this distance is just a slightly wrong smooth
+ * one; with it every plane change has an edge, and the eye counts them.
+ */
+const LOW_POLY: ShowcaseLook = {
+  background: "#1d1409",
+  paint: {
+    ...NO_PAINT,
+    exposure: 2,
+    bands: 6,
+    bandSoft: 0.25,
+    ink: 0.4,
+    inkColor: "#2a1a10",
+    inkWidth: 1.3,
+    inkFromDepth: 1,
+    inkFromLuma: 0.12,
+    saturation: 1.32,
+    tint: "#fff0d8",
+    lift: 0.05,
+    paperColor: "#fff6e6",
+    contrast: 1.14,
+  },
+  bloom: { intensity: 0.95, threshold: 0.55, smoothing: 0.4 },
+  vignette: { offset: 0.36, darkness: 0.42 },
+  ambient: 2.3,
+  ambientColor: null,
+  fill: 0.52,
+  fillColor: "#ffd6a6",
+  bulb: 1,
+  detail: 0,
+  facet: 42,
+  bareScroll: false,
+};
+
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   realistic: REALISTIC,
   anime: ANIME,
@@ -423,10 +473,7 @@ export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   watercolor: WATERCOLOR,
   inkWash: INK_WASH,
   minimalist: MINIMALIST,
-  // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
-  // menu offering them. Pointed at the photograph rather than left out so that
-  // this stays a total record and nothing has to check for a hole in it.
-  lowPoly: REALISTIC,
+  lowPoly: LOW_POLY,
 };
 
 export function showcaseLook(id: ShowcaseStyleId): ShowcaseLook {

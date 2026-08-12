@@ -2262,6 +2262,52 @@ select.view-mode option:disabled {
   background: #fffaf2;
 }
 
+/* Low poly 3D.
+
+   Nothing in this picture has a curve in it, so nothing in the chrome may
+   either. The corners are cut off square rather than rounded — a chamfer is
+   what a low-poly modeller does to an edge, and a radius is precisely what they
+   cannot do — and the fill is flat because a gradient is a smooth surface by
+   another name. */
+.showcase[data-style="lowPoly"] {
+  --sc-page: #1d1409;
+  --sc-panel: #3c2a16;
+  --sc-panel-lit: #5c3f20;
+  --sc-border: #7a5326;
+  --sc-border-lit: #ffbf6a;
+  --sc-text: #ffeed4;
+  --sc-text-dim: #c19a6c;
+  --sc-accent: #ffbf6a;
+  --sc-radius: 0;
+  --sc-pill: 0;
+  --sc-blur: none;
+  --sc-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --sc-inset: none;
+  --sc-track: #2a1c0e;
+  --sc-track-shadow: none;
+  --sc-thumb: #ffbf6a;
+  --sc-thumb-shadow: none;
+}
+
+/* Two corners taken off, on the diagonal — the panel is an irregular hexagon
+   rather than a rectangle, which is what makes it read as cut rather than as a
+   rectangle with its corners missing. It clips the border with them, and that
+   is the trade: a stroke that followed the chamfer would need a second element
+   behind the first, for a control this size. */
+.showcase[data-style="lowPoly"] .showcase-button,
+.showcase[data-style="lowPoly"] .showcase-menu {
+  clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}
+
+/* the switches are circles, and a low-poly circle has a countable number of
+   sides */
+.showcase[data-style="lowPoly"] .showcase-icon {
+  border-radius: 0;
+  clip-path: polygon(
+    30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%
+  );
+}
+
 .showcase {
   position: absolute;
   inset: 0;

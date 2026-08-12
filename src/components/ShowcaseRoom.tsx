@@ -790,7 +790,20 @@ export function ShowcaseRoom({
         />
       </mesh>
 
-      <Lacquer />
+      {/* The varnish, on any style that believes in smooth surfaces.
+       *
+       * A mirror is the strongest possible claim that a surface is finer than
+       * its geometry, which is the same claim `detail` governs everywhere else —
+       * so the two go together rather than needing a flag of their own. Low poly
+       * is the style that says no surface is smooth, and a faceted nightstand
+       * with a real reflection lying in it is two answers to one question.
+       *
+       * It also happens to be the style the reflection cannot survive. Faceting
+       * the props turns the reflected image poisonous — the whole frame comes
+       * back black, and only while this mesh is drawn — which is a fault worth
+       * knowing about if the gate is ever loosened. It is not why the gate is
+       * here; it is why it was found. */}
+      {look.detail > 0 && <Lacquer />}
 
       {/* The two pieces of furniture that are not boxes.
        *

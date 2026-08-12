@@ -74,33 +74,67 @@ export interface PropFit {
  * shading flattens; the bed and the nightstand arrive smooth and have to be
  * cut.
  *
- * Two operations, and both are needed. **Snapping** each vertex to a lattice is
- * what removes the detail — several neighbouring vertices land on the same
- * point, the triangles between them collapse to nothing, and what is left is a
- * coarse hull with visible corners. **Flat normals** are what make it read:
- * a faceted mesh still shaded smoothly is a lumpy smooth mesh, because the
- * normals are still the original surface's and it is the normals you can see.
+ * Three operations, and all three are needed.
  *
- * Non-indexed first, so that each triangle owns its three vertices and
- * `computeVertexNormals` gives every one of them the face's own normal rather
- * than an average over whatever else used to share it.
+ * **Snapping** each vertex to a lattice is what removes the detail: neighbouring
+ * vertices land on the same point and the surface between them flattens into a
+ * coarse hull with visible corners.
+ *
+ * **Throwing away what collapsed** is not tidying up after that — it is half of
+ * the work, and skipping it is a bug with a long fuse. On a bed at a 42 mm
+ * lattice most triangles end up with no area: two corners on the same point, or
+ * three distinct points in a line, which a coarse grid produces constantly.
+ * `computeVertexNormals` gives those a zero-length face normal, and a zero
+ * normal is `normalize(vec3(0))` in every lighting shader there is — a NaN. It
+ * does not stay put either: the frame is drawn into a half-float buffer and the
+ * bloom averages it up a mip chain, so one poisoned sliver comes back as a
+ * *black frame* with a clean strip down one side, which is exactly as easy to
+ * diagnose as it sounds. Dropping them also does what the style is named after:
+ * the bed loses four fifths of its triangles.
+ *
+ * **Flat normals** are what make the result read. A faceted mesh shaded
+ * smoothly is a lumpy smooth mesh, because the normals are still the original
+ * surface's and the normals are what you can see. Non-indexed first, so each
+ * triangle owns its three vertices and picks up its own face normal rather than
+ * an average over whatever else used to share the corner.
  */
 function facetGeometry(source: THREE.BufferGeometry, grid: number): THREE.BufferGeometry {
-  const geometry = source.index ? source.toNonIndexed() : source.clone();
-  const position = geometry.attributes.position as THREE.BufferAttribute;
-  const array = position.array as Float32Array;
-  for (let i = 0; i < array.length; i++) array[i] = Math.round(array[i] / grid) * grid;
-  position.needsUpdate = true;
+  const flat = source.index ? source.toNonIndexed() : source;
+  const from = (flat.attributes.position as THREE.BufferAttribute).array;
 
-  // Everything else the file brought — UVs it had, tangents, a second set of
-  // normals — is either about to be wrong or was never read here. Only the
-  // positions survive, and the normals are rebuilt from them.
-  for (const name of Object.keys(geometry.attributes)) {
-    if (name !== "position") geometry.deleteAttribute(name);
+  const kept: number[] = [];
+  const snap = (v: number) => Math.round(v / grid) * grid;
+  for (let t = 0; t < from.length; t += 9) {
+    const p = [
+      snap(from[t]), snap(from[t + 1]), snap(from[t + 2]),
+      snap(from[t + 3]), snap(from[t + 4]), snap(from[t + 5]),
+      snap(from[t + 6]), snap(from[t + 7]), snap(from[t + 8]),
+    ];
+    // Rejected on area rather than on whether two corners coincide, which is
+    // what this checked first and which is not the whole of it: three *distinct*
+    // lattice points are collinear often enough on a grid this coarse that a
+    // third of the zero normals survived the corner test. The cross product of
+    // the two edges is the face normal before it is normalised, so its length is
+    // both the area and the answer.
+    const ax = p[3] - p[0], ay = p[4] - p[1], az = p[5] - p[2];
+    const bx = p[6] - p[0], by = p[7] - p[1], bz = p[8] - p[2];
+    const cx = ay * bz - az * by;
+    const cy = az * bx - ax * bz;
+    const cz = ax * by - ay * bx;
+    if (cx * cx + cy * cy + cz * cz < grid * grid * grid * grid * 1e-6) continue;
+    kept.push(...p);
   }
+
+  // A fresh buffer rather than the source's, because everything else it brought
+  // — the UVs, a tangent set, the original normals — is either about to be
+  // wrong or was never read here. Only the corners survive, and the normals are
+  // rebuilt from them.
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(kept, 3));
   geometry.computeVertexNormals();
   geometry.computeBoundingBox();
   geometry.computeBoundingSphere();
+  if (flat !== source) flat.dispose();
   return geometry;
 }
 
