@@ -19,8 +19,10 @@ Six controls, and they are the whole of it:
   are looking at is the lamp on the bench. On a first load with an empty bench it
   puts up the first lamp the library offers.
 - **The style, top middle.** How the whole picture is drawn — the scene and the
-  controls in front of it both. Whatever is not built yet is still on the menu,
-  disabled, because the list is the plan.
+  controls in front of it both. All eight are drawn: a photograph, an anime cel,
+  a cartoon, a painted background, a watercolour, a sumi-e wash, a minimal room
+  and a faceted one. A ninth would appear here disabled until it worked, because
+  the list is the plan.
 - **Editor, top right.** Through to the workbench, with that lamp on it. The tab
   strip there begins with **← Showcase**, which is the way back.
 - **Zen, last in the light row.** Hides every control but itself, and then moves
