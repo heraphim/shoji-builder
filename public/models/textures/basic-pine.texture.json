@@ -28,7 +28,7 @@
     "fineWarpStrength": 0.006,
     "fineWarpScale": 23.2,
     "splotchScale": 0.51,
-    "splotchIntensity": 0.84,
+    "splotchIntensity": 0.32,
     "cellScale": 1480,
     "cellSize": 0.07,
     "poreIntensity": 0.407,
