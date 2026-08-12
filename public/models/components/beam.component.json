@@ -290,7 +290,7 @@
   ],
   "appearance": {
     "solidColor": "#1e4179",
-    "texture": "basic-pine.texture.json",
+    "texture": "weird-white.texture.json",
     "grainAxis": "x"
   },
   "preview": {
