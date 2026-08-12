@@ -8,7 +8,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { MeshReflectorMaterial } from "@react-three/drei";
 import type { MeshReflectorMaterial as ReflectorMaterial } from "@react-three/drei/materials/MeshReflectorMaterial";
 import { loadLibraryTexture, type TextureFile } from "../lib/textureFile";
-import { Prop, preloadProps, type PropFit } from "./ShowcaseProps";
+import { Prop, preloadProps, useFlatTop, type PropFit } from "./ShowcaseProps";
 import { siteUrl } from "../lib/library";
 import type { ShowcaseLook } from "../lib/showcaseLook";
 
@@ -249,16 +249,21 @@ preloadProps([NIGHTSTAND.file, BED.file]);
  * at room scale. This one is a file out of the library, and it is the right way
  * round for exactly one piece of furniture: the Texture Generator judges a wood
  * by standing it on *this* nightstand at *this* size (see `TextureGeneratorPage`
- * and the note on {@link NIGHTSTAND}), so a texture saved there was authored on
- * the object it is being used on. Its grain scale and its pith are already the
- * ones somebody chose while looking at this table.
+ * and the note on {@link NIGHTSTAND}), so a texture out of that library is
+ * already stated at the size it is used at — its grain scale and its pith are
+ * millimetres of this table rather than of a swatch.
  *
  * Which is why `board`'s corrections are not applied to it. They exist to take a
  * preset meant for an object a texture-unit across and stretch it onto half a
- * metre of top; run over numbers that were already chosen at this size they
- * would undo the choosing.
+ * metre of top; run over numbers that are already at this size they would undo
+ * the choosing.
+ *
+ * The finish in the file is a raw one — no clearcoat, and rough. That is not a
+ * contradiction with the mirror lying on it: the timber is the board and the
+ * film over it is the varnish, and they are two surfaces here on purpose. See
+ * {@link Lacquer}.
  */
-const NIGHTSTAND_TIMBER = "pine-gloss-1218.texture.json";
+const NIGHTSTAND_TIMBER = "basic-pine.texture.json";
 
 /**
  * Fetched at module scope, with the props.
@@ -357,17 +362,18 @@ const DREI_MIX =
 const UNLIT_MIX = `totalEmissiveRadiance += newMerge.rgb * mixStrength * diffuse;
    diffuseColor.rgb = vec3(0.0);`;
 
-/**
- * The sheet, in millimetres. The nightstand's top measures exactly this once the
- * model has been fitted to the room's table height — measured off the loaded
- * geometry rather than assumed, and the film is the whole of it: at this
- * sharpness a sheet a centimetre inside the edge reads as a pane of glass
- * sitting on the table rather than as a finish on it.
- */
-const FILM = { width: 1114, depth: 796, lift: 0.5 };
+/** How far the film floats over the timber, in millimetres. */
+const FILM_LIFT = 0.5;
 
 function Lacquer() {
   const material = useRef<ReflectorMaterial | null>(null);
+
+  // The sheet is cut to the flat part of the top rather than to the model's
+  // footprint, and it is measured rather than written down — see `flatTopOf`.
+  // The nightstand's top is a rectangle with its edges rolled over, and a film
+  // that carried on out over the roll would be a pane of glass resting on the
+  // table. Swap the model and the film comes out the new shape.
+  const top = useFlatTop(NIGHTSTAND);
 
   // Checked against the material rather than run once, because drei rebuilds the
   // material from scratch whenever one of its defines changes — and a fresh one
@@ -396,9 +402,17 @@ function Lacquer() {
     film.needsUpdate = true;
   });
 
+  if (!top) {
+    console.warn("Lacquer: the nightstand has no level top to varnish; no film drawn.");
+    return null;
+  }
+
   return (
-    <mesh position={[NIGHTSTAND_X, TABLE_Y + FILM.lift, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[FILM.width, FILM.depth]} />
+    <mesh
+      position={[top.center[0], top.y + FILM_LIFT, top.center[1]]}
+      rotation={[-Math.PI / 2, 0, 0]}
+    >
+      <planeGeometry args={[top.size[0], top.size[1]]} />
       <MeshReflectorMaterial
         ref={material}
         // The buffer is square and covers the whole mirrored *view* rather than
@@ -969,8 +983,17 @@ export function ShowcaseRoom({
        * the props turns the reflected image poisonous — the whole frame comes
        * back black, and only while this mesh is drawn — which is a fault worth
        * knowing about if the gate is ever loosened. It is not why the gate is
-       * here; it is why it was found. */}
-      {look.detail > 0 && <Lacquer />}
+       * here; it is why it was found.
+       *
+       * Suspended, because the film is cut to the nightstand's own top and has
+       * to wait for the model to say what shape that is. Its own boundary rather
+       * than the props' below: a film that waited for the *bed* would be a
+       * second thing holding up the room. */}
+      {look.detail > 0 && (
+        <Suspense fallback={null}>
+          <Lacquer />
+        </Suspense>
+      )}
 
       {/* The two pieces of furniture that are not boxes.
        *

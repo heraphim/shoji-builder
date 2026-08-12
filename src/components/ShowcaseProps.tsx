@@ -147,10 +147,183 @@ function facetGeometry(source: THREE.BufferGeometry, grid: number): THREE.Buffer
  * geometry is copied with it rather than shared, because the fit is baked into
  * the vertices — see the note on that inside.
  */
+/** Where a prop goes and how big it is — a {@link PropFit} without its materials. */
+export type PropPlacement = Omit<PropFit, "dress" | "fallback">;
+
+/**
+ * The whole of the fit, as the two numbers that carry it: what the model's own
+ * coordinates are multiplied by, and where they land.
+ *
+ * `world = turn * local * scale + offset`
+ *
+ * Pulled out of {@link Prop} because it is no longer only `Prop` that needs to
+ * know — anything measuring a *feature* of a loaded prop in room millimetres has
+ * to do the same arithmetic, and two copies of it are two answers waiting to
+ * disagree. See {@link flatTopOf}.
+ *
+ * Measured off the cached scene rather than off a clone: `Prop` never writes to
+ * the loaded geometry — it clones what it scales — so the two see the same
+ * vertices.
+ */
+export function fitOf(
+  scene: THREE.Object3D,
+  fit: PropPlacement
+): { turn: THREE.Matrix4; scale: number; offset: THREE.Vector3 } {
+  scene.updateMatrixWorld(true);
+  const turn = new THREE.Matrix4().makeRotationY(fit.turn ?? 0);
+
+  // Measured after the turn, so a prop that is rotated a quarter turn is fitted
+  // on the side that is actually its length once it is standing in the room.
+  const box = new THREE.Box3();
+  const local = new THREE.Matrix4();
+  scene.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
+    local.multiplyMatrices(turn, object.matrixWorld);
+    box.union(object.geometry.boundingBox!.clone().applyMatrix4(local));
+  });
+
+  const size = box.getSize(new THREE.Vector3());
+  const scale =
+    fit.height !== undefined
+      ? fit.height / Math.max(size.y, 1e-6)
+      : (fit.length ?? 1000) / Math.max(size.x, size.z, 1e-6);
+
+  const corner = new THREE.Vector3(
+    box.min.x + size.x * fit.anchor[0],
+    box.min.y + size.y * fit.anchor[1],
+    box.min.z + size.z * fit.anchor[2]
+  ).multiplyScalar(scale);
+
+  return {
+    turn,
+    scale,
+    offset: new THREE.Vector3(fit.at[0] - corner.x, fit.at[1] - corner.y, fit.at[2] - corner.z),
+  };
+}
+
+/** A flat, upward-facing patch of a prop, in room millimetres. */
+export interface FlatTop {
+  /** Its middle, in x and z. */
+  center: [number, number];
+  /** How far it runs, in x and z. */
+  size: [number, number];
+  /** The height of the plane itself. */
+  y: number;
+}
+
+/**
+ * How far from level a face may be and still count as part of the top. About
+ * two and a half degrees.
+ */
+const LEVEL = 0.999;
+
+/**
+ * How far below the highest level face another one may sit and still be the
+ * same surface, in millimetres of the room.
+ *
+ * Not zero, because a "flat" top out of a modeller is a few triangles that
+ * disagree in the sixth decimal, and not large, because the first band of a
+ * roundover is nearly level and only a little lower — which is the whole thing
+ * this is trying to keep out.
+ */
+const SAME_SURFACE = 0.25;
+
+/**
+ * The flat part of a prop's upper surface, measured off its triangles.
+ *
+ * The nightstand's top is not a rectangle: it is a rectangle with its edges
+ * rolled over, and a film cut to the model's *bounding box* hangs out over the
+ * roll all the way round. At a soft blur nobody could see it. Sharpen the
+ * reflection and it reads as a pane of glass resting on the table, which is the
+ * one thing a lacquer must not look like.
+ *
+ * So the sheet is measured rather than written down: every triangle that faces
+ * up and sits on the highest level surface, bounded in x and z. Change the
+ * nightstand for a different one and the film changes shape with it.
+ *
+ * @returns null if the prop has no level upper surface at all, which is a thing
+ *          worth hearing about rather than papering over — see the caller.
+ */
+export function flatTopOf(scene: THREE.Object3D, fit: PropPlacement): FlatTop | null {
+  const { turn, scale, offset } = fitOf(scene, fit);
+
+  const faces: { y: number; minX: number; maxX: number; minZ: number; maxZ: number }[] = [];
+  const local = new THREE.Matrix4();
+  const a = new THREE.Vector3();
+  const b = new THREE.Vector3();
+  const c = new THREE.Vector3();
+  const ab = new THREE.Vector3();
+  const ac = new THREE.Vector3();
+  const normal = new THREE.Vector3();
+
+  scene.traverse((object) => {
+    if (!(object instanceof THREE.Mesh)) return;
+    const position = object.geometry.attributes.position as THREE.BufferAttribute | undefined;
+    if (!position) return;
+    const index = object.geometry.index;
+    local.multiplyMatrices(turn, object.matrixWorld);
+
+    const corners = index ? index.count : position.count;
+    for (let i = 0; i < corners; i += 3) {
+      const at = (k: number) => (index ? index.getX(i + k) : i + k);
+      a.fromBufferAttribute(position, at(0)).applyMatrix4(local).multiplyScalar(scale).add(offset);
+      b.fromBufferAttribute(position, at(1)).applyMatrix4(local).multiplyScalar(scale).add(offset);
+      c.fromBufferAttribute(position, at(2)).applyMatrix4(local).multiplyScalar(scale).add(offset);
+
+      // The face normal off the geometry rather than the vertex normals, which
+      // are averaged and so are already lying about the arris between the top
+      // and the roll: a shared corner reports a normal halfway down the curve.
+      normal.crossVectors(ab.subVectors(b, a), ac.subVectors(c, a));
+      const length = normal.length();
+      if (length < 1e-9 || normal.y / length < LEVEL) continue;
+
+      faces.push({
+        y: Math.max(a.y, b.y, c.y),
+        minX: Math.min(a.x, b.x, c.x),
+        maxX: Math.max(a.x, b.x, c.x),
+        minZ: Math.min(a.z, b.z, c.z),
+        maxZ: Math.max(a.z, b.z, c.z),
+      });
+    }
+  });
+
+  if (faces.length === 0) return null;
+
+  const top = faces.reduce((highest, face) => Math.max(highest, face.y), -Infinity);
+  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+  for (const face of faces) {
+    if (top - face.y > SAME_SURFACE) continue;
+    minX = Math.min(minX, face.minX);
+    maxX = Math.max(maxX, face.maxX);
+    minZ = Math.min(minZ, face.minZ);
+    maxZ = Math.max(maxZ, face.maxZ);
+  }
+
+  return {
+    center: [(minX + maxX) / 2, (minZ + maxZ) / 2],
+    size: [maxX - minX, maxZ - minZ],
+    y: top,
+  };
+}
+
+/**
+ * {@link flatTopOf} for a prop that has not been loaded yet.
+ *
+ * Suspends, like `Prop` does, and off the same cache — the model is fetched
+ * once however many things are measuring it.
+ */
+export function useFlatTop(fit: PropPlacement): FlatTop | null {
+  const { scene } = useGLTF(siteUrl(`models/props/${fit.file}`));
+  return useMemo(() => flatTopOf(scene, fit), [scene, fit]);
+}
+
 export function Prop({ fit }: { fit: PropFit }) {
   const { scene } = useGLTF(siteUrl(`models/props/${fit.file}`));
 
   const model = useMemo(() => {
+    const { scale, offset } = fitOf(scene, fit);
+
     const root = scene.clone(true);
     root.rotation.y = fit.turn ?? 0;
     root.updateMatrixWorld(true);
@@ -164,15 +337,6 @@ export function Prop({ fit }: { fit: PropFit }) {
       object.castShadow = true;
       object.receiveShadow = true;
     });
-
-    // Measured after the turn, so a prop that is rotated a quarter turn is fitted
-    // on the side that is actually its length once it is standing in the room.
-    const box = new THREE.Box3().setFromObject(root);
-    const size = box.getSize(new THREE.Vector3());
-    const scale =
-      fit.height !== undefined
-        ? fit.height / Math.max(size.y, 1e-6)
-        : (fit.length ?? 1000) / Math.max(size.x, size.z, 1e-6);
 
     // The fit is applied to the *geometry* rather than to the node, and it has
     // to be.
@@ -203,15 +367,9 @@ export function Prop({ fit }: { fit: PropFit }) {
       cut.push(sized);
     });
 
-    const corner = new THREE.Vector3(
-      box.min.x + size.x * fit.anchor[0],
-      box.min.y + size.y * fit.anchor[1],
-      box.min.z + size.z * fit.anchor[2]
-    ).multiplyScalar(scale);
-
     const group = new THREE.Group();
     group.add(root);
-    group.position.set(fit.at[0] - corner.x, fit.at[1] - corner.y, fit.at[2] - corner.z);
+    group.position.copy(offset);
     return { group, cut };
   }, [scene, fit]);
 
