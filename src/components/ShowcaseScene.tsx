@@ -49,6 +49,40 @@ const VIEW_DIR = new THREE.Vector3(-0.26, 0.21, 1).normalize();
 const FOV = 34;
 
 /**
+ * The narrowest the *horizontal* field may get, as the tangent of its half-angle.
+ *
+ * {@link FOV} is vertical, so how much of the room is beside the lamp is decided
+ * by the window's shape, and an upright phone is the shape that decides it worst:
+ * at 34° vertical and an aspect of one half, the picture is 17° wide. That is a
+ * slice of wall about 840 mm across in a room nearly six metres wide — and there
+ * is no dollying out of it, because {@link KeepInRoom} stops the camera at the
+ * near edge of the room long before the frame has opened up. On a phone the whole
+ * zoom range was a fifth wider than the first shot and every part of it was
+ * lamp-and-wall.
+ *
+ * So below a certain aspect the vertical angle opens until the horizontal one
+ * stops shrinking: 30° across, which a phone reaches at around 56° tall. Wide,
+ * and a phone's own camera is wider still — an upright shot of a room is a
+ * wide-angle shot, in this app and in the hardware people are used to.
+ *
+ * A window's shape rather than a phone test, for the same reason the layout uses
+ * one: what starves the frame is a tall narrow viewport, whether that is a handset
+ * or a docked panel. Anything from about 0.88 : 1 up — every landscape window,
+ * including the same phone turned on its side — is already wider than the floor
+ * and comes out at exactly {@link FOV}.
+ */
+const MIN_H_TAN = Math.tan((30 * Math.PI) / 360);
+
+/**
+ * The vertical field of view for a window of this shape: {@link FOV}, opened up
+ * if that is what {@link MIN_H_TAN} costs.
+ */
+function fovFor(aspect: number): number {
+  const vTan = Math.max(Math.tan((FOV * Math.PI) / 360), MIN_H_TAN / Math.max(aspect, 1e-6));
+  return (Math.atan(vTan) * 360) / Math.PI;
+}
+
+/**
  * Which way round the camera starts, as an OrbitControls azimuth.
  *
  * Derived from {@link VIEW_DIR} rather than written down twice: the swing limits
@@ -167,9 +201,15 @@ const STREET = {
  * shrinks in the frame as you orbit it. Both fields of view are checked, so a
  * phone held upright frames the lamp on its height and a wide window frames it
  * on its girth, and neither crops it.
+ *
+ * Takes the angle rather than reading {@link FOV}, because the phone's is wider —
+ * see {@link fovFor}. Everything downstream is measured in this distance, so the
+ * limits move with it: a wider lens frames the same lamp from closer, and
+ * `minDistance` and the zoom ceiling both being multiples of it is what keeps
+ * "as close as the shot allows" meaning the same composition on either.
  */
-function frameDistance(half: THREE.Vector3, aspect: number): number {
-  const vTan = Math.tan((FOV * Math.PI) / 360);
+function frameDistance(half: THREE.Vector3, aspect: number, fov: number): number {
+  const vTan = Math.tan((fov * Math.PI) / 360);
   const hTan = vTan * Math.max(aspect, 1e-6);
   const radius = Math.hypot(half.x, half.z);
   const forHeight = half.y / vTan / LAMP_FILL;
@@ -438,8 +478,13 @@ export function Showcase({
   // throws stays a window shape.
   void WINDOW;
 
+  const aspect = size.width / Math.max(size.height, 1);
+  const fov = fovFor(aspect);
+
   const aspectRef = useRef(1);
-  aspectRef.current = size.width / Math.max(size.height, 1);
+  aspectRef.current = aspect;
+  const fovRef = useRef(fov);
+  fovRef.current = fov;
   const boxRef = useRef(lampBox);
   boxRef.current = lampBox;
 
@@ -450,7 +495,7 @@ export function Showcase({
     const current = boxRef.current;
     const half = current.getSize(new THREE.Vector3()).multiplyScalar(0.5);
     const centre = current.getCenter(new THREE.Vector3());
-    const distance = frameDistance(half, aspectRef.current);
+    const distance = frameDistance(half, aspectRef.current, fovRef.current);
     return {
       position: [
         centre.x + VIEW_DIR.x * distance,
@@ -460,7 +505,8 @@ export function Showcase({
       target: centre,
       reach: distance,
     };
-    // the box and the aspect are read through refs on purpose — see above
+    // the box, the aspect and the angle are read through refs on purpose — see
+    // above
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lampKey]);
 
@@ -476,7 +522,11 @@ export function Showcase({
 
   return (
     <>
-      <PerspectiveCamera makeDefault position={position} fov={FOV} near={5} far={12000} />
+      {/* The lens follows the window's shape live, while the framing does not:
+          turning a phone on its side narrows the angle back to {@link FOV} where
+          the width no longer needs the help, and the camera stays exactly where
+          the visitor left it. */}
+      <PerspectiveCamera makeDefault position={position} fov={fov} near={5} far={12000} />
 
       {/* The room's own bounce, from whichever sources are lit.
        *
