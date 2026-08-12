@@ -104,6 +104,9 @@ const RANGES: Record<string, Range> = {
   // across it, which is a stain and not a figure. The generator cannot know
   // which part its wood will land on, so it has to assume the small one — the
   // same texture is asked to cover a 5 mm kumiko strip and a table top.
+  //
+  // Both maxima here are only reachable by the one board in eight that
+  // {@link BLOTCH_OVER_ONE} lets past — see {@link blotch}.
   splotchScale: { spread: 0.4, min: 0.45, max: 2.4 },
   // And the ceiling is an arithmetic one — see {@link blotchCeiling}. 1.8 is
   // above where that bound bites on all but the palest timber, so this is the
@@ -133,6 +136,21 @@ const PORE_CHANCE = 0.45;
 
 /** How strong they are when there are any. */
 const PORE_STRENGTH = [0.05, 0.3] as const;
+
+/**
+ * How often a board is allowed a blotch number past 1 at all.
+ *
+ * Both of them, on the same coin. A board with a fine busy figure and a board
+ * with a strong one are the same board — restless — and rolling the two
+ * independently would mostly produce halves of it.
+ *
+ * The presets are what make this necessary rather than a preference. Nine of
+ * the ten sit above 1 on `splotchIntensity` and three on `splotchScale`, because
+ * they are calibrated against an object about one texture unit across and this
+ * app's parts are a fraction of that — the same mis-scaling `DEFAULT_PLACEMENT`
+ * exists to correct, showing up in a second place.
+ */
+const BLOTCH_OVER_ONE = 0.12;
 
 /**
  * How much of the blotch range may be crushed to flat black, as a fraction.
@@ -216,6 +234,43 @@ function wander(value: number, { spread, min, max }: Range): number {
 }
 
 const between = (min: number, max: number) => min + Math.random() * (max - min);
+
+/**
+ * A blotch number, held under 1 unless this is one of the boards
+ * {@link BLOTCH_OVER_ONE} lets past.
+ *
+ * The pull is `v / (1 + vⁿ)^(1/n)`, which is under 1 for every positive v and
+ * leaves the ten species in the order the table put them in — pine still
+ * blotchier than maple, walnut still finer than teak. A clamp would not: nine of
+ * the ten presets are above 1 on strength, so clamping would pile nine of them
+ * onto exactly 1.0 and call the result variety. Compressing keeps a
+ * distribution where flattening would leave an atom.
+ *
+ * `n` is how *late* the pull arrives, and the two numbers need different
+ * answers because their tables are shaped differently. Strength has nine presets
+ * above 1 and wants pulling from the start, which is `n = 1` — plain `v/(1+v)`,
+ * halving at 1. Scale has only three, and six sit below 0.6 already; pulling
+ * those drove two thirds of every board onto the 0.45 floor, which is one blotch
+ * size wearing a hundred thousand names. A higher `n` is near-identity until it
+ * approaches 1 and only then bends, so the small species keep their spacing and
+ * only the three big ones are brought in.
+ *
+ * The pull comes **after** the wander and not before it, which is the whole
+ * reason this is a function rather than a smaller number in the table. Pulled
+ * first, the spread promptly undid it — a preset landing at 0.98 still wandered
+ * to 1.37 — and one scale in six came out past 1 anyway. Pulled last it cannot,
+ * because the map's range is `[0, 1)` and the wander has already happened.
+ * The floor is applied last of all, so what it catches is only the species that
+ * were under it to begin with rather than everything the pull dragged down.
+ */
+function blotch(value: number, range: Range, knee: number, overOne: boolean): number {
+  if (overOne) return wander(value, range);
+  const spread = value * (1 + (Math.random() * 2 - 1) * range.spread);
+  return clamp(spread / (1 + spread ** knee) ** (1 / knee), range.min, 1);
+}
+
+/** See {@link blotch}: strength is pulled from the start, scale only near 1. */
+const BLOTCH_KNEE = { strength: 1, scale: 4 };
 
 const pick = <T,>(from: readonly T[]): T => from[Math.floor(Math.random() * from.length)];
 
@@ -391,6 +446,8 @@ export function randomWood(): WoodCandidate {
   const base = WOOD_SPECIES[species];
   const preset = woodPreset(species, finish);
   const colors = wanderColors(base.darkGrainColor, base.lightGrainColor, preset.clearcoatDarken);
+  // One coin for both blotch numbers. See {@link BLOTCH_OVER_ONE}.
+  const overOne = Math.random() < BLOTCH_OVER_ONE;
 
   const drawn: WoodParams = {
     ...preset,
@@ -412,8 +469,9 @@ export function randomWood(): WoodCandidate {
     smallWarpScale: wander(base.smallWarpScale, RANGES.smallWarpScale),
     fineWarpStrength: wander(base.fineWarpStrength, RANGES.fineWarpStrength),
     fineWarpScale: wander(base.fineWarpScale, RANGES.fineWarpScale),
-    splotchScale: wander(base.splotchScale, RANGES.splotchScale),
-    splotchIntensity: wander(base.splotchIntensity, RANGES.splotchIntensity),
+    splotchScale: blotch(base.splotchScale, RANGES.splotchScale, BLOTCH_KNEE.scale, overOne),
+    splotchIntensity: blotch(
+      base.splotchIntensity, RANGES.splotchIntensity, BLOTCH_KNEE.strength, overOne),
     cellScale: wander(base.cellScale, RANGES.cellScale),
     cellSize: wander(base.cellSize, RANGES.cellSize),
 
