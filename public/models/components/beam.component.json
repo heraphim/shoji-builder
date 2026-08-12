@@ -1,13 +1,13 @@
 {
   "id": "beam",
   "type": "component",
-  "format": 4,
+  "format": 6,
   "units": "mm",
   "variables": {
-    "beamDepth": "6.5",
-    "beamExtra": "57",
-    "beamHeight": "18",
-    "innerWidth": "215"
+    "beamDepth": "10",
+    "beamExtra": "20",
+    "beamHeight": "15",
+    "innerWidth": "200"
   },
   "blocks": [
     {
@@ -34,16 +34,16 @@
       "name": "beam.stl (2)",
       "size": {
         "x": "#beamDepth",
-        "y": "(#beamHeight) - (1/2*#beamHeight)",
+        "y": "7.5",
         "z": "#beamDepth"
       },
       "sizeSource": {
         "x": "set",
-        "y": "implied",
+        "y": "literal",
         "z": "set"
       },
       "origin": [
-        57,
+        20,
         0,
         0
       ]
@@ -62,7 +62,7 @@
         "z": "set"
       },
       "origin": [
-        63.5,
+        30,
         0,
         0
       ]
@@ -81,7 +81,7 @@
         "z": "set"
       },
       "origin": [
-        285,
+        240,
         0,
         0
       ]
@@ -91,16 +91,16 @@
       "name": "beam.stl (5)",
       "size": {
         "x": "#beamDepth",
-        "y": "(#beamHeight) - (1/2*#beamHeight)",
+        "y": "7.5",
         "z": "#beamDepth"
       },
       "sizeSource": {
         "x": "set",
-        "y": "implied",
+        "y": "literal",
         "z": "set"
       },
       "origin": [
-        278.5,
+        230,
         0,
         0
       ]
@@ -186,131 +186,101 @@
   ],
   "measurements": [
     {
-      "id": "dfee3815-3baa-4162-b564-90930e82b9aa",
-      "formula": "#beamExtra",
-      "edges": [
-        {
-          "start": [
-            65,
-            18,
-            10
-          ],
-          "end": [
-            45,
-            18,
-            10
-          ]
-        },
-        {
-          "start": [
-            45,
-            18,
-            0
-          ],
-          "end": [
-            65,
-            18,
-            0
-          ]
-        }
-      ]
-    },
-    {
       "id": "b506b5cb-ab35-4a2a-8f1b-6815d0807139",
       "formula": "1/2*#beamHeight",
       "edges": [
         {
           "start": [
-            65,
+            20,
             9,
             10
           ],
           "end": [
-            65,
+            20,
             18,
             10
           ]
         },
         {
           "start": [
-            285,
+            240,
             18,
             10
           ],
           "end": [
-            285,
-            9,
-            10
-          ]
-        },
-        {
-          "start": [
-            275,
-            9,
-            10
-          ],
-          "end": [
-            275,
-            18,
-            10
-          ]
-        },
-        {
-          "start": [
-            75,
-            18,
-            10
-          ],
-          "end": [
-            75,
+            240,
             9,
             10
           ]
         },
         {
           "start": [
-            65,
+            230,
+            9,
+            10
+          ],
+          "end": [
+            230,
+            18,
+            10
+          ]
+        },
+        {
+          "start": [
+            30,
+            18,
+            10
+          ],
+          "end": [
+            30,
+            9,
+            10
+          ]
+        },
+        {
+          "start": [
+            20,
             18,
             0
           ],
           "end": [
-            65,
+            20,
             9,
             0
           ]
         },
         {
           "start": [
-            285,
+            240,
             9,
             0
           ],
           "end": [
-            285,
+            240,
             18,
             0
           ]
         },
         {
           "start": [
-            275,
+            230,
             18,
             0
           ],
           "end": [
-            275,
+            230,
             9,
             0
           ]
         },
         {
           "start": [
-            75,
+            30,
             9,
             0
           ],
           "end": [
-            75,
+            30,
             18,
             0
           ]
@@ -318,107 +288,112 @@
       ]
     }
   ],
+  "appearance": {
+    "solidColor": "#1e4179",
+    "texture": "basic-pine.texture.json",
+    "grainAxis": "x"
+  },
   "preview": {
     "variables": {
-      "innerWidth": 215,
-      "innerDepth": 215,
-      "innerHeight": 358,
-      "legThickness": 18,
-      "legExtraTop": 26,
-      "legExtraBottom": 41,
-      "beamHeight": 18,
-      "beamDepth": 6.5,
-      "beamExtra": 57,
+      "innerWidth": 200,
+      "innerDepth": 200,
+      "innerHeight": 370,
+      "legThickness": 20,
+      "legExtraTop": 20,
+      "legExtraBottom": 40,
+      "beamHeight": 15,
+      "beamDepth": 10,
+      "beamExtra": 20,
       "frameWidth": 7,
       "frameHeight": 7
     },
     "solids": [
       {
         "vertices": [
-          57,
-          9,
+          20,
+          7.5,
           0,
-          57,
-          18,
+          20,
+          15,
           0,
-          57,
-          18,
-          6.5,
-          57,
-          9,
-          6.5,
+          20,
+          15,
+          10,
+          20,
+          7.5,
+          10,
           0,
-          18,
+          15,
           0,
-          57,
-          0,
-          0,
+          20,
           0,
           0,
           0,
-          63.5,
-          18,
-          0,
-          278.5,
-          18,
-          0,
-          278.5,
-          9,
-          0,
-          63.5,
-          9,
-          0,
-          285,
-          18,
-          0,
-          342,
-          18,
-          0,
-          342,
           0,
           0,
-          285,
+          30,
+          15,
+          0,
+          230,
+          15,
+          0,
+          230,
+          7.5,
+          0,
+          30,
+          7.5,
+          0,
+          240,
+          15,
+          0,
+          260,
+          15,
+          0,
+          260,
           0,
           0,
-          285,
-          9,
-          0,
-          342,
-          0,
-          6.5,
+          240,
           0,
           0,
-          6.5,
-          57,
+          240,
+          7.5,
           0,
-          6.5,
+          260,
           0,
-          18,
-          6.5,
-          285,
+          10,
           0,
-          6.5,
-          285,
-          9,
-          6.5,
-          342,
-          18,
-          6.5,
-          285,
-          18,
-          6.5,
-          63.5,
-          9,
-          6.5,
-          278.5,
-          9,
-          6.5,
-          278.5,
-          18,
-          6.5,
-          63.5,
-          18,
-          6.5
+          0,
+          10,
+          20,
+          0,
+          10,
+          0,
+          15,
+          10,
+          240,
+          0,
+          10,
+          240,
+          7.5,
+          10,
+          260,
+          15,
+          10,
+          240,
+          15,
+          10,
+          30,
+          7.5,
+          10,
+          230,
+          7.5,
+          10,
+          230,
+          15,
+          10,
+          30,
+          15,
+          10
         ],
         "triangles": [
           0,
