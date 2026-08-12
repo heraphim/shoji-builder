@@ -1,0 +1,212 @@
+{
+  "id": "post-through",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerHeight": "370",
+    "legExtraBottom": "40",
+    "legExtraTop": "20",
+    "legThickness": "20"
+  },
+  "blocks": [
+    {
+      "id": "46f08b9c-0001-5334-a22d-78b2f15fdab1",
+      "name": "post-through.stl (1)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#legExtraBottom",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "c2146e17-bda3-5be8-9cd7-40e73bb256bf",
+      "name": "post-through.stl (2)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "-1/6*#beamDepth + 1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 40.0, 0.0 ]
+    },
+    {
+      "id": "3fe049e4-7c0c-56a5-89e6-d6fa1c55fb80",
+      "name": "post-through.stl (3)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "-1/6*#beamDepth + 1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 40.0, 11.6667 ]
+    },
+    {
+      "id": "ee836a77-9478-580b-bce2-181a2bebdd7c",
+      "name": "post-through.stl (4)",
+      "size": {
+        "x": "#legThickness",
+        "y": "-2*#beamHeight + #innerHeight",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 55.0, 0.0 ]
+    },
+    {
+      "id": "3bdeee22-b386-5c29-8b80-6290a839e385",
+      "name": "post-through.stl (5)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "-1/6*#beamDepth + 1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 395.0, 0.0 ]
+    },
+    {
+      "id": "bb0005f7-b147-5b9e-b38f-48c14e427bac",
+      "name": "post-through.stl (6)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "-1/6*#beamDepth + 1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 395.0, 11.6667 ]
+    },
+    {
+      "id": "de53ef41-7904-5452-bfc6-b111f9062c60",
+      "name": "post-through.stl (7)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#legExtraTop",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 410.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "24e51b58-0361-5001-99e8-4d3a203cf731",
+      "a": {
+        "block": "46f08b9c-0001-5334-a22d-78b2f15fdab1",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "c2146e17-bda3-5be8-9cd7-40e73bb256bf",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "da25c0ae-1435-5d6a-bd74-77da40bfcc88",
+      "a": {
+        "block": "46f08b9c-0001-5334-a22d-78b2f15fdab1",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "3fe049e4-7c0c-56a5-89e6-d6fa1c55fb80",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "30632972-eeee-5ef8-afd8-72a07deda761",
+      "a": {
+        "block": "c2146e17-bda3-5be8-9cd7-40e73bb256bf",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "ee836a77-9478-580b-bce2-181a2bebdd7c",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "6a5c2eb2-650a-5036-8ea4-d30563e765d9",
+      "a": {
+        "block": "ee836a77-9478-580b-bce2-181a2bebdd7c",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "3bdeee22-b386-5c29-8b80-6290a839e385",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "cc753754-2310-5966-a0ce-d8f072055d38",
+      "a": {
+        "block": "ee836a77-9478-580b-bce2-181a2bebdd7c",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "bb0005f7-b147-5b9e-b38f-48c14e427bac",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "1aa1a6a0-6aa1-5f79-84fa-3652c7ca1d86",
+      "a": {
+        "block": "3bdeee22-b386-5c29-8b80-6290a839e385",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "de53ef41-7904-5452-bfc6-b111f9062c60",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 20.0, 0.0, 0.0, 20.0, 40.0, 0.0, 20.0, 40.0, 20.0, 20.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 40.0, 0.0, 0.0, 40.0, 20.0, 0.0, 0.0, 20.0, 20.0, 55.0, 0.0, 20.0, 55.0, 8.3333, 20.0, 40.0, 8.3333, 0.0, 55.0, 0.0, 0.0, 55.0, 8.3333, 0.0, 40.0, 8.3333, 20.0, 40.0, 11.6667, 20.0, 55.0, 11.6667, 20.0, 55.0, 20.0, 0.0, 40.0, 11.6667, 0.0, 55.0, 11.6667, 0.0, 55.0, 20.0, 20.0, 395.0, 0.0, 20.0, 395.0, 20.0, 0.0, 395.0, 0.0, 0.0, 395.0, 20.0, 20.0, 410.0, 0.0, 20.0, 410.0, 8.3333, 20.0, 395.0, 8.3333, 0.0, 410.0, 0.0, 0.0, 410.0, 8.3333, 0.0, 395.0, 8.3333, 20.0, 395.0, 11.6667, 20.0, 410.0, 11.6667, 20.0, 410.0, 20.0, 0.0, 395.0, 11.6667, 0.0, 410.0, 11.6667, 0.0, 410.0, 20.0, 20.0, 430.0, 0.0, 20.0, 430.0, 20.0, 0.0, 430.0, 0.0, 0.0, 430.0, 20.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 1, 8, 9, 1, 9, 10, 5, 13, 12, 5, 12, 11, 11, 12, 9, 11, 9, 8, 5, 1, 10, 5, 10, 13, 13, 10, 9, 13, 9, 12, 5, 11, 8, 5, 8, 1, 14, 15, 16, 14, 16, 2, 17, 6, 19, 17, 19, 18, 18, 19, 16, 18, 16, 15, 17, 14, 2, 17, 2, 6, 6, 2, 16, 6, 16, 19, 17, 18, 15, 17, 15, 14, 8, 20, 21, 8, 21, 16, 11, 19, 23, 11, 23, 22, 22, 23, 21, 22, 21, 20, 11, 8, 16, 11, 16, 19, 19, 16, 21, 19, 21, 23, 11, 22, 20, 11, 20, 8, 20, 24, 25, 20, 25, 26, 22, 29, 28, 22, 28, 27, 27, 28, 25, 27, 25, 24, 22, 20, 26, 22, 26, 29, 29, 26, 25, 29, 25, 28, 22, 27, 24, 22, 24, 20, 30, 31, 32, 30, 32, 21, 33, 23, 35, 33, 35, 34, 34, 35, 32, 34, 32, 31, 33, 30, 21, 33, 21, 23, 23, 21, 32, 23, 32, 35, 33, 34, 31, 33, 31, 30, 24, 36, 37, 24, 37, 32, 27, 35, 39, 27, 39, 38, 38, 39, 37, 38, 37, 36, 27, 24, 32, 27, 32, 35, 35, 32, 37, 35, 37, 39, 27, 38, 36, 27, 36, 24 ]
+      }
+    ]
+  },
+  "_note": "Post cut for through tenons."
+}

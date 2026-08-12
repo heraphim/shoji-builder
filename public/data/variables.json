@@ -1,0 +1,19 @@
+{
+  "units": "mm",
+  "variables": {
+    "innerWidth": { "value": "200", "pairedWith": "innerDepth", "paired": true },
+    "innerDepth": { "value": "200" },
+    "innerHeight": { "value": "370" },
+
+    "legThickness": { "value": "20" },
+    "legExtraTop": { "value": "20" },
+    "legExtraBottom": { "value": "40" },
+
+    "beamHeight": { "value": "15" },
+    "beamDepth": { "value": "10" },
+    "beamExtra": { "value": "20" },
+
+    "frameWidth": { "value": "7", "pairedWith": "frameHeight", "paired": true },
+    "frameHeight": { "value": "7" }
+  }
+}

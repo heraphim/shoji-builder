@@ -1,0 +1,585 @@
+{
+  "id": "lamp",
+  "type": "lamp",
+  "format": 1,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamExtra": "20",
+    "beamHeight": "15",
+    "frameHeight": "#frameWidth",
+    "frameWidth": "7",
+    "innerDepth": "#innerWidth",
+    "innerHeight": "370",
+    "innerWidth": "200",
+    "legExtraBottom": "40",
+    "legExtraTop": "20",
+    "legThickness": "20"
+  },
+  "paired": {
+    "innerWidth": true,
+    "frameWidth": true
+  },
+  "stashed": {
+    "innerDepth": "200",
+    "frameHeight": "7"
+  },
+  "instances": [
+    {
+      "id": "4bb0b943-219e-4df9-b02d-bb47bcc1768c",
+      "label": "leg",
+      "component": "leg.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "b0d93285-2105-4393-9374-1fa6427b63e9",
+      "label": "leg (2)",
+      "component": "leg.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "12a32909-f5f5-4dd0-9b54-05a12f45adb3",
+      "label": "leg (3)",
+      "component": "leg.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3c1a1d56-4a38-4f51-bf2c-1a5b74aff3cf",
+      "label": "leg (4)",
+      "component": "leg.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "8310d55e-ad27-4998-b2d4-daec2c110dcf"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "7137c616-c852-4163-ac5f-e5548c305c99",
+      "label": "beam",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "123df654-bb10-4c99-9aa7-5eba773ca7c8",
+      "label": "beam (2)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fb25d55a-6f1c-49ab-8127-e9370d697c7d",
+      "label": "beam (3)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "d197e0af-11da-4b29-bbf9-873783880b08",
+      "label": "beam (4)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "b2ba39ba-c22c-4722-85b1-3ae9a17ac26a"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "3e2bb77e-88a6-4cda-89c7-dcf79e5e83f7",
+      "label": "beam (5)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          },
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "a089dd4a-5047-4099-997e-f5b32cb99580",
+      "label": "beam (6)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          },
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "2191473e-ab22-4e99-870f-e9d0153ccfbf",
+      "label": "beam (7)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          },
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "4a4c7e46-e022-4339-ac49-33f5cbfc55f2",
+      "label": "beam (8)",
+      "component": "beam.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          },
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "248c5fd3-7267-4a40-bb52-dcd1ff656a97"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,528 @@
+{
+  "id": "weight-slender-rail-bottom",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth",
+    "legThickness": "20",
+    "tenonLength": "2/3*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "8633fb33-84a8-533a-b7a5-9ff519807440",
+      "name": "weight-slender-rail-bottom.stl (1)",
+      "size": {
+        "x": "3/4*#tenonLength",
+        "y": "1/2*#beamHeight",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 1.875, 2.5 ]
+    },
+    {
+      "id": "b31d2fcb-d898-55c6-bf62-8afe54c69cda",
+      "name": "weight-slender-rail-bottom.stl (2)",
+      "size": {
+        "x": "1/5*#innerWidth - 1/2*#kumikoThickness - 9/20*#tenonLength",
+        "y": "3/4*#beamHeight",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "259204af-1cfc-5373-984e-29dda599d702",
+      "name": "weight-slender-rail-bottom.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "3/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 41.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "ed0845af-3349-56cf-b415-40c11cdb83e5",
+      "name": "weight-slender-rail-bottom.stl (4)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/2*#beamHeight",
+        "z": "3/8*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 41.5, 0.0, 0.4167 ]
+    },
+    {
+      "id": "464bb82c-f023-55e1-8c5e-482105fc1ba1",
+      "name": "weight-slender-rail-bottom.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 41.5, 7.5, 7.0833 ]
+    },
+    {
+      "id": "bccbdf29-2bcf-57cc-b826-d55fc5fee516",
+      "name": "weight-slender-rail-bottom.stl (6)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness + 3/10*#tenonLength",
+        "y": "3/4*#beamHeight",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 46.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "f5f051a7-a433-5e96-9998-502de1a5e48f",
+      "name": "weight-slender-rail-bottom.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "3/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 85.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "6598c6cf-85c0-520c-be73-a96897524532",
+      "name": "weight-slender-rail-bottom.stl (8)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/2*#beamHeight",
+        "z": "3/8*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 85.5, 0.0, 0.4167 ]
+    },
+    {
+      "id": "be40c5fd-51bb-5d75-8b5b-4cd41b4830b5",
+      "name": "weight-slender-rail-bottom.stl (9)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 85.5, 7.5, 7.0833 ]
+    },
+    {
+      "id": "cf31eec1-b81f-5ade-9ea2-1dbb5b018dee",
+      "name": "weight-slender-rail-bottom.stl (10)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness + 3/10*#tenonLength",
+        "y": "3/4*#beamHeight",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 90.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "0bf6db9f-8ad0-55fa-8e4e-eb5afec3d85e",
+      "name": "weight-slender-rail-bottom.stl (11)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "3/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "672d9228-15af-5780-8c5c-c9e35dfd8974",
+      "name": "weight-slender-rail-bottom.stl (12)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/2*#beamHeight",
+        "z": "3/8*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.5, 0.0, 0.4167 ]
+    },
+    {
+      "id": "a46d5d6a-9b22-52f6-9181-122160afcee9",
+      "name": "weight-slender-rail-bottom.stl (13)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.5, 7.5, 7.0833 ]
+    },
+    {
+      "id": "d6dc92cd-dfec-5a72-9c59-d54c60f50d79",
+      "name": "weight-slender-rail-bottom.stl (14)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness + 3/10*#tenonLength",
+        "y": "3/4*#beamHeight",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 134.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "306102c4-e541-5cf8-acfd-2864544c763f",
+      "name": "weight-slender-rail-bottom.stl (15)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "3/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 173.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "6f5aa710-b995-5426-a7f9-d6fa8028f864",
+      "name": "weight-slender-rail-bottom.stl (16)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/2*#beamHeight",
+        "z": "3/8*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 173.5, 0.0, 0.4167 ]
+    },
+    {
+      "id": "a7cf4f1d-e8f7-50c3-b2e5-80a1b6feead9",
+      "name": "weight-slender-rail-bottom.stl (17)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/4*#beamHeight",
+        "z": "3/8*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 173.5, 7.5, 7.0833 ]
+    },
+    {
+      "id": "9aa28376-478c-5350-baab-dad8a90d7d78",
+      "name": "weight-slender-rail-bottom.stl (18)",
+      "size": {
+        "x": "1/5*#innerWidth - 1/2*#kumikoThickness - 9/20*#tenonLength",
+        "y": "3/4*#beamHeight",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 178.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "fe350572-57b9-596e-8c63-66a252838ddf",
+      "name": "weight-slender-rail-bottom.stl (19)",
+      "size": {
+        "x": "3/4*#tenonLength",
+        "y": "1/2*#beamHeight",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 210.0, 1.875, 2.5 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "72ee2061-2c8e-58b0-8f59-35bd678af0cf",
+      "a": {
+        "block": "b31d2fcb-d898-55c6-bf62-8afe54c69cda",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "259204af-1cfc-5373-984e-29dda599d702",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "8e92e299-8287-5530-acf6-b7c522a99fec",
+      "a": {
+        "block": "b31d2fcb-d898-55c6-bf62-8afe54c69cda",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "ed0845af-3349-56cf-b415-40c11cdb83e5",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "5d124524-c5dd-56d1-83a1-60804bafec74",
+      "a": {
+        "block": "b31d2fcb-d898-55c6-bf62-8afe54c69cda",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "464bb82c-f023-55e1-8c5e-482105fc1ba1",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "bde11620-d3fc-5f46-86ef-6401e4b282f3",
+      "a": {
+        "block": "259204af-1cfc-5373-984e-29dda599d702",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "bccbdf29-2bcf-57cc-b826-d55fc5fee516",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "833bd9ef-0624-5eb6-85c0-7c9c8d5020b7",
+      "a": {
+        "block": "bccbdf29-2bcf-57cc-b826-d55fc5fee516",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "f5f051a7-a433-5e96-9998-502de1a5e48f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "2ace507b-97c3-5637-8a8f-cfb2d9558861",
+      "a": {
+        "block": "bccbdf29-2bcf-57cc-b826-d55fc5fee516",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "6598c6cf-85c0-520c-be73-a96897524532",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "02614678-dc1f-59d7-a00c-45ed300deb76",
+      "a": {
+        "block": "bccbdf29-2bcf-57cc-b826-d55fc5fee516",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "be40c5fd-51bb-5d75-8b5b-4cd41b4830b5",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "ff3a2429-bb2b-5a91-96fd-303b1d42f6fa",
+      "a": {
+        "block": "f5f051a7-a433-5e96-9998-502de1a5e48f",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "cf31eec1-b81f-5ade-9ea2-1dbb5b018dee",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "5afff07c-7e2b-53e4-924d-4c8f6a2fe138",
+      "a": {
+        "block": "cf31eec1-b81f-5ade-9ea2-1dbb5b018dee",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "0bf6db9f-8ad0-55fa-8e4e-eb5afec3d85e",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "196290d0-77bf-5f10-afd6-3c548e1c9bb0",
+      "a": {
+        "block": "cf31eec1-b81f-5ade-9ea2-1dbb5b018dee",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "672d9228-15af-5780-8c5c-c9e35dfd8974",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "3e11f80a-6071-54e4-8cbb-85ea9865d93d",
+      "a": {
+        "block": "cf31eec1-b81f-5ade-9ea2-1dbb5b018dee",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "a46d5d6a-9b22-52f6-9181-122160afcee9",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "35bcd713-aa85-5eaf-842e-8387ff6460fa",
+      "a": {
+        "block": "0bf6db9f-8ad0-55fa-8e4e-eb5afec3d85e",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "d6dc92cd-dfec-5a72-9c59-d54c60f50d79",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "7582941d-2793-5ebf-a3c3-f388fd084c92",
+      "a": {
+        "block": "d6dc92cd-dfec-5a72-9c59-d54c60f50d79",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "306102c4-e541-5cf8-acfd-2864544c763f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "3b2e0886-b6dc-59d6-bb22-cb8f46b9ea73",
+      "a": {
+        "block": "d6dc92cd-dfec-5a72-9c59-d54c60f50d79",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "6f5aa710-b995-5426-a7f9-d6fa8028f864",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "6c23cff7-dd5e-5633-a9e2-1a75d6e5d0a4",
+      "a": {
+        "block": "d6dc92cd-dfec-5a72-9c59-d54c60f50d79",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "a7cf4f1d-e8f7-50c3-b2e5-80a1b6feead9",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "cdf552c9-b1a6-5a92-b30d-3fc4a3a27773",
+      "a": {
+        "block": "306102c4-e541-5cf8-acfd-2864544c763f",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "9aa28376-478c-5350-baab-dad8a90d7d78",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "5855f0aa-ea9d-592a-87f6-e6e8ec1fb912",
+      "a": {
+        "block": "8633fb33-84a8-533a-b7a5-9ff519807440",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "b31d2fcb-d898-55c6-bf62-8afe54c69cda",
+        "anchor": [ 0.0, 0.1667, 0.3333 ]
+      }
+    },
+    {
+      "id": "e3860b24-f405-5ef9-be43-5c17020772b6",
+      "a": {
+        "block": "9aa28376-478c-5350-baab-dad8a90d7d78",
+        "anchor": [ 1.0, 0.1667, 0.3333 ]
+      },
+      "b": {
+        "block": "fe350572-57b9-596e-8c63-66a252838ddf",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "tenonLength": 13.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 1.875, 2.5, 10.0, 9.375, 2.5, 10.0, 9.375, 5.0, 10.0, 1.875, 5.0, 0.0, 1.875, 2.5, 0.0, 9.375, 2.5, 0.0, 9.375, 5.0, 0.0, 1.875, 5.0, 41.5, 0.0, 0.0, 41.5, 11.25, 0.0, 41.5, 11.25, 7.5, 41.5, 0.0, 7.5, 10.0, 0.0, 0.0, 10.0, 11.25, 0.0, 10.0, 11.25, 7.5, 10.0, 0.0, 7.5, 46.5, 0.0, 0.0, 46.5, 11.25, 0.0, 46.5, 11.25, 0.4167, 46.5, 0.0, 0.4167, 41.5, 11.25, 0.4167, 41.5, 0.0, 0.4167, 46.5, 7.5, 0.4167, 46.5, 7.5, 7.5, 46.5, 0.0, 7.5, 41.5, 7.5, 0.4167, 41.5, 7.5, 7.5, 46.5, 7.5, 7.0833, 46.5, 11.25, 7.0833, 46.5, 11.25, 7.5, 41.5, 7.5, 7.0833, 41.5, 11.25, 7.0833, 85.5, 0.0, 0.0, 85.5, 11.25, 0.0, 85.5, 11.25, 7.5, 85.5, 0.0, 7.5, 90.5, 0.0, 0.0, 90.5, 11.25, 0.0, 90.5, 11.25, 0.4167, 90.5, 0.0, 0.4167, 85.5, 11.25, 0.4167, 85.5, 0.0, 0.4167, 90.5, 7.5, 0.4167, 90.5, 7.5, 7.5, 90.5, 0.0, 7.5, 85.5, 7.5, 0.4167, 85.5, 7.5, 7.5, 90.5, 7.5, 7.0833, 90.5, 11.25, 7.0833, 90.5, 11.25, 7.5, 85.5, 7.5, 7.0833, 85.5, 11.25, 7.0833, 129.5, 0.0, 0.0, 129.5, 11.25, 0.0, 129.5, 11.25, 7.5, 129.5, 0.0, 7.5, 134.5, 0.0, 0.0, 134.5, 11.25, 0.0, 134.5, 11.25, 0.4167, 134.5, 0.0, 0.4167, 129.5, 11.25, 0.4167, 129.5, 0.0, 0.4167, 134.5, 7.5, 0.4167, 134.5, 7.5, 7.5, 134.5, 0.0, 7.5, 129.5, 7.5, 0.4167, 129.5, 7.5, 7.5, 134.5, 7.5, 7.0833, 134.5, 11.25, 7.0833, 134.5, 11.25, 7.5, 129.5, 7.5, 7.0833, 129.5, 11.25, 7.0833, 173.5, 0.0, 0.0, 173.5, 11.25, 0.0, 173.5, 11.25, 7.5, 173.5, 0.0, 7.5, 178.5, 0.0, 0.0, 178.5, 11.25, 0.0, 178.5, 11.25, 0.4167, 178.5, 0.0, 0.4167, 173.5, 11.25, 0.4167, 173.5, 0.0, 0.4167, 178.5, 7.5, 0.4167, 178.5, 7.5, 7.5, 178.5, 0.0, 7.5, 173.5, 7.5, 0.4167, 173.5, 7.5, 7.5, 178.5, 7.5, 7.0833, 178.5, 11.25, 7.0833, 178.5, 11.25, 7.5, 173.5, 7.5, 7.0833, 173.5, 11.25, 7.0833, 210.0, 0.0, 0.0, 210.0, 11.25, 0.0, 210.0, 11.25, 7.5, 210.0, 0.0, 7.5, 220.0, 1.875, 2.5, 220.0, 9.375, 2.5, 220.0, 9.375, 5.0, 220.0, 1.875, 5.0, 210.0, 1.875, 2.5, 210.0, 9.375, 2.5, 210.0, 9.375, 5.0, 210.0, 1.875, 5.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 8, 21, 20, 8, 20, 9, 9, 20, 18, 9, 18, 17, 8, 16, 19, 8, 19, 21, 21, 19, 18, 21, 18, 20, 8, 9, 17, 8, 17, 16, 19, 22, 23, 19, 23, 24, 21, 11, 26, 21, 26, 25, 25, 26, 23, 25, 23, 22, 21, 19, 24, 21, 24, 11, 11, 24, 23, 11, 23, 26, 21, 25, 22, 21, 22, 19, 27, 28, 29, 27, 29, 23, 30, 26, 10, 30, 10, 31, 31, 10, 29, 31, 29, 28, 30, 27, 23, 30, 23, 26, 26, 23, 29, 26, 29, 10, 30, 31, 28, 30, 28, 27, 32, 33, 34, 32, 34, 35, 16, 24, 29, 16, 29, 17, 17, 29, 34, 17, 34, 33, 16, 32, 35, 16, 35, 24, 24, 35, 34, 24, 34, 29, 16, 17, 33, 16, 33, 32, 36, 37, 38, 36, 38, 39, 32, 41, 40, 32, 40, 33, 33, 40, 38, 33, 38, 37, 32, 36, 39, 32, 39, 41, 41, 39, 38, 41, 38, 40, 32, 33, 37, 32, 37, 36, 39, 42, 43, 39, 43, 44, 41, 35, 46, 41, 46, 45, 45, 46, 43, 45, 43, 42, 41, 39, 44, 41, 44, 35, 35, 44, 43, 35, 43, 46, 41, 45, 42, 41, 42, 39, 47, 48, 49, 47, 49, 43, 50, 46, 34, 50, 34, 51, 51, 34, 49, 51, 49, 48, 50, 47, 43, 50, 43, 46, 46, 43, 49, 46, 49, 34, 50, 51, 48, 50, 48, 47, 52, 53, 54, 52, 54, 55, 36, 44, 49, 36, 49, 37, 37, 49, 54, 37, 54, 53, 36, 52, 55, 36, 55, 44, 44, 55, 54, 44, 54, 49, 36, 37, 53, 36, 53, 52, 56, 57, 58, 56, 58, 59, 52, 61, 60, 52, 60, 53, 53, 60, 58, 53, 58, 57, 52, 56, 59, 52, 59, 61, 61, 59, 58, 61, 58, 60, 52, 53, 57, 52, 57, 56, 59, 62, 63, 59, 63, 64, 61, 55, 66, 61, 66, 65, 65, 66, 63, 65, 63, 62, 61, 59, 64, 61, 64, 55, 55, 64, 63, 55, 63, 66, 61, 65, 62, 61, 62, 59, 67, 68, 69, 67, 69, 63, 70, 66, 54, 70, 54, 71, 71, 54, 69, 71, 69, 68, 70, 67, 63, 70, 63, 66, 66, 63, 69, 66, 69, 54, 70, 71, 68, 70, 68, 67, 72, 73, 74, 72, 74, 75, 56, 64, 69, 56, 69, 57, 57, 69, 74, 57, 74, 73, 56, 72, 75, 56, 75, 64, 64, 75, 74, 64, 74, 69, 56, 57, 73, 56, 73, 72, 76, 77, 78, 76, 78, 79, 72, 81, 80, 72, 80, 73, 73, 80, 78, 73, 78, 77, 72, 76, 79, 72, 79, 81, 81, 79, 78, 81, 78, 80, 72, 73, 77, 72, 77, 76, 79, 82, 83, 79, 83, 84, 81, 75, 86, 81, 86, 85, 85, 86, 83, 85, 83, 82, 81, 79, 84, 81, 84, 75, 75, 84, 83, 75, 83, 86, 81, 85, 82, 81, 82, 79, 87, 88, 89, 87, 89, 83, 90, 86, 74, 90, 74, 91, 91, 74, 89, 91, 89, 88, 90, 87, 83, 90, 83, 86, 86, 83, 89, 86, 89, 74, 90, 91, 88, 90, 88, 87, 92, 93, 94, 92, 94, 95, 76, 84, 89, 76, 89, 77, 77, 89, 94, 77, 94, 93, 76, 92, 95, 76, 95, 84, 84, 95, 94, 84, 94, 89, 76, 77, 93, 76, 93, 92, 96, 97, 98, 96, 98, 99, 100, 103, 102, 100, 102, 101, 101, 102, 98, 101, 98, 97, 100, 96, 99, 100, 99, 103, 103, 99, 98, 103, 98, 102, 100, 101, 97, 100, 97, 96 ]
+      }
+    ]
+  },
+  "_note": "Bottom rail, slender section."
+}

@@ -1,0 +1,158 @@
+{
+  "id": "washi-frame-y",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamHeight": "15",
+    "innerHeight": "370",
+    "kumikoThickness": "1/3*#beamHeight"
+  },
+  "blocks": [
+    {
+      "id": "39fee613-8a9e-5c65-9a41-9848779889ea",
+      "name": "washi-frame-y.stl (1)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "2*#kumikoThickness",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 5.0 ]
+    },
+    {
+      "id": "d9d1ddcf-f081-5176-8bf3-251ab8afc124",
+      "name": "washi-frame-y.stl (2)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "1/2*#innerHeight - 4*#kumikoThickness",
+        "z": "1/2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 0.0 ]
+    },
+    {
+      "id": "051b6925-bf1d-5dd0-8624-0b53c8cb66b3",
+      "name": "washi-frame-y.stl (3)",
+      "size": {
+        "x": "3/2*#kumikoThickness",
+        "y": "1/2*#innerHeight - 4*#kumikoThickness",
+        "z": "3/2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 2.5 ]
+    },
+    {
+      "id": "5a0dd8de-82dc-5e3a-88aa-502fefe0cfad",
+      "name": "washi-frame-y.stl (4)",
+      "size": {
+        "x": "1/2*#kumikoThickness",
+        "y": "1/2*#innerHeight - 4*#kumikoThickness",
+        "z": "1/2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 7.5, 10.0, 7.5 ]
+    },
+    {
+      "id": "fc504575-5c6b-5248-b18c-d2b859f64b31",
+      "name": "washi-frame-y.stl (5)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "2*#kumikoThickness",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 175.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "9b1014a4-bb47-5eff-8916-8e4d212c4b09",
+      "a": {
+        "block": "39fee613-8a9e-5c65-9a41-9848779889ea",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "051b6925-bf1d-5dd0-8624-0b53c8cb66b3",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "ef96d849-f581-5262-9d99-29f72591d3e1",
+      "a": {
+        "block": "39fee613-8a9e-5c65-9a41-9848779889ea",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "5a0dd8de-82dc-5e3a-88aa-502fefe0cfad",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "005fa55b-aa18-51a3-b9e7-cf5040ec4371",
+      "a": {
+        "block": "d9d1ddcf-f081-5176-8bf3-251ab8afc124",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "051b6925-bf1d-5dd0-8624-0b53c8cb66b3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "f7284cdb-f1d7-5a4c-aa45-4c4d965a127e",
+      "a": {
+        "block": "d9d1ddcf-f081-5176-8bf3-251ab8afc124",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "fc504575-5c6b-5248-b18c-d2b859f64b31",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 0.0, 5.0, 10.0, 10.0, 5.0, 10.0, 10.0, 10.0, 10.0, 0.0, 10.0, 0.0, 0.0, 5.0, 0.0, 10.0, 5.0, 0.0, 10.0, 10.0, 0.0, 0.0, 10.0, 10.0, 10.0, 0.0, 10.0, 175.0, 0.0, 10.0, 175.0, 2.5, 10.0, 10.0, 2.5, 0.0, 10.0, 0.0, 0.0, 175.0, 0.0, 0.0, 175.0, 2.5, 0.0, 10.0, 2.5, 7.5, 10.0, 2.5, 7.5, 175.0, 2.5, 7.5, 175.0, 10.0, 7.5, 10.0, 10.0, 0.0, 175.0, 10.0, 10.0, 10.0, 7.5, 10.0, 175.0, 7.5, 10.0, 175.0, 10.0, 7.5, 10.0, 7.5, 7.5, 175.0, 7.5, 10.0, 185.0, 0.0, 10.0, 185.0, 5.0, 10.0, 175.0, 5.0, 0.0, 185.0, 0.0, 0.0, 185.0, 5.0, 0.0, 175.0, 5.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 15, 6, 20, 15, 20, 14, 14, 20, 18, 14, 18, 17, 15, 16, 19, 15, 19, 6, 6, 19, 18, 6, 18, 20, 15, 14, 17, 15, 17, 16, 21, 22, 23, 21, 23, 2, 24, 19, 18, 24, 18, 25, 25, 18, 23, 25, 23, 22, 24, 21, 2, 24, 2, 19, 19, 2, 23, 19, 23, 18, 24, 25, 22, 24, 22, 21, 9, 26, 27, 9, 27, 28, 13, 31, 30, 13, 30, 29, 29, 30, 27, 29, 27, 26, 13, 9, 28, 13, 28, 31, 31, 28, 27, 31, 27, 30, 13, 29, 26, 13, 26, 9 ]
+      }
+    ]
+  },
+  "_note": "Frame the paper is stretched on, upright."
+}

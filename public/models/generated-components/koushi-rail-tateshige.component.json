@@ -1,0 +1,1256 @@
+{
+  "id": "koushi-rail-tateshige",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth",
+    "legThickness": "20",
+    "tenonLength": "2/3*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "1fb35f75-e7d4-512e-959a-fbe88ebf95e6",
+      "name": "koushi-rail-tateshige.stl (1)",
+      "size": {
+        "x": "#tenonLength",
+        "y": "2/3*#beamHeight",
+        "z": "1/3*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 2.5, 3.3333 ]
+    },
+    {
+      "id": "17ce4a33-a158-5545-a245-c5a55d857aba",
+      "name": "koushi-rail-tateshige.stl (2)",
+      "size": {
+        "x": "1/12*#innerWidth - 1/2*#kumikoThickness - 5/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 13.3333, 0.0, 0.0 ]
+    },
+    {
+      "id": "81c33509-f8e8-501c-8ecc-078bca8f7c33",
+      "name": "koushi-rail-tateshige.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 16.3889, 0.0, 0.0 ]
+    },
+    {
+      "id": "0b2f36a8-ebb7-5d5e-aa71-2d311fd86423",
+      "name": "koushi-rail-tateshige.stl (4)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 16.3889, 5.0, 1.6667 ]
+    },
+    {
+      "id": "34900620-fd50-591e-bb28-d08493c0d707",
+      "name": "koushi-rail-tateshige.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 16.3889, 0.0, 8.3333 ]
+    },
+    {
+      "id": "e32306a0-388e-5a76-a4fe-872f9057c0a4",
+      "name": "koushi-rail-tateshige.stl (6)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 21.3889, 0.0, 0.0 ]
+    },
+    {
+      "id": "1ca989cb-23cd-5a9b-bfc0-e214ad8b60f3",
+      "name": "koushi-rail-tateshige.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 35.2778, 0.0, 0.0 ]
+    },
+    {
+      "id": "89d03a9a-b181-53d5-9fb6-f5a0d00779da",
+      "name": "koushi-rail-tateshige.stl (8)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 35.2778, 5.0, 1.6667 ]
+    },
+    {
+      "id": "143a2816-dc04-5bab-95da-8a6f644a0c93",
+      "name": "koushi-rail-tateshige.stl (9)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 35.2778, 0.0, 8.3333 ]
+    },
+    {
+      "id": "7cf9dbac-e159-5475-8b4b-2f8afdd2e903",
+      "name": "koushi-rail-tateshige.stl (10)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 40.2778, 0.0, 0.0 ]
+    },
+    {
+      "id": "165a8c1c-a649-5bb8-a9e7-b64e04808a1d",
+      "name": "koushi-rail-tateshige.stl (11)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 54.1667, 0.0, 0.0 ]
+    },
+    {
+      "id": "0dd8227a-2966-5d33-8d55-04661ea07eb3",
+      "name": "koushi-rail-tateshige.stl (12)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 54.1667, 5.0, 1.6667 ]
+    },
+    {
+      "id": "3a75fe07-3348-5460-9ea3-7730ae3984ab",
+      "name": "koushi-rail-tateshige.stl (13)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 54.1667, 0.0, 8.3333 ]
+    },
+    {
+      "id": "69045694-d0ab-5b4f-bce2-686a95a600f3",
+      "name": "koushi-rail-tateshige.stl (14)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 59.1667, 0.0, 0.0 ]
+    },
+    {
+      "id": "de111af6-7ced-57ce-9428-25be8f76e9db",
+      "name": "koushi-rail-tateshige.stl (15)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 73.0556, 0.0, 0.0 ]
+    },
+    {
+      "id": "4217fe42-400c-501f-ad81-8dab79e2a8cc",
+      "name": "koushi-rail-tateshige.stl (16)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 73.0556, 5.0, 1.6667 ]
+    },
+    {
+      "id": "370b3d09-d647-55c1-bb89-e217dad36d5d",
+      "name": "koushi-rail-tateshige.stl (17)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 73.0556, 0.0, 8.3333 ]
+    },
+    {
+      "id": "70179b0a-950c-55ec-a440-da55bd202b35",
+      "name": "koushi-rail-tateshige.stl (18)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 78.0556, 0.0, 0.0 ]
+    },
+    {
+      "id": "33dc5d8c-8a75-547d-add1-ca627db4c2c4",
+      "name": "koushi-rail-tateshige.stl (19)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 91.9444, 0.0, 0.0 ]
+    },
+    {
+      "id": "ce42fd73-57b4-54b3-8dc3-9f0efa44cdd6",
+      "name": "koushi-rail-tateshige.stl (20)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 91.9444, 5.0, 1.6667 ]
+    },
+    {
+      "id": "28f913e6-3459-5918-a271-feca76d61ee2",
+      "name": "koushi-rail-tateshige.stl (21)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 91.9444, 0.0, 8.3333 ]
+    },
+    {
+      "id": "14f4ac8b-31f4-57e6-803a-2dc85b2691f3",
+      "name": "koushi-rail-tateshige.stl (22)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 96.9444, 0.0, 0.0 ]
+    },
+    {
+      "id": "361d25bb-993b-55ba-be5b-4c94d81e17f3",
+      "name": "koushi-rail-tateshige.stl (23)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 110.8333, 0.0, 0.0 ]
+    },
+    {
+      "id": "867808c8-b8ca-5cbf-8619-721e870222e4",
+      "name": "koushi-rail-tateshige.stl (24)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 110.8333, 5.0, 1.6667 ]
+    },
+    {
+      "id": "06e38189-579b-53cd-8875-96876708f809",
+      "name": "koushi-rail-tateshige.stl (25)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 110.8333, 0.0, 8.3333 ]
+    },
+    {
+      "id": "54c1b94a-1af9-59d9-9309-10367615fa11",
+      "name": "koushi-rail-tateshige.stl (26)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 115.8333, 0.0, 0.0 ]
+    },
+    {
+      "id": "d81d791f-e67a-594d-a7fd-a2adc9bb6df1",
+      "name": "koushi-rail-tateshige.stl (27)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.7222, 0.0, 0.0 ]
+    },
+    {
+      "id": "53c3d147-c451-546c-821b-e917c7b0feac",
+      "name": "koushi-rail-tateshige.stl (28)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.7222, 5.0, 1.6667 ]
+    },
+    {
+      "id": "6c5a333b-08bc-5883-ad0f-e5440296f830",
+      "name": "koushi-rail-tateshige.stl (29)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 129.7222, 0.0, 8.3333 ]
+    },
+    {
+      "id": "1eed7fbf-28a1-5e82-8a57-efb8ce3ba146",
+      "name": "koushi-rail-tateshige.stl (30)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 134.7222, 0.0, 0.0 ]
+    },
+    {
+      "id": "7ae34736-750b-53fc-bd41-7a5d2a3e8a9f",
+      "name": "koushi-rail-tateshige.stl (31)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 148.6111, 0.0, 0.0 ]
+    },
+    {
+      "id": "99fa2d20-d4cd-5c36-8cfd-4aa32337a257",
+      "name": "koushi-rail-tateshige.stl (32)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 148.6111, 5.0, 1.6667 ]
+    },
+    {
+      "id": "76595773-10dd-56cd-b276-99d97ddf797e",
+      "name": "koushi-rail-tateshige.stl (33)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 148.6111, 0.0, 8.3333 ]
+    },
+    {
+      "id": "866c772e-da9f-51fc-a955-1c47c3c56bbf",
+      "name": "koushi-rail-tateshige.stl (34)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 153.6111, 0.0, 0.0 ]
+    },
+    {
+      "id": "5b8bdfdd-ddff-568a-b8eb-6098376b8bee",
+      "name": "koushi-rail-tateshige.stl (35)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 167.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "81ff3f29-e865-554e-83d1-1a5984925e4b",
+      "name": "koushi-rail-tateshige.stl (36)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 167.5, 5.0, 1.6667 ]
+    },
+    {
+      "id": "696dbc78-b330-5488-b4d2-3ae21f0df2ad",
+      "name": "koushi-rail-tateshige.stl (37)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 167.5, 0.0, 8.3333 ]
+    },
+    {
+      "id": "1d3383ed-2db9-54f2-bc6b-4bec1b6fc388",
+      "name": "koushi-rail-tateshige.stl (38)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 172.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "17d8c0c5-7002-5b4a-89a5-5a8492f05559",
+      "name": "koushi-rail-tateshige.stl (39)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 186.3889, 0.0, 0.0 ]
+    },
+    {
+      "id": "449fd739-8703-5a26-a5d8-8a6cd1582ba6",
+      "name": "koushi-rail-tateshige.stl (40)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 186.3889, 5.0, 1.6667 ]
+    },
+    {
+      "id": "d7951aa1-0f6c-5a91-8143-ef1ab33bf479",
+      "name": "koushi-rail-tateshige.stl (41)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 186.3889, 0.0, 8.3333 ]
+    },
+    {
+      "id": "737b4a3d-0ce3-5305-9511-a3ee60461fe2",
+      "name": "koushi-rail-tateshige.stl (42)",
+      "size": {
+        "x": "1/12*#innerWidth - #kumikoThickness + 1/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 191.3889, 0.0, 0.0 ]
+    },
+    {
+      "id": "a15e9130-1411-5b00-8847-5f7392d0487b",
+      "name": "koushi-rail-tateshige.stl (43)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 205.2778, 0.0, 0.0 ]
+    },
+    {
+      "id": "12614b33-64ad-5a4e-935c-366a04021e61",
+      "name": "koushi-rail-tateshige.stl (44)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "2/3*#beamHeight",
+        "z": "1/2*#beamDepth + 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 205.2778, 5.0, 1.6667 ]
+    },
+    {
+      "id": "62a65357-688d-59ba-9629-e78ecacda69f",
+      "name": "koushi-rail-tateshige.stl (45)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "1/2*#beamDepth - 1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 205.2778, 0.0, 8.3333 ]
+    },
+    {
+      "id": "c180e278-eaac-57ca-a974-3037ae64bf5f",
+      "name": "koushi-rail-tateshige.stl (46)",
+      "size": {
+        "x": "1/12*#innerWidth - 1/2*#kumikoThickness - 5/6*#tenonLength",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 210.2778, 0.0, 0.0 ]
+    },
+    {
+      "id": "321e214a-b080-56e0-bc6a-d0da044dbd96",
+      "name": "koushi-rail-tateshige.stl (47)",
+      "size": {
+        "x": "#tenonLength",
+        "y": "2/3*#beamHeight",
+        "z": "1/3*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 213.3333, 2.5, 3.3333 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "94ef7b11-e603-57a8-b1b1-ca21fa5cf82a",
+      "a": {
+        "block": "17ce4a33-a158-5545-a245-c5a55d857aba",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "81c33509-f8e8-501c-8ecc-078bca8f7c33",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "7862ee87-39a5-5864-9ad2-f5242846432b",
+      "a": {
+        "block": "17ce4a33-a158-5545-a245-c5a55d857aba",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "0b2f36a8-ebb7-5d5e-aa71-2d311fd86423",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "414d35dd-e477-5b52-b91f-cd5ebd9c3249",
+      "a": {
+        "block": "17ce4a33-a158-5545-a245-c5a55d857aba",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "34900620-fd50-591e-bb28-d08493c0d707",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "a1073393-946f-5bb1-b19c-07f430df4abb",
+      "a": {
+        "block": "81c33509-f8e8-501c-8ecc-078bca8f7c33",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "e32306a0-388e-5a76-a4fe-872f9057c0a4",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "e56e4ee5-d3ea-59d9-84b9-9eac410be7f0",
+      "a": {
+        "block": "e32306a0-388e-5a76-a4fe-872f9057c0a4",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "1ca989cb-23cd-5a9b-bfc0-e214ad8b60f3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "d08f6078-3dd2-5540-9ff8-f01338848c09",
+      "a": {
+        "block": "e32306a0-388e-5a76-a4fe-872f9057c0a4",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "89d03a9a-b181-53d5-9fb6-f5a0d00779da",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "a3f1ee7a-52c6-5325-aa3c-1df7bddd4dd2",
+      "a": {
+        "block": "e32306a0-388e-5a76-a4fe-872f9057c0a4",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "143a2816-dc04-5bab-95da-8a6f644a0c93",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "2091ead4-ff06-50bb-b76e-28f1f9d7cd06",
+      "a": {
+        "block": "1ca989cb-23cd-5a9b-bfc0-e214ad8b60f3",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "7cf9dbac-e159-5475-8b4b-2f8afdd2e903",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "d4a503a2-5271-5cad-b023-d65cee88f830",
+      "a": {
+        "block": "7cf9dbac-e159-5475-8b4b-2f8afdd2e903",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "165a8c1c-a649-5bb8-a9e7-b64e04808a1d",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "e03c910f-64d5-561d-b890-aa644aa4437e",
+      "a": {
+        "block": "7cf9dbac-e159-5475-8b4b-2f8afdd2e903",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "0dd8227a-2966-5d33-8d55-04661ea07eb3",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "5250e1d5-4b4c-5c09-a861-7efc35700d13",
+      "a": {
+        "block": "7cf9dbac-e159-5475-8b4b-2f8afdd2e903",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "3a75fe07-3348-5460-9ea3-7730ae3984ab",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "123e6ad6-e65e-59b3-addd-e7838c9fca86",
+      "a": {
+        "block": "165a8c1c-a649-5bb8-a9e7-b64e04808a1d",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "69045694-d0ab-5b4f-bce2-686a95a600f3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "8858d0e1-fa32-589d-9ddb-9da3d87ce964",
+      "a": {
+        "block": "69045694-d0ab-5b4f-bce2-686a95a600f3",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "de111af6-7ced-57ce-9428-25be8f76e9db",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "35213f6a-6ea2-5aac-a502-3684480fdbe4",
+      "a": {
+        "block": "69045694-d0ab-5b4f-bce2-686a95a600f3",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "4217fe42-400c-501f-ad81-8dab79e2a8cc",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "4cdb1058-4017-5b8e-a0d0-970b15d0b3e9",
+      "a": {
+        "block": "69045694-d0ab-5b4f-bce2-686a95a600f3",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "370b3d09-d647-55c1-bb89-e217dad36d5d",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "0f9a1be0-c66b-59b6-8976-b6e447a26d5a",
+      "a": {
+        "block": "de111af6-7ced-57ce-9428-25be8f76e9db",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "70179b0a-950c-55ec-a440-da55bd202b35",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "21e1bc6a-2e77-5b6c-9232-463dfff465b9",
+      "a": {
+        "block": "70179b0a-950c-55ec-a440-da55bd202b35",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "33dc5d8c-8a75-547d-add1-ca627db4c2c4",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "d1998ac1-ec6b-5de5-8886-cfd9bf0fd23b",
+      "a": {
+        "block": "70179b0a-950c-55ec-a440-da55bd202b35",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "ce42fd73-57b4-54b3-8dc3-9f0efa44cdd6",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "356d84b3-08a7-5553-bd02-4736128171ed",
+      "a": {
+        "block": "70179b0a-950c-55ec-a440-da55bd202b35",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "28f913e6-3459-5918-a271-feca76d61ee2",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "6912bf49-18bc-51b2-b864-76ca1f940bc6",
+      "a": {
+        "block": "33dc5d8c-8a75-547d-add1-ca627db4c2c4",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "14f4ac8b-31f4-57e6-803a-2dc85b2691f3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "25755376-b8e7-590a-ac0e-491a4dd1645c",
+      "a": {
+        "block": "14f4ac8b-31f4-57e6-803a-2dc85b2691f3",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "361d25bb-993b-55ba-be5b-4c94d81e17f3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "2ebcadf0-8e8e-5d4a-9bb4-e938379702bb",
+      "a": {
+        "block": "14f4ac8b-31f4-57e6-803a-2dc85b2691f3",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "867808c8-b8ca-5cbf-8619-721e870222e4",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "a591d0e1-f4f2-5dee-9139-42d92e75333b",
+      "a": {
+        "block": "14f4ac8b-31f4-57e6-803a-2dc85b2691f3",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "06e38189-579b-53cd-8875-96876708f809",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "571ed1d2-4ae5-58ef-bc28-6acaeb6c4ab7",
+      "a": {
+        "block": "361d25bb-993b-55ba-be5b-4c94d81e17f3",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "54c1b94a-1af9-59d9-9309-10367615fa11",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "3aeaa5ff-d09f-5271-a261-0c5a057ee7a8",
+      "a": {
+        "block": "54c1b94a-1af9-59d9-9309-10367615fa11",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "d81d791f-e67a-594d-a7fd-a2adc9bb6df1",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "de1b61a6-9a4c-54b1-85d2-d739201324e8",
+      "a": {
+        "block": "54c1b94a-1af9-59d9-9309-10367615fa11",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "53c3d147-c451-546c-821b-e917c7b0feac",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "725a7c75-4f9d-5e00-910d-7d4cf22f827d",
+      "a": {
+        "block": "54c1b94a-1af9-59d9-9309-10367615fa11",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "6c5a333b-08bc-5883-ad0f-e5440296f830",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "f803d109-ccf5-5dc3-960e-cffa1d321144",
+      "a": {
+        "block": "d81d791f-e67a-594d-a7fd-a2adc9bb6df1",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "1eed7fbf-28a1-5e82-8a57-efb8ce3ba146",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "64d83008-ff13-5fdf-b3e5-f429df7d644f",
+      "a": {
+        "block": "1eed7fbf-28a1-5e82-8a57-efb8ce3ba146",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "7ae34736-750b-53fc-bd41-7a5d2a3e8a9f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "c788c399-5c93-5310-9bd0-b483aac7d400",
+      "a": {
+        "block": "1eed7fbf-28a1-5e82-8a57-efb8ce3ba146",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "99fa2d20-d4cd-5c36-8cfd-4aa32337a257",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "e5a39a55-0a00-5189-8e7e-69ebd74f9d24",
+      "a": {
+        "block": "1eed7fbf-28a1-5e82-8a57-efb8ce3ba146",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "76595773-10dd-56cd-b276-99d97ddf797e",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "4accec22-87a6-556b-8602-4bd80f8dd389",
+      "a": {
+        "block": "7ae34736-750b-53fc-bd41-7a5d2a3e8a9f",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "866c772e-da9f-51fc-a955-1c47c3c56bbf",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "1191af6d-b9f3-5ec3-a793-25646262cee4",
+      "a": {
+        "block": "866c772e-da9f-51fc-a955-1c47c3c56bbf",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "5b8bdfdd-ddff-568a-b8eb-6098376b8bee",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "df627f10-01b1-5cad-9ce6-70a053f3fb4a",
+      "a": {
+        "block": "866c772e-da9f-51fc-a955-1c47c3c56bbf",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "81ff3f29-e865-554e-83d1-1a5984925e4b",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "3f9a36dd-943d-59f8-a4b4-cd7409c8d3e2",
+      "a": {
+        "block": "866c772e-da9f-51fc-a955-1c47c3c56bbf",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "696dbc78-b330-5488-b4d2-3ae21f0df2ad",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "39de5545-ae6e-53de-8fe9-a690b8d047ce",
+      "a": {
+        "block": "5b8bdfdd-ddff-568a-b8eb-6098376b8bee",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "1d3383ed-2db9-54f2-bc6b-4bec1b6fc388",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "70fee5a9-d965-5d53-8bd9-2dffb084388a",
+      "a": {
+        "block": "1d3383ed-2db9-54f2-bc6b-4bec1b6fc388",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "17d8c0c5-7002-5b4a-89a5-5a8492f05559",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "735f2a42-d3e9-5cca-b2c3-e8244acb6b84",
+      "a": {
+        "block": "1d3383ed-2db9-54f2-bc6b-4bec1b6fc388",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "449fd739-8703-5a26-a5d8-8a6cd1582ba6",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "b1cb1cb9-8a70-579f-8f30-a59007bf8d9e",
+      "a": {
+        "block": "1d3383ed-2db9-54f2-bc6b-4bec1b6fc388",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "d7951aa1-0f6c-5a91-8143-ef1ab33bf479",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "f84847c4-c95c-5c97-95e5-b3a68d6bcbc1",
+      "a": {
+        "block": "17d8c0c5-7002-5b4a-89a5-5a8492f05559",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "737b4a3d-0ce3-5305-9511-a3ee60461fe2",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "c80175bb-2415-5d63-852d-f3c10ab05691",
+      "a": {
+        "block": "737b4a3d-0ce3-5305-9511-a3ee60461fe2",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "a15e9130-1411-5b00-8847-5f7392d0487b",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "71128b74-acdd-59eb-90b7-8d44c1a97602",
+      "a": {
+        "block": "737b4a3d-0ce3-5305-9511-a3ee60461fe2",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "12614b33-64ad-5a4e-935c-366a04021e61",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    },
+    {
+      "id": "8bc0999f-46e6-5481-a804-db0bd2adf855",
+      "a": {
+        "block": "737b4a3d-0ce3-5305-9511-a3ee60461fe2",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "62a65357-688d-59ba-9629-e78ecacda69f",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "cc765b3e-d6e7-5382-94db-963217c93bf2",
+      "a": {
+        "block": "a15e9130-1411-5b00-8847-5f7392d0487b",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "c180e278-eaac-57ca-a974-3037ae64bf5f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "86ec4f30-a5c7-5c8f-b781-22c80763c79b",
+      "a": {
+        "block": "1fb35f75-e7d4-512e-959a-fbe88ebf95e6",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "17ce4a33-a158-5545-a245-c5a55d857aba",
+        "anchor": [ 0.0, 0.1667, 0.3333 ]
+      }
+    },
+    {
+      "id": "6f2b7d20-e92f-5894-a5ca-ad6d46492dc8",
+      "a": {
+        "block": "c180e278-eaac-57ca-a974-3037ae64bf5f",
+        "anchor": [ 1.0, 0.1667, 0.3333 ]
+      },
+      "b": {
+        "block": "321e214a-b080-56e0-bc6a-d0da044dbd96",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "tenonLength": 13.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 13.3333, 2.5, 3.3333, 13.3333, 12.5, 3.3333, 13.3333, 12.5, 6.6667, 13.3333, 2.5, 6.6667, 0.0, 2.5, 3.3333, 0.0, 12.5, 3.3333, 0.0, 12.5, 6.6667, 0.0, 2.5, 6.6667, 16.3889, 0.0, 0.0, 16.3889, 15.0, 0.0, 16.3889, 15.0, 10.0, 16.3889, 0.0, 10.0, 13.3333, 0.0, 0.0, 13.3333, 15.0, 0.0, 13.3333, 15.0, 10.0, 13.3333, 0.0, 10.0, 21.3889, 0.0, 0.0, 21.3889, 15.0, 0.0, 21.3889, 15.0, 1.6667, 21.3889, 0.0, 1.6667, 16.3889, 15.0, 1.6667, 16.3889, 0.0, 1.6667, 21.3889, 5.0, 1.6667, 21.3889, 15.0, 10.0, 21.3889, 5.0, 10.0, 16.3889, 5.0, 1.6667, 16.3889, 5.0, 10.0, 21.3889, 0.0, 8.3333, 21.3889, 5.0, 8.3333, 21.3889, 0.0, 10.0, 16.3889, 0.0, 8.3333, 16.3889, 5.0, 8.3333, 35.2778, 0.0, 0.0, 35.2778, 15.0, 0.0, 35.2778, 15.0, 10.0, 35.2778, 0.0, 10.0, 40.2778, 0.0, 0.0, 40.2778, 15.0, 0.0, 40.2778, 15.0, 1.6667, 40.2778, 0.0, 1.6667, 35.2778, 15.0, 1.6667, 35.2778, 0.0, 1.6667, 40.2778, 5.0, 1.6667, 40.2778, 15.0, 10.0, 40.2778, 5.0, 10.0, 35.2778, 5.0, 1.6667, 35.2778, 5.0, 10.0, 40.2778, 0.0, 8.3333, 40.2778, 5.0, 8.3333, 40.2778, 0.0, 10.0, 35.2778, 0.0, 8.3333, 35.2778, 5.0, 8.3333, 54.1667, 0.0, 0.0, 54.1667, 15.0, 0.0, 54.1667, 15.0, 10.0, 54.1667, 0.0, 10.0, 59.1667, 0.0, 0.0, 59.1667, 15.0, 0.0, 59.1667, 15.0, 1.6667, 59.1667, 0.0, 1.6667, 54.1667, 15.0, 1.6667, 54.1667, 0.0, 1.6667, 59.1667, 5.0, 1.6667, 59.1667, 15.0, 10.0, 59.1667, 5.0, 10.0, 54.1667, 5.0, 1.6667, 54.1667, 5.0, 10.0, 59.1667, 0.0, 8.3333, 59.1667, 5.0, 8.3333, 59.1667, 0.0, 10.0, 54.1667, 0.0, 8.3333, 54.1667, 5.0, 8.3333, 73.0556, 0.0, 0.0, 73.0556, 15.0, 0.0, 73.0556, 15.0, 10.0, 73.0556, 0.0, 10.0, 78.0556, 0.0, 0.0, 78.0556, 15.0, 0.0, 78.0556, 15.0, 1.6667, 78.0556, 0.0, 1.6667, 73.0556, 15.0, 1.6667, 73.0556, 0.0, 1.6667, 78.0556, 5.0, 1.6667, 78.0556, 15.0, 10.0, 78.0556, 5.0, 10.0, 73.0556, 5.0, 1.6667, 73.0556, 5.0, 10.0, 78.0556, 0.0, 8.3333, 78.0556, 5.0, 8.3333, 78.0556, 0.0, 10.0, 73.0556, 0.0, 8.3333, 73.0556, 5.0, 8.3333, 91.9444, 0.0, 0.0, 91.9444, 15.0, 0.0, 91.9444, 15.0, 10.0, 91.9444, 0.0, 10.0, 96.9444, 0.0, 0.0, 96.9444, 15.0, 0.0, 96.9444, 15.0, 1.6667, 96.9444, 0.0, 1.6667, 91.9444, 15.0, 1.6667, 91.9444, 0.0, 1.6667, 96.9444, 5.0, 1.6667, 96.9444, 15.0, 10.0, 96.9444, 5.0, 10.0, 91.9444, 5.0, 1.6667, 91.9444, 5.0, 10.0, 96.9444, 0.0, 8.3333, 96.9444, 5.0, 8.3333, 96.9444, 0.0, 10.0, 91.9444, 0.0, 8.3333, 91.9444, 5.0, 8.3333, 110.8333, 0.0, 0.0, 110.8333, 15.0, 0.0, 110.8333, 15.0, 10.0, 110.8333, 0.0, 10.0, 115.8333, 0.0, 0.0, 115.8333, 15.0, 0.0, 115.8333, 15.0, 1.6667, 115.8333, 0.0, 1.6667, 110.8333, 15.0, 1.6667, 110.8333, 0.0, 1.6667, 115.8333, 5.0, 1.6667, 115.8333, 15.0, 10.0, 115.8333, 5.0, 10.0, 110.8333, 5.0, 1.6667, 110.8333, 5.0, 10.0, 115.8333, 0.0, 8.3333, 115.8333, 5.0, 8.3333, 115.8333, 0.0, 10.0, 110.8333, 0.0, 8.3333, 110.8333, 5.0, 8.3333, 129.7222, 0.0, 0.0, 129.7222, 15.0, 0.0, 129.7222, 15.0, 10.0, 129.7222, 0.0, 10.0, 134.7222, 0.0, 0.0, 134.7222, 15.0, 0.0, 134.7222, 15.0, 1.6667, 134.7222, 0.0, 1.6667, 129.7222, 15.0, 1.6667, 129.7222, 0.0, 1.6667, 134.7222, 5.0, 1.6667, 134.7222, 15.0, 10.0, 134.7222, 5.0, 10.0, 129.7222, 5.0, 1.6667, 129.7222, 5.0, 10.0, 134.7222, 0.0, 8.3333, 134.7222, 5.0, 8.3333, 134.7222, 0.0, 10.0, 129.7222, 0.0, 8.3333, 129.7222, 5.0, 8.3333, 148.6111, 0.0, 0.0, 148.6111, 15.0, 0.0, 148.6111, 15.0, 10.0, 148.6111, 0.0, 10.0, 153.6111, 0.0, 0.0, 153.6111, 15.0, 0.0, 153.6111, 15.0, 1.6667, 153.6111, 0.0, 1.6667, 148.6111, 15.0, 1.6667, 148.6111, 0.0, 1.6667, 153.6111, 5.0, 1.6667, 153.6111, 15.0, 10.0, 153.6111, 5.0, 10.0, 148.6111, 5.0, 1.6667, 148.6111, 5.0, 10.0, 153.6111, 0.0, 8.3333, 153.6111, 5.0, 8.3333, 153.6111, 0.0, 10.0, 148.6111, 0.0, 8.3333, 148.6111, 5.0, 8.3333, 167.5, 0.0, 0.0, 167.5, 15.0, 0.0, 167.5, 15.0, 10.0, 167.5, 0.0, 10.0, 172.5, 0.0, 0.0, 172.5, 15.0, 0.0, 172.5, 15.0, 1.6667, 172.5, 0.0, 1.6667, 167.5, 15.0, 1.6667, 167.5, 0.0, 1.6667, 172.5, 5.0, 1.6667, 172.5, 15.0, 10.0, 172.5, 5.0, 10.0, 167.5, 5.0, 1.6667, 167.5, 5.0, 10.0, 172.5, 0.0, 8.3333, 172.5, 5.0, 8.3333, 172.5, 0.0, 10.0, 167.5, 0.0, 8.3333, 167.5, 5.0, 8.3333, 186.3889, 0.0, 0.0, 186.3889, 15.0, 0.0, 186.3889, 15.0, 10.0, 186.3889, 0.0, 10.0, 191.3889, 0.0, 0.0, 191.3889, 15.0, 0.0, 191.3889, 15.0, 1.6667, 191.3889, 0.0, 1.6667, 186.3889, 15.0, 1.6667, 186.3889, 0.0, 1.6667, 191.3889, 5.0, 1.6667, 191.3889, 15.0, 10.0, 191.3889, 5.0, 10.0, 186.3889, 5.0, 1.6667, 186.3889, 5.0, 10.0, 191.3889, 0.0, 8.3333, 191.3889, 5.0, 8.3333, 191.3889, 0.0, 10.0, 186.3889, 0.0, 8.3333, 186.3889, 5.0, 8.3333, 205.2778, 0.0, 0.0, 205.2778, 15.0, 0.0, 205.2778, 15.0, 10.0, 205.2778, 0.0, 10.0, 210.2778, 0.0, 0.0, 210.2778, 15.0, 0.0, 210.2778, 15.0, 1.6667, 210.2778, 0.0, 1.6667, 205.2778, 15.0, 1.6667, 205.2778, 0.0, 1.6667, 210.2778, 5.0, 1.6667, 210.2778, 15.0, 10.0, 210.2778, 5.0, 10.0, 205.2778, 5.0, 1.6667, 205.2778, 5.0, 10.0, 210.2778, 0.0, 8.3333, 210.2778, 5.0, 8.3333, 210.2778, 0.0, 10.0, 205.2778, 0.0, 8.3333, 205.2778, 5.0, 8.3333, 213.3333, 0.0, 0.0, 213.3333, 15.0, 0.0, 213.3333, 15.0, 10.0, 213.3333, 0.0, 10.0, 226.6667, 2.5, 3.3333, 226.6667, 12.5, 3.3333, 226.6667, 12.5, 6.6667, 226.6667, 2.5, 6.6667, 213.3333, 2.5, 3.3333, 213.3333, 12.5, 3.3333, 213.3333, 12.5, 6.6667, 213.3333, 2.5, 6.6667 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 8, 21, 20, 8, 20, 9, 9, 20, 18, 9, 18, 17, 8, 16, 19, 8, 19, 21, 21, 19, 18, 21, 18, 20, 8, 9, 17, 8, 17, 16, 22, 18, 23, 22, 23, 24, 25, 26, 10, 25, 10, 20, 20, 10, 23, 20, 23, 18, 25, 22, 24, 25, 24, 26, 26, 24, 23, 26, 23, 10, 25, 20, 18, 25, 18, 22, 27, 28, 24, 27, 24, 29, 30, 11, 26, 30, 26, 31, 31, 26, 24, 31, 24, 28, 30, 27, 29, 30, 29, 11, 11, 29, 24, 11, 24, 26, 30, 31, 28, 30, 28, 27, 32, 33, 34, 32, 34, 35, 16, 29, 23, 16, 23, 17, 17, 23, 34, 17, 34, 33, 16, 32, 35, 16, 35, 29, 29, 35, 34, 29, 34, 23, 16, 17, 33, 16, 33, 32, 36, 37, 38, 36, 38, 39, 32, 41, 40, 32, 40, 33, 33, 40, 38, 33, 38, 37, 32, 36, 39, 32, 39, 41, 41, 39, 38, 41, 38, 40, 32, 33, 37, 32, 37, 36, 42, 38, 43, 42, 43, 44, 45, 46, 34, 45, 34, 40, 40, 34, 43, 40, 43, 38, 45, 42, 44, 45, 44, 46, 46, 44, 43, 46, 43, 34, 45, 40, 38, 45, 38, 42, 47, 48, 44, 47, 44, 49, 50, 35, 46, 50, 46, 51, 51, 46, 44, 51, 44, 48, 50, 47, 49, 50, 49, 35, 35, 49, 44, 35, 44, 46, 50, 51, 48, 50, 48, 47, 52, 53, 54, 52, 54, 55, 36, 49, 43, 36, 43, 37, 37, 43, 54, 37, 54, 53, 36, 52, 55, 36, 55, 49, 49, 55, 54, 49, 54, 43, 36, 37, 53, 36, 53, 52, 56, 57, 58, 56, 58, 59, 52, 61, 60, 52, 60, 53, 53, 60, 58, 53, 58, 57, 52, 56, 59, 52, 59, 61, 61, 59, 58, 61, 58, 60, 52, 53, 57, 52, 57, 56, 62, 58, 63, 62, 63, 64, 65, 66, 54, 65, 54, 60, 60, 54, 63, 60, 63, 58, 65, 62, 64, 65, 64, 66, 66, 64, 63, 66, 63, 54, 65, 60, 58, 65, 58, 62, 67, 68, 64, 67, 64, 69, 70, 55, 66, 70, 66, 71, 71, 66, 64, 71, 64, 68, 70, 67, 69, 70, 69, 55, 55, 69, 64, 55, 64, 66, 70, 71, 68, 70, 68, 67, 72, 73, 74, 72, 74, 75, 56, 69, 63, 56, 63, 57, 57, 63, 74, 57, 74, 73, 56, 72, 75, 56, 75, 69, 69, 75, 74, 69, 74, 63, 56, 57, 73, 56, 73, 72, 76, 77, 78, 76, 78, 79, 72, 81, 80, 72, 80, 73, 73, 80, 78, 73, 78, 77, 72, 76, 79, 72, 79, 81, 81, 79, 78, 81, 78, 80, 72, 73, 77, 72, 77, 76, 82, 78, 83, 82, 83, 84, 85, 86, 74, 85, 74, 80, 80, 74, 83, 80, 83, 78, 85, 82, 84, 85, 84, 86, 86, 84, 83, 86, 83, 74, 85, 80, 78, 85, 78, 82, 87, 88, 84, 87, 84, 89, 90, 75, 86, 90, 86, 91, 91, 86, 84, 91, 84, 88, 90, 87, 89, 90, 89, 75, 75, 89, 84, 75, 84, 86, 90, 91, 88, 90, 88, 87, 92, 93, 94, 92, 94, 95, 76, 89, 83, 76, 83, 77, 77, 83, 94, 77, 94, 93, 76, 92, 95, 76, 95, 89, 89, 95, 94, 89, 94, 83, 76, 77, 93, 76, 93, 92, 96, 97, 98, 96, 98, 99, 92, 101, 100, 92, 100, 93, 93, 100, 98, 93, 98, 97, 92, 96, 99, 92, 99, 101, 101, 99, 98, 101, 98, 100, 92, 93, 97, 92, 97, 96, 102, 98, 103, 102, 103, 104, 105, 106, 94, 105, 94, 100, 100, 94, 103, 100, 103, 98, 105, 102, 104, 105, 104, 106, 106, 104, 103, 106, 103, 94, 105, 100, 98, 105, 98, 102, 107, 108, 104, 107, 104, 109, 110, 95, 106, 110, 106, 111, 111, 106, 104, 111, 104, 108, 110, 107, 109, 110, 109, 95, 95, 109, 104, 95, 104, 106, 110, 111, 108, 110, 108, 107, 112, 113, 114, 112, 114, 115, 96, 109, 103, 96, 103, 97, 97, 103, 114, 97, 114, 113, 96, 112, 115, 96, 115, 109, 109, 115, 114, 109, 114, 103, 96, 97, 113, 96, 113, 112, 116, 117, 118, 116, 118, 119, 112, 121, 120, 112, 120, 113, 113, 120, 118, 113, 118, 117, 112, 116, 119, 112, 119, 121, 121, 119, 118, 121, 118, 120, 112, 113, 117, 112, 117, 116, 122, 118, 123, 122, 123, 124, 125, 126, 114, 125, 114, 120, 120, 114, 123, 120, 123, 118, 125, 122, 124, 125, 124, 126, 126, 124, 123, 126, 123, 114, 125, 120, 118, 125, 118, 122, 127, 128, 124, 127, 124, 129, 130, 115, 126, 130, 126, 131, 131, 126, 124, 131, 124, 128, 130, 127, 129, 130, 129, 115, 115, 129, 124, 115, 124, 126, 130, 131, 128, 130, 128, 127, 132, 133, 134, 132, 134, 135, 116, 129, 123, 116, 123, 117, 117, 123, 134, 117, 134, 133, 116, 132, 135, 116, 135, 129, 129, 135, 134, 129, 134, 123, 116, 117, 133, 116, 133, 132, 136, 137, 138, 136, 138, 139, 132, 141, 140, 132, 140, 133, 133, 140, 138, 133, 138, 137, 132, 136, 139, 132, 139, 141, 141, 139, 138, 141, 138, 140, 132, 133, 137, 132, 137, 136, 142, 138, 143, 142, 143, 144, 145, 146, 134, 145, 134, 140, 140, 134, 143, 140, 143, 138, 145, 142, 144, 145, 144, 146, 146, 144, 143, 146, 143, 134, 145, 140, 138, 145, 138, 142, 147, 148, 144, 147, 144, 149, 150, 135, 146, 150, 146, 151, 151, 146, 144, 151, 144, 148, 150, 147, 149, 150, 149, 135, 135, 149, 144, 135, 144, 146, 150, 151, 148, 150, 148, 147, 152, 153, 154, 152, 154, 155, 136, 149, 143, 136, 143, 137, 137, 143, 154, 137, 154, 153, 136, 152, 155, 136, 155, 149, 149, 155, 154, 149, 154, 143, 136, 137, 153, 136, 153, 152, 156, 157, 158, 156, 158, 159, 152, 161, 160, 152, 160, 153, 153, 160, 158, 153, 158, 157, 152, 156, 159, 152, 159, 161, 161, 159, 158, 161, 158, 160, 152, 153, 157, 152, 157, 156, 162, 158, 163, 162, 163, 164, 165, 166, 154, 165, 154, 160, 160, 154, 163, 160, 163, 158, 165, 162, 164, 165, 164, 166, 166, 164, 163, 166, 163, 154, 165, 160, 158, 165, 158, 162, 167, 168, 164, 167, 164, 169, 170, 155, 166, 170, 166, 171, 171, 166, 164, 171, 164, 168, 170, 167, 169, 170, 169, 155, 155, 169, 164, 155, 164, 166, 170, 171, 168, 170, 168, 167, 172, 173, 174, 172, 174, 175, 156, 169, 163, 156, 163, 157, 157, 163, 174, 157, 174, 173, 156, 172, 175, 156, 175, 169, 169, 175, 174, 169, 174, 163, 156, 157, 173, 156, 173, 172, 176, 177, 178, 176, 178, 179, 172, 181, 180, 172, 180, 173, 173, 180, 178, 173, 178, 177, 172, 176, 179, 172, 179, 181, 181, 179, 178, 181, 178, 180, 172, 173, 177, 172, 177, 176, 182, 178, 183, 182, 183, 184, 185, 186, 174, 185, 174, 180, 180, 174, 183, 180, 183, 178, 185, 182, 184, 185, 184, 186, 186, 184, 183, 186, 183, 174, 185, 180, 178, 185, 178, 182, 187, 188, 184, 187, 184, 189, 190, 175, 186, 190, 186, 191, 191, 186, 184, 191, 184, 188, 190, 187, 189, 190, 189, 175, 175, 189, 184, 175, 184, 186, 190, 191, 188, 190, 188, 187, 192, 193, 194, 192, 194, 195, 176, 189, 183, 176, 183, 177, 177, 183, 194, 177, 194, 193, 176, 192, 195, 176, 195, 189, 189, 195, 194, 189, 194, 183, 176, 177, 193, 176, 193, 192, 196, 197, 198, 196, 198, 199, 192, 201, 200, 192, 200, 193, 193, 200, 198, 193, 198, 197, 192, 196, 199, 192, 199, 201, 201, 199, 198, 201, 198, 200, 192, 193, 197, 192, 197, 196, 202, 198, 203, 202, 203, 204, 205, 206, 194, 205, 194, 200, 200, 194, 203, 200, 203, 198, 205, 202, 204, 205, 204, 206, 206, 204, 203, 206, 203, 194, 205, 200, 198, 205, 198, 202, 207, 208, 204, 207, 204, 209, 210, 195, 206, 210, 206, 211, 211, 206, 204, 211, 204, 208, 210, 207, 209, 210, 209, 195, 195, 209, 204, 195, 204, 206, 210, 211, 208, 210, 208, 207, 212, 213, 214, 212, 214, 215, 196, 209, 203, 196, 203, 197, 197, 203, 214, 197, 214, 213, 196, 212, 215, 196, 215, 209, 209, 215, 214, 209, 214, 203, 196, 197, 213, 196, 213, 212, 216, 217, 218, 216, 218, 219, 212, 221, 220, 212, 220, 213, 213, 220, 218, 213, 218, 217, 212, 216, 219, 212, 219, 221, 221, 219, 218, 221, 218, 220, 212, 213, 217, 212, 217, 216, 222, 218, 223, 222, 223, 224, 225, 226, 214, 225, 214, 220, 220, 214, 223, 220, 223, 218, 225, 222, 224, 225, 224, 226, 226, 224, 223, 226, 223, 214, 225, 220, 218, 225, 218, 222, 227, 228, 224, 227, 224, 229, 230, 215, 226, 230, 226, 231, 231, 226, 224, 231, 224, 228, 230, 227, 229, 230, 229, 215, 215, 229, 224, 215, 224, 226, 230, 231, 228, 230, 228, 227, 232, 233, 234, 232, 234, 235, 216, 229, 223, 216, 223, 217, 217, 223, 234, 217, 234, 233, 216, 232, 235, 216, 235, 229, 229, 235, 234, 229, 234, 223, 216, 217, 233, 216, 233, 232, 236, 237, 238, 236, 238, 239, 240, 243, 242, 240, 242, 241, 241, 242, 238, 241, 238, 237, 240, 236, 239, 240, 239, 243, 243, 239, 238, 243, 238, 242, 240, 241, 237, 240, 237, 236 ]
+      }
+    ]
+  },
+  "_note": "Rail for a dense vertical lattice - eleven bars."
+}

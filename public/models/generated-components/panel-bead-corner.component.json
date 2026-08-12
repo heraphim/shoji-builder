@@ -1,0 +1,109 @@
+{
+  "id": "panel-bead-corner",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth",
+    "legThickness": "20"
+  },
+  "blocks": [
+    {
+      "id": "a8d950e5-07df-5184-a26d-97e9b37f8089",
+      "name": "panel-bead-corner.stl (1)",
+      "size": {
+        "x": "-#kumikoWidth + 2*#legThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "a512af08-83d7-5761-a6b0-fb0f8b4210c2",
+      "name": "panel-bead-corner.stl (2)",
+      "size": {
+        "x": "-#kumikoWidth + 2*#legThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 3.3333, 5.0 ]
+    },
+    {
+      "id": "332b3370-6edf-5ce6-a79b-de7aa92b2797",
+      "name": "panel-bead-corner.stl (3)",
+      "size": {
+        "x": "#kumikoWidth",
+        "y": "1/2*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 33.3333, 0.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "51ce5657-0fab-5f7a-9d72-801809b4be7b",
+      "a": {
+        "block": "a8d950e5-07df-5184-a26d-97e9b37f8089",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "a512af08-83d7-5761-a6b0-fb0f8b4210c2",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "83901c74-eaf4-5366-9f25-34721d3c7fc2",
+      "a": {
+        "block": "a8d950e5-07df-5184-a26d-97e9b37f8089",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "332b3370-6edf-5ce6-a79b-de7aa92b2797",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 33.3333, 0.0, 0.0, 33.3333, 3.3333, 0.0, 33.3333, 3.3333, 10.0, 33.3333, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 3.3333, 0.0, 0.0, 3.3333, 10.0, 0.0, 0.0, 10.0, 33.3333, 3.3333, 5.0, 33.3333, 6.6667, 5.0, 33.3333, 6.6667, 10.0, 0.0, 3.3333, 5.0, 0.0, 6.6667, 5.0, 0.0, 6.6667, 10.0, 40.0, 0.0, 0.0, 40.0, 3.3333, 0.0, 40.0, 3.3333, 10.0, 40.0, 0.0, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 2, 11, 6, 13, 11, 13, 12, 12, 13, 10, 12, 10, 9, 11, 8, 2, 11, 2, 6, 6, 2, 10, 6, 10, 13, 11, 12, 9, 11, 9, 8, 14, 15, 16, 14, 16, 17, 0, 3, 2, 0, 2, 1, 1, 2, 16, 1, 16, 15, 0, 14, 17, 0, 17, 3, 3, 17, 16, 3, 16, 2, 0, 1, 15, 0, 15, 14 ]
+      }
+    ]
+  },
+  "_note": "Short corner bead, lapped where it meets its neighbour."
+}

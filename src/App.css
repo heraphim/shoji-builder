@@ -1,0 +1,1651 @@
+/* The blueprint palette, on the whole app rather than on one tab: both tabs are
+   the same drawing surface seen at two scales, so they share one set of tokens.
+   Named here so a page only ever says which role a colour plays. */
+.app {
+  --bp-bg: #1a3a6b;
+  --bp-bg-dark: #142e56;
+  --bp-panel: #1e4179;
+  --bp-panel-lit: #26518f;
+  --bp-border: #4a6ea8;
+  --bp-line: #bfe1ff;
+  --bp-text: #e8f2ff;
+  --bp-text-dim: #9dbde4;
+  --bp-accent: #ffcc00;
+  --bp-hover: #ff9f43;
+
+  /* how well a length is pinned down. Kept in step with STATUS_COLOR in
+     src/lib/edgeStatus.ts, which colours the edges in the four views. */
+  --bp-known: #4ade80;
+  --bp-implied: #ffcc00;
+  --bp-unknown: #f87171;
+
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--bp-bg);
+  color: var(--bp-text);
+  font-family: system-ui, sans-serif;
+}
+
+/* Folder tabs.
+   The whole effect is the bottom edge: the strip draws one, every tab sits on
+   it with a negative margin, and the active tab paints its own bottom edge in
+   the page's colour — so the line breaks where the active tab is and that tab
+   reads as the front leaf of the folder rather than as a lit button. */
+.app-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 8px 20px 0;
+  background: var(--bp-bg-dark);
+  border-bottom: 1px solid var(--bp-border);
+  flex-shrink: 0;
+}
+
+/* The tab is the leaf; the label and the caret are two controls on it, so the
+   border and the fill belong to the wrapper and neither button draws its own. */
+.app-tab {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin-bottom: -1px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 7px 7px 0 0;
+}
+
+.app-tab:hover:not(.active) {
+  background: var(--bp-panel-lit);
+}
+
+.app-tab.active {
+  z-index: 2;
+  background: var(--bp-bg);
+  border-bottom-color: var(--bp-bg);
+}
+
+.app-tab button {
+  background: transparent;
+  border: none;
+  color: var(--bp-text-dim);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.app-tab.active button {
+  color: var(--bp-text);
+}
+
+.app-tab-label {
+  padding: 7px 6px 8px 18px;
+}
+
+/* the caret is the file menu, so it gets its own hit area and its own hover */
+.app-tab-caret {
+  padding: 7px 12px 8px 6px;
+  font-size: 10px !important;
+  line-height: 1.6;
+}
+
+.app-tab-caret:hover {
+  color: var(--bp-accent) !important;
+}
+
+.app-tab.active .app-tab-label,
+.app-tab.active .app-tab-caret {
+  padding-bottom: 9px;
+}
+
+.app-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  background: var(--bp-bg);
+}
+
+.loading {
+  padding: 24px;
+}
+
+/* ---- the file menu, under a tab's caret ---- */
+
+.file-menu {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  min-width: 220px;
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-top: 1px;
+  padding: 4px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 0 6px 6px 6px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* While the name dialog is up the menu is only its host: the dialog covers the
+   screen, and an empty dropdown box behind it in the corner is just litter. */
+.file-menu:has(.file-dialog-backdrop) {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.file-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.file-menu-item:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.file-menu-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* the name the design was opened from, riding on the Save rows */
+.file-menu-trailing {
+  color: var(--bp-text-dim);
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 45%;
+}
+
+/* a label wrapping a hidden input — see UploadItem */
+.file-menu-upload input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-menu-rule {
+  height: 1px;
+  margin: 4px 6px;
+  background: var(--bp-border);
+}
+
+.file-menu-back {
+  color: var(--bp-text-dim);
+}
+
+.file-menu-list {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.file-menu-empty {
+  padding: 8px 10px;
+  color: var(--bp-text-dim);
+  font-size: 12px;
+}
+
+/* ---- the name dialog ---- */
+
+.file-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 24, 46, 0.6);
+}
+
+.file-dialog {
+  width: 320px;
+  padding: 18px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 8px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+
+.file-dialog h2 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-text-dim);
+}
+
+/* the library settings, which are four fields rather than one */
+.file-dialog-wide {
+  width: 380px;
+}
+
+.file-dialog-note {
+  margin: 0 0 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--bp-text-dim);
+}
+
+.file-dialog-field {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.file-dialog-field span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: var(--bp-text-dim);
+}
+
+.file-dialog input[type="text"],
+.file-dialog input[type="password"] {
+  width: 100%;
+  padding: 7px 10px;
+  background: var(--bp-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.file-dialog input[type="text"]:focus,
+.file-dialog input[type="password"]:focus {
+  outline: none;
+  border-color: var(--bp-line);
+}
+
+.file-dialog-warn {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--bp-text-dim);
+}
+
+/* the second press is the one that stands on a file, so it is the one that
+   looks like it */
+.file-dialog-warn.armed {
+  color: var(--bp-accent);
+}
+
+.file-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.file-dialog-actions button {
+  padding: 7px 16px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.file-dialog-actions button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.file-dialog-actions button.primary {
+  border-color: var(--bp-accent);
+  color: var(--bp-accent);
+}
+
+.file-dialog-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* dropping the token is a real action but not the one the dialog is for, so it
+   sits away from the pair that answer it */
+.file-dialog-actions button.file-dialog-quiet {
+  margin-right: auto;
+  border-color: transparent;
+  background: transparent;
+  color: var(--bp-text-dim);
+}
+
+/* ---- Lamp Design tab ---- */
+
+.lamp-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.lamp-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.lamp-canvas {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: var(--bp-bg);
+}
+
+.lamp-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  padding: 12px;
+  overflow-y: auto;
+  border-left: 1px solid var(--bp-border);
+  background: var(--bp-bg-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---- collapsible sidebar panel (both tabs) ---- */
+
+/* The parts of the job don't happen at once, so every panel folds away — and
+   which are folded is remembered across reloads (see usePanelStore). */
+.side-panel {
+  border: 1px solid var(--bp-border);
+  border-radius: 8px;
+  background: var(--bp-panel);
+}
+
+/* No overflow:hidden on the panel — it would clip the insert dropdown, which
+   hangs below a panel that is barely taller than its own button. Only the
+   header needs the corners taken off it, so it takes them off itself. */
+.side-panel-header {
+  border-radius: 7px 7px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side-panel-header:hover {
+  background: var(--bp-panel-lit);
+}
+
+.side-panel.collapsed .side-panel-header {
+  border-radius: 7px;
+}
+
+.side-panel-caret {
+  color: var(--bp-text-dim);
+  font-size: 11px;
+  width: 10px;
+}
+
+.side-panel-title {
+  flex: 1;
+}
+
+.side-panel-badge {
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: var(--bp-bg-dark);
+  color: var(--bp-text-dim);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.side-panel-body {
+  padding: 4px 12px 12px;
+  border-top: 1px solid var(--bp-border);
+}
+
+/* ---- Insert component ---- */
+
+.insert-component {
+  position: relative;
+  margin: 8px 0 10px;
+}
+
+button.lamp-primary {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button.lamp-primary:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+button.lamp-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.insert-dropdown {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  padding: 4px;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.insert-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.insert-dropdown button:hover {
+  background: var(--bp-panel-lit);
+}
+
+/* ---- The inserted components ---- */
+
+.instance-list-lamp {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lamp-empty {
+  font-size: 12px;
+  color: var(--bp-text-dim);
+  padding: 2px 0 4px;
+}
+
+/* flex, not a grid: a connected row carries one button more than a loose one
+   (rotate about the connection axis), so the columns are not fixed */
+.lamp-instance-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 8px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+}
+
+.lamp-instance-row:hover {
+  border-color: var(--bp-line);
+}
+
+.lamp-instance-row.armed {
+  border-color: var(--bp-accent);
+  background: rgba(255, 204, 0, 0.07);
+}
+
+.lamp-instance-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button.lamp-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text-dim);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+button.lamp-icon:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+  color: var(--bp-text);
+}
+
+/* Lit: the thing the icon names is currently true — the part is attached, or it
+   is on screen. Green, the same "settled" colour the rest of the app uses, so a
+   glance down a list of a dozen parts reads as a column of states rather than of
+   buttons. */
+button.lamp-icon.lamp-icon-on {
+  border-color: var(--bp-known);
+  color: #8fd3a0;
+}
+
+button.lamp-icon.lamp-icon-on:hover:not(:disabled) {
+  background: rgba(74, 222, 128, 0.14);
+  color: var(--bp-known);
+}
+
+/* a pick in flight on this part: the same yellow as the row it is in */
+button.lamp-icon.lamp-icon-armed {
+  border-color: var(--bp-accent);
+  color: var(--bp-accent);
+}
+
+button.lamp-icon:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* A symmetry that is already filled: the button stays, so the row still says
+   the part is one of a set, and it stays hoverable so the scene can still show
+   which parts that set is — there is simply nothing left for it to add. */
+button.lamp-icon.lamp-icon-spent {
+  opacity: 0.35;
+  cursor: default;
+}
+
+button.lamp-icon.lamp-icon-spent:hover {
+  background: transparent;
+  color: var(--bp-text-dim);
+}
+
+button.lamp-icon.lamp-delete:hover {
+  border-color: var(--bp-unknown);
+  color: var(--bp-unknown);
+}
+
+.lamp-pick-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #ffe28a;
+}
+
+.lamp-pick-status button {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  border-radius: 3px;
+  color: #ffe28a;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.lamp-error {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+/* ---- Variables list (shared: Lamp sidebar + Component Editor) ---- */
+
+.variables-list h2 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.variables-error {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+.variable-row {
+  display: grid;
+  grid-template-columns: 108px 1fr 56px 24px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+
+.variable-row.selectable {
+  cursor: pointer;
+}
+
+.variable-row.selectable:hover {
+  background: var(--bp-panel);
+}
+
+.variable-row.armed {
+  border-color: var(--bp-accent);
+  background: rgba(255, 204, 0, 0.08);
+}
+
+.variable-name {
+  font-size: 13px;
+  color: var(--bp-text-dim);
+}
+
+.variable-row input[type="text"] {
+  width: 100%;
+  background: var(--bp-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  padding: 4px 6px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+}
+
+.variable-resolved {
+  font-size: 13px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.variable-annotation {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  color: #8fd3a0;
+}
+
+/* Offered only where the variable is already a bare number — dragging one on a
+   formula would throw the formula away, so those render disabled. */
+.variable-slider {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 2px 0 0;
+  accent-color: #8fd3a0;
+  cursor: pointer;
+}
+
+.variable-slider:disabled {
+  accent-color: var(--bp-border);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* collapse/expand a paired variable (innerWidth/innerDepth, frameWidth/Height) */
+.pair-toggle {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text-dim);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pair-toggle:hover {
+  background: var(--bp-panel);
+  color: var(--bp-text);
+}
+
+.pair-toggle.active {
+  border-color: #8fd3a0;
+  color: #8fd3a0;
+}
+
+.variable-row.collapsed-pair .variable-name {
+  color: var(--bp-text);
+}
+
+/* ---- Component Editor (blueprint theme) ---- */
+
+.component-editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text);
+}
+
+/* What the last file action had to say, on both tabs — see FileStatusBar. */
+.file-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 16px;
+  background: var(--bp-bg-dark);
+  border-bottom: 1px solid var(--bp-border);
+  flex-shrink: 0;
+}
+
+.upload-button {
+  position: relative;
+  padding: 6px 14px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--bp-text);
+}
+
+.upload-button:hover {
+  background: var(--bp-panel-lit);
+}
+
+select.upload-button {
+  font-family: inherit;
+  line-height: 1.4;
+}
+
+select.upload-button:disabled {
+  color: var(--bp-text-dim);
+  cursor: default;
+}
+
+select.upload-button:disabled:hover {
+  background: var(--bp-panel);
+}
+
+.upload-button input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.source-file-name {
+  font-size: 13px;
+  color: var(--bp-text-dim);
+  font-family: ui-monospace, monospace;
+}
+
+.load-report {
+  font-size: 12px;
+  color: #8fd3a0;
+}
+
+.load-error {
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+.component-editor-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.component-editor-canvas {
+  flex: 1;
+  position: relative;
+}
+
+/* ---- the view grid (both tabs) ---- */
+
+.views-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bp-bg);
+}
+
+/* while a view is being carried to another slot, nothing under the cursor
+   should start a text selection instead */
+.views-container[data-dragging] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* The minimised views, as a strip above the grid. It is a flex item rather than
+   an overlay: a view that has been put away should give its space back. */
+.views-minimized {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--bp-bg-dark);
+  border-bottom: 1px solid var(--bp-border);
+}
+
+.view-chip {
+  padding: 3px 12px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 10px;
+  color: var(--bp-text-dim);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.view-chip:hover {
+  background: var(--bp-panel-lit);
+  color: var(--bp-text);
+}
+
+.views-grid {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  z-index: 1;
+}
+
+/* Preset layouts rather than a splittable tree — see the note in
+   ViewportGrid.tsx. Three is one tall cell beside two stacked ones, the layout
+   Max and Maya both settled on: the view being worked in keeps its size while
+   the other two stay legible. */
+.views-grid[data-count="1"] {
+  grid-template: "a" 1fr / 1fr;
+}
+
+.views-grid[data-count="2"] {
+  grid-template: "a b" 1fr / 1fr 1fr;
+}
+
+.views-grid[data-count="3"] {
+  grid-template:
+    "a b" 1fr
+    "a c" 1fr / 1fr 1fr;
+}
+
+.views-grid[data-count="4"] {
+  grid-template:
+    "a b" 1fr
+    "c d" 1fr / 1fr 1fr;
+}
+
+/* cells must stay transparent — the shared WebGL canvas renders underneath
+   them (z-index 0) and shows through; an opaque cell hides its view entirely.
+   That is also why the separators are cell borders and not a gap over a
+   coloured grid: the grid's own background would paint over the canvas, and a
+   transparent child shows its parent's background rather than what is beneath
+   the parent. */
+.view-cell {
+  position: relative;
+  background: transparent;
+  overflow: hidden;
+}
+
+.views-grid[data-count="2"] [data-slot="a"],
+.views-grid[data-count="3"] [data-slot="a"],
+.views-grid[data-count="4"] [data-slot="a"],
+.views-grid[data-count="4"] [data-slot="c"] {
+  border-right: 1px solid var(--bp-border);
+}
+
+.views-grid[data-count="3"] [data-slot="b"],
+.views-grid[data-count="4"] [data-slot="a"],
+.views-grid[data-count="4"] [data-slot="b"] {
+  border-bottom: 1px solid var(--bp-border);
+}
+
+/* the slot a dragged view would land in, and the one it came from */
+.view-cell[data-drop-target] {
+  outline: 1px dashed var(--bp-accent);
+  outline-offset: -3px;
+}
+
+.view-cell[data-dragging] {
+  outline: 1px solid var(--bp-accent);
+  outline-offset: -3px;
+}
+
+.view-tracking {
+  position: absolute;
+  inset: 0;
+}
+
+.views-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.view-toolbar {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.view-toolbar > * {
+  pointer-events: auto;
+}
+
+/* per-view controls, pinned to the cell's lower-right corner */
+.view-controls {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.view-controls > * {
+  pointer-events: auto;
+}
+
+.view-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-text-dim);
+  margin-right: auto;
+}
+
+/* the label doubles as the handle that carries the view to another slot */
+.view-drag {
+  cursor: grab;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.view-drag:hover {
+  background: rgba(20, 46, 86, 0.85);
+  color: var(--bp-text);
+}
+
+.views-container[data-dragging] .view-drag {
+  cursor: grabbing;
+}
+
+/* how the faces are drawn, and how the lines are — two settings, not one list
+   of every combination of them */
+select.view-mode {
+  padding: 2px 4px;
+  background: rgba(20, 46, 86, 0.85);
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+select.view-mode option {
+  background: var(--bp-bg-dark);
+  color: var(--bp-text);
+}
+
+select.view-mode option:disabled {
+  color: var(--bp-text-dim);
+}
+
+.view-minimize {
+  width: 22px;
+  padding: 3px 0 !important;
+  text-align: center;
+}
+
+.view-toolbar button,
+.view-controls button {
+  padding: 3px 8px;
+  background: rgba(20, 46, 86, 0.85);
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  color: var(--bp-text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.view-toolbar button:hover:not(:disabled),
+.view-controls button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.view-toolbar button:disabled,
+.view-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.view-toolbar button.armed,
+.view-controls button.armed {
+  border-color: var(--bp-accent);
+  color: var(--bp-accent);
+}
+
+/* ---- sidebar ---- */
+
+.component-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  padding: 12px;
+  overflow-y: auto;
+  border-left: 1px solid var(--bp-border);
+  background: var(--bp-bg-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Just the contents now: the box, the title and the fold are `.side-panel`,
+   which these sit inside. */
+.measurements-panel button,
+.connection-panel button {
+  width: 100%;
+  padding: 7px 12px;
+  margin-bottom: 10px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.measurements-panel button:hover:not(:disabled),
+.connection-panel button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.measurements-panel button:disabled,
+.connection-panel button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pick-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 204, 0, 0.1);
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  border-radius: 4px;
+  font-size: 12px;
+  color: #ffe28a;
+}
+
+.pick-status button {
+  width: auto;
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid rgba(255, 204, 0, 0.45);
+  border-radius: 3px;
+  color: #ffe28a;
+  cursor: pointer;
+}
+
+.measurement-editor {
+  margin-bottom: 10px;
+}
+
+.pending-count {
+  font-size: 12px;
+  color: var(--bp-accent);
+  margin-bottom: 8px;
+}
+
+.variable-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.variable-chips .chip {
+  width: auto;
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  border-radius: 10px;
+}
+
+.measurement-editor input[type="text"] {
+  width: 100%;
+  margin-bottom: 8px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  box-sizing: border-box;
+}
+
+.measurement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.measurement-row {
+  display: grid;
+  grid-template-columns: 1fr 74px 44px 20px;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+}
+
+.measurement-row:hover {
+  border-color: var(--bp-accent);
+}
+
+/* Set by the designer (green) against derived (yellow) — the same distinction
+   the drawings make, so a row and the edges it measures read as one thing. */
+.set-row {
+  border-left: 3px solid var(--bp-known);
+}
+
+.measurement-row.set-row input[type="text"],
+.set-row .measurement-value {
+  color: var(--bp-known);
+}
+
+/* set, but nothing in the model can be re-cut to it — the number in the list is
+   not the length the part actually has */
+.set-row .measurement-value.measurement-unmet {
+  color: var(--bp-unknown);
+  cursor: help;
+}
+
+.measurement-row input[type="text"] {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--bp-text);
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  box-sizing: border-box;
+}
+
+.measurement-value {
+  font-size: 11px;
+  text-align: right;
+  color: var(--bp-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.measurement-edges {
+  font-size: 10px;
+  color: var(--bp-text-dim);
+}
+
+.measurement-row > button {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* derived values — never typed in, so they get no input and no delete */
+.implied-row {
+  grid-template-columns: 1fr 72px;
+  border-left: 3px solid var(--bp-implied);
+}
+
+.implied-row .implied-formula,
+.implied-row .measurement-value {
+  color: var(--bp-implied);
+}
+
+.implied-formula {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  color: var(--bp-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.implied-axis {
+  flex-shrink: 0;
+  padding: 0 4px;
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  font-size: 10px;
+  color: var(--bp-text-dim);
+}
+
+.implied-panel .measurement-value {
+  color: #4ade80;
+}
+
+.axis-readout {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #8fd3a0;
+}
+
+.instance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.instance-row {
+  display: grid;
+  grid-template-columns: 24px repeat(3, 1fr) 24px;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+}
+
+.instance-label {
+  font-size: 12px;
+  color: var(--bp-text-dim);
+}
+
+.rotation-input {
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  color: var(--bp-text-dim);
+  gap: 2px;
+}
+
+.rotation-input input[type="number"] {
+  width: 100%;
+  background: var(--bp-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  color: var(--bp-text);
+  padding: 3px 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.instance-row > button {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.sidebar-actions button {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.sidebar-actions button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.sidebar-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.connection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.connection-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 8px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+}
+
+.connection-row:hover {
+  border-color: var(--bp-accent);
+}
+
+.connection-label {
+  font-size: 12px;
+  color: var(--bp-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.connection-row > button {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+/* ---- Textures tab ---- */
+
+/* Same three-part shape as the other two tabs: a status strip, the views, and
+   the sidebar. The sidebar is wider than the editor's because every row here is
+   a label, a slider and a number, and at 300px the number wraps. */
+.textures-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text);
+}
+
+.textures-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.textures-canvas {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.texture-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  padding: 12px;
+  overflow-y: auto;
+  border-left: 1px solid var(--bp-border);
+  background: var(--bp-bg-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---- texture controls (Textures tab, and the editor's two panels) ---- */
+
+.texture-panel,
+.appearance-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+/* One control per line: label on the left at a fixed width so every row's
+   controls line up down the panel, then whatever the control is. */
+.texture-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 88px at 11px is what the longest label in the set needs. Sized to the labels
+   rather than left to `auto` so the sliders line up down the panel — a column of
+   controls that each start somewhere different is much harder to compare than
+   one that reads as a column. */
+.texture-label {
+  flex: 0 0 88px;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--bp-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.texture-select {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+  padding: 4px 6px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+/* The slider is the control; the box beside it is the readout. So the slider
+   takes every pixel the row can spare and never drops below a width worth
+   dragging. */
+.texture-range {
+  flex: 1 1 auto;
+  min-width: 96px;
+  accent-color: var(--bp-accent);
+}
+
+/* The readout is an input, not a label — half these numbers get copied between
+   textures by hand, and a value you can only reach by dragging is one you
+   cannot set to the same thing twice.
+   `width` and `min-width: 0` together, and neither is redundant: a flex item's
+   automatic minimum size is its *content* size, and for an <input> that is its
+   intrinsic ~20-character width. Left at `auto` it overrides the flex basis
+   outright — which is what once made these boxes 139px wide and left the
+   sliders 27px of the row. */
+.texture-number {
+  flex: 0 0 54px;
+  width: 54px;
+  min-width: 0;
+  padding: 3px 5px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  text-align: right;
+}
+
+/* The spinners are ~15px of a 54px box, and everything they do the slider
+   beside them does better. Arrow keys still step the value. */
+.texture-number[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.texture-number::-webkit-outer-spin-button,
+.texture-number::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* Rows with no slider have the whole width going spare, so their box takes it
+   rather than sitting at the readout's size — the seed and the hex codes are
+   typed in far more often than the sliders' numbers are. */
+.texture-row > .texture-number:not(:last-child),
+.texture-row:not(.texture-slider-row) > .texture-number:last-child {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.texture-hex {
+  flex: 1 1 auto;
+  width: auto;
+  text-align: left;
+  text-transform: lowercase;
+}
+
+.texture-color {
+  flex: 0 0 34px;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.texture-seed {
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.texture-seed:hover {
+  background: var(--bp-panel-lit);
+}
+
+.texture-note,
+.appearance-note {
+  margin: 0 0 2px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--bp-text-dim);
+}
+
+/* Three buttons that behave as one setting, so they are drawn as one control
+   rather than as three that happen to be adjacent. */
+.axis-toggle {
+  display: flex;
+  gap: 0;
+}
+
+.axis-toggle button {
+  width: 34px;
+  margin: 0;
+  padding: 4px 0;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  color: var(--bp-text-dim);
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  cursor: pointer;
+}
+
+.axis-toggle button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.axis-toggle button:last-child {
+  border-radius: 0 4px 4px 0;
+}
+
+.axis-toggle button + button {
+  border-left: none;
+}
+
+.axis-toggle button:hover {
+  background: var(--bp-panel-lit);
+}
+
+.axis-toggle button.active {
+  background: var(--bp-accent);
+  border-color: var(--bp-accent);
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.appearance-panel > button {
+  width: 100%;
+  padding: 6px 12px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.appearance-panel > button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.appearance-panel > button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

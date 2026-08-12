@@ -1,0 +1,210 @@
+{
+  "id": "ariake-cover-post",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "innerHeight": "370",
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "8eb37e1f-2388-595f-ba63-277d68e5d91c",
+      "name": "ariake-cover-post.stl (1)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/4*#legThickness",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 0.0, 5.0 ]
+    },
+    {
+      "id": "6878b110-7a35-5490-b35f-7fdd38ffdace",
+      "name": "ariake-cover-post.stl (2)",
+      "size": {
+        "x": "3/4*#legThickness",
+        "y": "1/12*#innerHeight - 1/4*#legThickness - #pegDiameter",
+        "z": "3/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 5.0, 0.0 ]
+    },
+    {
+      "id": "c3ae14dd-9e3e-5f01-b91c-418801ffe87c",
+      "name": "ariake-cover-post.stl (3)",
+      "size": {
+        "x": "3/4*#legThickness",
+        "y": "2*#pegDiameter",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 27.5, 0.0 ]
+    },
+    {
+      "id": "f4acedf3-82dc-59ec-907b-920b95552d39",
+      "name": "ariake-cover-post.stl (4)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "2*#pegDiameter",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 27.5, 10.0 ]
+    },
+    {
+      "id": "32a665ef-5f37-561e-bd2a-409cbeff753e",
+      "name": "ariake-cover-post.stl (5)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "2*#pegDiameter",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 27.5, 10.0 ]
+    },
+    {
+      "id": "255cda7a-f11a-5e0c-aef8-c2ccce018c00",
+      "name": "ariake-cover-post.stl (6)",
+      "size": {
+        "x": "3/4*#legThickness",
+        "y": "1/12*#innerHeight - 1/4*#legThickness - #pegDiameter",
+        "z": "3/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 34.1667, 0.0 ]
+    },
+    {
+      "id": "1e7c926d-689e-52ae-8523-d5d5cf0fd225",
+      "name": "ariake-cover-post.stl (7)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/4*#legThickness",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 56.6667, 5.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "202ec2eb-31e8-5303-885a-57a9d8d5228e",
+      "a": {
+        "block": "6878b110-7a35-5490-b35f-7fdd38ffdace",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "c3ae14dd-9e3e-5f01-b91c-418801ffe87c",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "b5a23efe-9b32-58a8-b583-1eacc16f05ba",
+      "a": {
+        "block": "6878b110-7a35-5490-b35f-7fdd38ffdace",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "f4acedf3-82dc-59ec-907b-920b95552d39",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "af293a08-3c33-5073-92df-e84a6eaad4c4",
+      "a": {
+        "block": "6878b110-7a35-5490-b35f-7fdd38ffdace",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "32a665ef-5f37-561e-bd2a-409cbeff753e",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "f49ebae3-7e24-5f82-9647-3f6904e39fd4",
+      "a": {
+        "block": "c3ae14dd-9e3e-5f01-b91c-418801ffe87c",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "255cda7a-f11a-5e0c-aef8-c2ccce018c00",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "418efb37-f1e2-5027-aa7e-63400ba03d52",
+      "a": {
+        "block": "8eb37e1f-2388-595f-ba63-277d68e5d91c",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "6878b110-7a35-5490-b35f-7fdd38ffdace",
+        "anchor": [ 0.3333, 0.0, 0.3333 ]
+      }
+    },
+    {
+      "id": "b512fc21-235b-550b-b4b5-e9aedd19fa5a",
+      "a": {
+        "block": "255cda7a-f11a-5e0c-aef8-c2ccce018c00",
+        "anchor": [ 0.3333, 1.0, 0.3333 ]
+      },
+      "b": {
+        "block": "1e7c926d-689e-52ae-8523-d5d5cf0fd225",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 0.0, 5.0, 10.0, 5.0, 5.0, 10.0, 5.0, 10.0, 10.0, 0.0, 10.0, 5.0, 0.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 10.0, 5.0, 0.0, 10.0, 15.0, 5.0, 0.0, 15.0, 27.5, 0.0, 15.0, 27.5, 15.0, 15.0, 5.0, 15.0, 0.0, 5.0, 0.0, 0.0, 27.5, 0.0, 0.0, 27.5, 15.0, 0.0, 5.0, 15.0, 15.0, 34.1667, 0.0, 15.0, 34.1667, 10.0, 15.0, 27.5, 10.0, 0.0, 34.1667, 0.0, 0.0, 34.1667, 10.0, 0.0, 27.5, 10.0, 5.0, 27.5, 10.0, 5.0, 34.1667, 10.0, 5.0, 34.1667, 15.0, 5.0, 27.5, 15.0, 0.0, 34.1667, 15.0, 15.0, 34.1667, 15.0, 10.0, 27.5, 10.0, 10.0, 34.1667, 10.0, 10.0, 34.1667, 15.0, 10.0, 27.5, 15.0, 15.0, 56.6667, 0.0, 15.0, 56.6667, 15.0, 0.0, 56.6667, 0.0, 0.0, 56.6667, 15.0, 10.0, 56.6667, 5.0, 10.0, 61.6667, 5.0, 10.0, 61.6667, 10.0, 10.0, 56.6667, 10.0, 5.0, 56.6667, 5.0, 5.0, 61.6667, 5.0, 5.0, 61.6667, 10.0, 5.0, 56.6667, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 9, 16, 17, 9, 17, 18, 13, 21, 20, 13, 20, 19, 19, 20, 17, 19, 17, 16, 13, 9, 18, 13, 18, 21, 21, 18, 17, 21, 17, 20, 13, 19, 16, 13, 16, 9, 22, 23, 24, 22, 24, 25, 21, 14, 26, 21, 26, 20, 20, 26, 24, 20, 24, 23, 21, 22, 25, 21, 25, 14, 14, 25, 24, 14, 24, 26, 21, 20, 23, 21, 23, 22, 18, 17, 27, 18, 27, 10, 28, 31, 30, 28, 30, 29, 29, 30, 27, 29, 27, 17, 28, 18, 10, 28, 10, 31, 31, 10, 27, 31, 27, 30, 28, 29, 17, 28, 17, 18, 16, 32, 33, 16, 33, 27, 19, 26, 35, 19, 35, 34, 34, 35, 33, 34, 33, 32, 19, 16, 27, 19, 27, 26, 26, 27, 33, 26, 33, 35, 19, 34, 32, 19, 32, 16, 36, 37, 38, 36, 38, 39, 40, 43, 42, 40, 42, 41, 41, 42, 38, 41, 38, 37, 40, 36, 39, 40, 39, 43, 43, 39, 38, 43, 38, 42, 40, 41, 37, 40, 37, 36 ]
+      }
+    ]
+  },
+  "_note": "Short cover post, tenoned both ends."
+}

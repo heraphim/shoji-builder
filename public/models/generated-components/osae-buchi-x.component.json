@@ -1,0 +1,135 @@
+{
+  "id": "osae-buchi-x",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "1db62ced-755e-5536-803e-3fa1e8455c12",
+      "name": "osae-buchi-x.stl (1)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "932ffebf-e601-5723-ba14-ccd0127b0051",
+      "name": "osae-buchi-x.stl (2)",
+      "size": {
+        "x": "#innerWidth - 4*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "b628faaa-9a2a-5bdd-b934-8810da59ffd7",
+      "name": "osae-buchi-x.stl (3)",
+      "size": {
+        "x": "#innerWidth - 4*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "1/2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 3.3333, 2.5 ]
+    },
+    {
+      "id": "c69a4621-7a85-5da5-8df9-30a40871732e",
+      "name": "osae-buchi-x.stl (4)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 190.0, 0.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "721a5e5a-101f-5e41-992e-29b896a0a860",
+      "a": {
+        "block": "1db62ced-755e-5536-803e-3fa1e8455c12",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "932ffebf-e601-5723-ba14-ccd0127b0051",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "e0bb54ae-dabb-5a54-9ca5-8099d0528ed6",
+      "a": {
+        "block": "932ffebf-e601-5723-ba14-ccd0127b0051",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "b628faaa-9a2a-5bdd-b934-8810da59ffd7",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "b3fa4680-dec6-5403-ac8f-20791bb028e0",
+      "a": {
+        "block": "932ffebf-e601-5723-ba14-ccd0127b0051",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "c69a4621-7a85-5da5-8df9-30a40871732e",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 0.0, 0.0, 10.0, 3.3333, 0.0, 10.0, 3.3333, 5.0, 10.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 3.3333, 0.0, 0.0, 3.3333, 5.0, 0.0, 0.0, 5.0, 190.0, 0.0, 0.0, 190.0, 3.3333, 0.0, 190.0, 3.3333, 5.0, 190.0, 0.0, 5.0, 190.0, 3.3333, 2.5, 190.0, 6.6667, 2.5, 190.0, 6.6667, 5.0, 10.0, 3.3333, 2.5, 10.0, 6.6667, 2.5, 10.0, 6.6667, 5.0, 200.0, 0.0, 0.0, 200.0, 3.3333, 0.0, 200.0, 3.3333, 5.0, 200.0, 0.0, 5.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 0, 3, 2, 0, 2, 1, 1, 2, 10, 1, 10, 9, 0, 8, 11, 0, 11, 3, 3, 11, 10, 3, 10, 2, 0, 1, 9, 0, 9, 8, 12, 13, 14, 12, 14, 10, 15, 2, 17, 15, 17, 16, 16, 17, 14, 16, 14, 13, 15, 12, 10, 15, 10, 2, 2, 10, 14, 2, 14, 17, 15, 16, 13, 15, 13, 12, 18, 19, 20, 18, 20, 21, 8, 11, 10, 8, 10, 9, 9, 10, 20, 9, 20, 19, 8, 18, 21, 8, 21, 11, 11, 21, 20, 11, 20, 10, 8, 9, 19, 8, 19, 18 ]
+      }
+    ]
+  },
+  "_note": "Paper retaining strip, rebated and notched to clear the posts."
+}

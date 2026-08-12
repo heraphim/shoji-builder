@@ -1,0 +1,182 @@
+{
+  "id": "door-latch-keeper",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "legThickness": "20"
+  },
+  "blocks": [
+    {
+      "id": "bb00ee80-7424-58df-b1eb-df5812197dae",
+      "name": "door-latch-keeper.stl (1)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "3/4*#beamDepth",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "977dfecc-a30a-5987-98df-f32af5c4758e",
+      "name": "door-latch-keeper.stl (2)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "3/4*#beamDepth",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 7.5 ]
+    },
+    {
+      "id": "22456625-755a-561a-8dbc-ed3fe8b506f8",
+      "name": "door-latch-keeper.stl (3)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "3/4*#beamDepth",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "40a180de-88ea-53b2-b3ff-1a45f8c3cf1f",
+      "name": "door-latch-keeper.stl (4)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "3/8*#beamDepth",
+        "z": "3/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 0.0, 2.5 ]
+    },
+    {
+      "id": "366c75cb-7d4f-5a7f-a2a5-550a808ca129",
+      "name": "door-latch-keeper.stl (5)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "3/8*#beamDepth",
+        "z": "1/4*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 3.75, 7.5 ]
+    },
+    {
+      "id": "6ed8b2de-71d1-5730-8d5c-be2ced9c1939",
+      "name": "door-latch-keeper.stl (6)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "3/4*#beamDepth",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 15.0, 0.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "a6c74553-38a6-52ae-8916-6812a02c2782",
+      "a": {
+        "block": "bb00ee80-7424-58df-b1eb-df5812197dae",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "22456625-755a-561a-8dbc-ed3fe8b506f8",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "7ed7950f-a20e-5ee1-a9df-553692cdcbce",
+      "a": {
+        "block": "977dfecc-a30a-5987-98df-f32af5c4758e",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "40a180de-88ea-53b2-b3ff-1a45f8c3cf1f",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "1835dfec-a801-5a5b-a0ef-8f0683db700b",
+      "a": {
+        "block": "977dfecc-a30a-5987-98df-f32af5c4758e",
+        "anchor": [ 1.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "366c75cb-7d4f-5a7f-a2a5-550a808ca129",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      }
+    },
+    {
+      "id": "0568594d-b7c4-5dce-a3da-443cee9f4355",
+      "a": {
+        "block": "22456625-755a-561a-8dbc-ed3fe8b506f8",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "40a180de-88ea-53b2-b3ff-1a45f8c3cf1f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "db122eed-c847-5e9b-90a8-5bad9461aa48",
+      "a": {
+        "block": "22456625-755a-561a-8dbc-ed3fe8b506f8",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "6ed8b2de-71d1-5730-8d5c-be2ced9c1939",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 5.0, 0.0, 0.0, 5.0, 7.5, 0.0, 5.0, 7.5, 2.5, 5.0, 0.0, 2.5, 0.0, 0.0, 0.0, 0.0, 7.5, 0.0, 0.0, 7.5, 2.5, 0.0, 0.0, 2.5, 5.0, 0.0, 7.5, 5.0, 7.5, 7.5, 5.0, 7.5, 10.0, 5.0, 0.0, 10.0, 0.0, 0.0, 7.5, 0.0, 7.5, 7.5, 0.0, 7.5, 10.0, 0.0, 0.0, 10.0, 15.0, 0.0, 0.0, 15.0, 7.5, 0.0, 15.0, 7.5, 2.5, 15.0, 0.0, 2.5, 15.0, 3.75, 2.5, 15.0, 3.75, 10.0, 15.0, 0.0, 10.0, 5.0, 3.75, 2.5, 5.0, 3.75, 10.0, 15.0, 3.75, 7.5, 15.0, 7.5, 7.5, 15.0, 7.5, 10.0, 5.0, 3.75, 7.5, 20.0, 0.0, 0.0, 20.0, 7.5, 0.0, 20.0, 7.5, 10.0, 20.0, 0.0, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 0, 3, 2, 0, 2, 1, 1, 2, 18, 1, 18, 17, 0, 16, 19, 0, 19, 3, 3, 19, 18, 3, 18, 2, 0, 1, 17, 0, 17, 16, 19, 20, 21, 19, 21, 22, 3, 11, 24, 3, 24, 23, 23, 24, 21, 23, 21, 20, 3, 19, 22, 3, 22, 11, 11, 22, 21, 11, 21, 24, 3, 23, 20, 3, 20, 19, 25, 26, 27, 25, 27, 21, 28, 24, 10, 28, 10, 9, 9, 10, 27, 9, 27, 26, 28, 25, 21, 28, 21, 24, 24, 21, 27, 24, 27, 10, 28, 9, 26, 28, 26, 25, 29, 30, 31, 29, 31, 32, 16, 22, 27, 16, 27, 17, 17, 27, 31, 17, 31, 30, 16, 29, 32, 16, 32, 22, 22, 32, 31, 22, 31, 27, 16, 17, 30, 16, 30, 29 ]
+      }
+    ]
+  },
+  "_note": "Keeper the latch drops over."
+}

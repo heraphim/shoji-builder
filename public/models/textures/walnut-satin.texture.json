@@ -1,0 +1,42 @@
+{
+  "id": "walnut-satin",
+  "type": "texture",
+  "format": 1,
+  "units": "mm",
+  "model": "wood",
+  "species": "walnut",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 190,
+    "pith": [
+      0.8,
+      0.2
+    ],
+    "seed": 41,
+    "centerSize": 1.07,
+    "ringThickness": 0.03125,
+    "ringBias": 0.08,
+    "ringSizeVariance": 0.03,
+    "ringVarianceScale": 5.5,
+    "barkThickness": 0.98,
+    "grainContrast": 0.55,
+    "largeWarpScale": 0.42,
+    "largeGrainStretch": 0.34,
+    "smallWarpStrength": 0.016,
+    "smallWarpScale": 10.3,
+    "fineWarpStrength": 0.028,
+    "fineWarpScale": 12.7,
+    "splotchScale": 1.84,
+    "splotchIntensity": 0.97,
+    "cellScale": 710,
+    "cellSize": 0.31,
+    "poreIntensity": 0.407,
+    "darkGrainColor": "#311e13",
+    "lightGrainColor": "#523424",
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

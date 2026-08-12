@@ -1,0 +1,158 @@
+{
+  "id": "kane-tsugi-male",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "innerWidth": "200",
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "f371bfa4-a4cb-5137-88c5-5905f3064fdd",
+      "name": "kane-tsugi-male.stl (1)",
+      "size": {
+        "x": "1/2*#innerWidth - #legThickness",
+        "y": "#legThickness",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "20a55682-603c-5ce3-a721-9985e29143da",
+      "name": "kane-tsugi-male.stl (2)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/2*#legThickness",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 80.0, 5.0, 5.0 ]
+    },
+    {
+      "id": "129b8651-4cc7-5df7-a480-f20e0db9b6b4",
+      "name": "kane-tsugi-male.stl (3)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#legThickness",
+        "z": "1/4*#legThickness - 1/2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 85.0, 5.0, 5.0 ]
+    },
+    {
+      "id": "d005ed82-9a19-53e7-98b9-27e614c9ac2c",
+      "name": "kane-tsugi-male.stl (4)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#legThickness",
+        "z": "1/4*#legThickness - 1/2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 85.0, 5.0, 11.6667 ]
+    },
+    {
+      "id": "b6b578aa-9704-5833-9167-dc04630f88d5",
+      "name": "kane-tsugi-male.stl (5)",
+      "size": {
+        "x": "3/4*#legThickness - #pegDiameter",
+        "y": "1/2*#legThickness",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 88.3333, 5.0, 5.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "112d5217-cd7c-594f-9e3b-332789c0b21f",
+      "a": {
+        "block": "20a55682-603c-5ce3-a721-9985e29143da",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "129b8651-4cc7-5df7-a480-f20e0db9b6b4",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "fa2c2984-d214-5c1a-93e3-ae5b145fda9d",
+      "a": {
+        "block": "20a55682-603c-5ce3-a721-9985e29143da",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "d005ed82-9a19-53e7-98b9-27e614c9ac2c",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "0b3331a3-8fa8-5e08-bc67-c992856dc952",
+      "a": {
+        "block": "129b8651-4cc7-5df7-a480-f20e0db9b6b4",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "b6b578aa-9704-5833-9167-dc04630f88d5",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "7de45b9c-223f-5afb-bf21-3033732d43ad",
+      "a": {
+        "block": "f371bfa4-a4cb-5137-88c5-5905f3064fdd",
+        "anchor": [ 1.0, 0.25, 0.25 ]
+      },
+      "b": {
+        "block": "20a55682-603c-5ce3-a721-9985e29143da",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 80.0, 0.0, 0.0, 80.0, 20.0, 0.0, 80.0, 20.0, 20.0, 80.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 20.0, 20.0, 0.0, 0.0, 20.0, 85.0, 5.0, 5.0, 85.0, 15.0, 5.0, 85.0, 15.0, 15.0, 85.0, 5.0, 15.0, 80.0, 5.0, 5.0, 80.0, 15.0, 5.0, 80.0, 15.0, 15.0, 80.0, 5.0, 15.0, 88.3333, 5.0, 5.0, 88.3333, 15.0, 5.0, 88.3333, 15.0, 8.3333, 88.3333, 5.0, 8.3333, 85.0, 15.0, 8.3333, 85.0, 5.0, 8.3333, 88.3333, 5.0, 11.6667, 88.3333, 15.0, 11.6667, 88.3333, 15.0, 15.0, 88.3333, 5.0, 15.0, 85.0, 5.0, 11.6667, 85.0, 15.0, 11.6667, 100.0, 5.0, 5.0, 100.0, 15.0, 5.0, 100.0, 15.0, 15.0, 100.0, 5.0, 15.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 8, 21, 20, 8, 20, 9, 9, 20, 18, 9, 18, 17, 8, 16, 19, 8, 19, 21, 21, 19, 18, 21, 18, 20, 8, 9, 17, 8, 17, 16, 22, 23, 24, 22, 24, 25, 26, 11, 10, 26, 10, 27, 27, 10, 24, 27, 24, 23, 26, 22, 25, 26, 25, 11, 11, 25, 24, 11, 24, 10, 26, 27, 23, 26, 23, 22, 28, 29, 30, 28, 30, 31, 16, 25, 24, 16, 24, 17, 17, 24, 30, 17, 30, 29, 16, 28, 31, 16, 31, 25, 25, 31, 30, 25, 30, 24, 16, 17, 29, 16, 29, 28 ]
+      }
+    ]
+  },
+  "_note": "Right-angle splice, tongued arm."
+}

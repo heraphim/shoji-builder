@@ -1,0 +1,213 @@
+{
+  "id": "panel-bar-3-upright",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerHeight": "370",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "684233b5-96c2-5117-87f3-9efb708f5f14",
+      "name": "panel-bar-3-upright.stl (1)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 1.1111 ]
+    },
+    {
+      "id": "681bf97f-fee3-5140-91a7-77ddf38b3ee2",
+      "name": "panel-bar-3-upright.stl (2)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/6*#innerHeight - 3/2*#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 5.0, 0.0 ]
+    },
+    {
+      "id": "aa489f1d-cc96-5e94-b6f5-ba6ae0cb03e6",
+      "name": "panel-bar-3-upright.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 59.1667, 0.0 ]
+    },
+    {
+      "id": "148b303c-b0d6-5259-b0be-3db29e46ee27",
+      "name": "panel-bar-3-upright.stl (4)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/6*#innerHeight - #kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 64.1667, 0.0 ]
+    },
+    {
+      "id": "00fc0263-1fd0-5861-96a9-fab12d03826a",
+      "name": "panel-bar-3-upright.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 120.8333, 0.0 ]
+    },
+    {
+      "id": "8943cecd-9334-5cd0-8b98-7ace8cd7a38f",
+      "name": "panel-bar-3-upright.stl (6)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/6*#innerHeight - 3/2*#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 125.8333, 0.0 ]
+    },
+    {
+      "id": "9749d352-71a3-5930-8e73-37bb48b5da02",
+      "name": "panel-bar-3-upright.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 180.0, 1.1111 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ee889243-ebf2-5a0e-b2d7-b5115fef0b30",
+      "a": {
+        "block": "681bf97f-fee3-5140-91a7-77ddf38b3ee2",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "aa489f1d-cc96-5e94-b6f5-ba6ae0cb03e6",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "d23f4186-dfee-5b77-96c7-e91d5a2c2128",
+      "a": {
+        "block": "aa489f1d-cc96-5e94-b6f5-ba6ae0cb03e6",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "148b303c-b0d6-5259-b0be-3db29e46ee27",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "be99309d-8613-563b-8562-c4e60a6dffa3",
+      "a": {
+        "block": "148b303c-b0d6-5259-b0be-3db29e46ee27",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "00fc0263-1fd0-5861-96a9-fab12d03826a",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "34197d6e-738d-5d0f-bd47-0900b536d2b5",
+      "a": {
+        "block": "00fc0263-1fd0-5861-96a9-fab12d03826a",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "8943cecd-9334-5cd0-8b98-7ace8cd7a38f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "2e36f9ab-ef37-51f6-b89b-f51eb48ca2d2",
+      "a": {
+        "block": "684233b5-96c2-5117-87f3-9efb708f5f14",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "681bf97f-fee3-5140-91a7-77ddf38b3ee2",
+        "anchor": [ 0.0, 0.0, 0.1667 ]
+      }
+    },
+    {
+      "id": "5f0cd723-c5cf-5ad4-97ed-f93fa2ac61ab",
+      "a": {
+        "block": "8943cecd-9334-5cd0-8b98-7ace8cd7a38f",
+        "anchor": [ 0.0, 1.0, 0.1667 ]
+      },
+      "b": {
+        "block": "9749d352-71a3-5930-8e73-37bb48b5da02",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 5.0, 0.0, 1.1111, 5.0, 5.0, 1.1111, 5.0, 5.0, 5.5556, 5.0, 0.0, 5.5556, 0.0, 0.0, 1.1111, 0.0, 5.0, 1.1111, 0.0, 5.0, 5.5556, 0.0, 0.0, 5.5556, 5.0, 5.0, 0.0, 5.0, 59.1667, 0.0, 5.0, 59.1667, 6.6667, 5.0, 5.0, 6.6667, 0.0, 5.0, 0.0, 0.0, 59.1667, 0.0, 0.0, 59.1667, 6.6667, 0.0, 5.0, 6.6667, 5.0, 64.1667, 0.0, 5.0, 64.1667, 3.3333, 5.0, 59.1667, 3.3333, 0.0, 64.1667, 0.0, 0.0, 64.1667, 3.3333, 0.0, 59.1667, 3.3333, 5.0, 120.8333, 0.0, 5.0, 120.8333, 6.6667, 5.0, 64.1667, 6.6667, 0.0, 120.8333, 0.0, 0.0, 120.8333, 6.6667, 0.0, 64.1667, 6.6667, 5.0, 125.8333, 0.0, 5.0, 125.8333, 3.3333, 5.0, 120.8333, 3.3333, 0.0, 125.8333, 0.0, 0.0, 125.8333, 3.3333, 0.0, 120.8333, 3.3333, 5.0, 180.0, 0.0, 5.0, 180.0, 6.6667, 5.0, 125.8333, 6.6667, 0.0, 180.0, 0.0, 0.0, 180.0, 6.6667, 0.0, 125.8333, 6.6667, 5.0, 180.0, 1.1111, 5.0, 185.0, 1.1111, 5.0, 185.0, 5.5556, 5.0, 180.0, 5.5556, 0.0, 180.0, 1.1111, 0.0, 185.0, 1.1111, 0.0, 185.0, 5.5556, 0.0, 180.0, 5.5556 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 9, 16, 17, 9, 17, 18, 13, 21, 20, 13, 20, 19, 19, 20, 17, 19, 17, 16, 13, 9, 18, 13, 18, 21, 21, 18, 17, 21, 17, 20, 13, 19, 16, 13, 16, 9, 16, 22, 23, 16, 23, 24, 19, 27, 26, 19, 26, 25, 25, 26, 23, 25, 23, 22, 19, 16, 24, 19, 24, 27, 27, 24, 23, 27, 23, 26, 19, 25, 22, 19, 22, 16, 22, 28, 29, 22, 29, 30, 25, 33, 32, 25, 32, 31, 31, 32, 29, 31, 29, 28, 25, 22, 30, 25, 30, 33, 33, 30, 29, 33, 29, 32, 25, 31, 28, 25, 28, 22, 28, 34, 35, 28, 35, 36, 31, 39, 38, 31, 38, 37, 37, 38, 35, 37, 35, 34, 31, 28, 36, 31, 36, 39, 39, 36, 35, 39, 35, 38, 31, 37, 34, 31, 34, 28, 40, 41, 42, 40, 42, 43, 44, 47, 46, 44, 46, 45, 45, 46, 42, 45, 42, 41, 44, 40, 43, 44, 43, 47, 47, 43, 42, 47, 42, 46, 44, 45, 41, 44, 41, 40 ]
+      }
+    ]
+  },
+  "_note": "Panel bar upright, 3 cells."
+}

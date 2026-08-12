@@ -1,0 +1,265 @@
+{
+  "id": "jigumi-bar-upright-4",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerHeight": "370",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "367432c2-0e2b-5fb4-9255-b7be0b99b542",
+      "name": "jigumi-bar-upright-4.stl (1)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 1.1111 ]
+    },
+    {
+      "id": "e04a4987-b3da-534f-b45b-e1061c3ec4aa",
+      "name": "jigumi-bar-upright-4.stl (2)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "-1/3*#beamHeight + 1/8*#innerHeight - 1/2*#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 5.0, 0.0 ]
+    },
+    {
+      "id": "1ff0e6ac-abc1-5101-8192-329e258ce118",
+      "name": "jigumi-bar-upright-4.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 43.75, 0.0 ]
+    },
+    {
+      "id": "8758af53-d639-5f14-8620-b688ad4c7c34",
+      "name": "jigumi-bar-upright-4.stl (4)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/8*#innerHeight - #kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 48.75, 0.0 ]
+    },
+    {
+      "id": "9885a09f-3b4f-5b03-a063-8c31acf29d2e",
+      "name": "jigumi-bar-upright-4.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 90.0, 0.0 ]
+    },
+    {
+      "id": "b6cf6b02-a034-5248-9594-7ccb7af939f2",
+      "name": "jigumi-bar-upright-4.stl (6)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/8*#innerHeight - #kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 95.0, 0.0 ]
+    },
+    {
+      "id": "a93b984a-4fd9-5c40-9f94-e05112a6bef5",
+      "name": "jigumi-bar-upright-4.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 136.25, 0.0 ]
+    },
+    {
+      "id": "64fc983d-dd69-5dfc-89fd-f51a84d64762",
+      "name": "jigumi-bar-upright-4.stl (8)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "-1/3*#beamHeight + 1/8*#innerHeight - 1/2*#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 141.25, 0.0 ]
+    },
+    {
+      "id": "74ea10e1-d00f-59fa-aac9-860dea69d50a",
+      "name": "jigumi-bar-upright-4.stl (9)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/3*#beamHeight",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 180.0, 1.1111 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "aa2cd2a8-c864-5276-a8fd-54bba38165b8",
+      "a": {
+        "block": "e04a4987-b3da-534f-b45b-e1061c3ec4aa",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "1ff0e6ac-abc1-5101-8192-329e258ce118",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "09a2b995-08b1-5ff2-ae53-faf8b5d9720e",
+      "a": {
+        "block": "1ff0e6ac-abc1-5101-8192-329e258ce118",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "8758af53-d639-5f14-8620-b688ad4c7c34",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "10f46154-48c4-5a66-a4fa-4389b4c7ccb7",
+      "a": {
+        "block": "8758af53-d639-5f14-8620-b688ad4c7c34",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "9885a09f-3b4f-5b03-a063-8c31acf29d2e",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "57a0f27e-8435-5e42-bbb1-855309239cfd",
+      "a": {
+        "block": "9885a09f-3b4f-5b03-a063-8c31acf29d2e",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b6cf6b02-a034-5248-9594-7ccb7af939f2",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "47e9ed48-ffa5-580e-a5c7-d96285f98787",
+      "a": {
+        "block": "b6cf6b02-a034-5248-9594-7ccb7af939f2",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "a93b984a-4fd9-5c40-9f94-e05112a6bef5",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "beddfe6d-425b-5b19-a97d-ea8ee686fa65",
+      "a": {
+        "block": "a93b984a-4fd9-5c40-9f94-e05112a6bef5",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "64fc983d-dd69-5dfc-89fd-f51a84d64762",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "4b69e23a-89a0-5dea-aa83-20d34aa3774f",
+      "a": {
+        "block": "367432c2-0e2b-5fb4-9255-b7be0b99b542",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "e04a4987-b3da-534f-b45b-e1061c3ec4aa",
+        "anchor": [ 0.0, 0.0, 0.1667 ]
+      }
+    },
+    {
+      "id": "feee0c74-e370-5204-a8ea-fff1e8582a98",
+      "a": {
+        "block": "64fc983d-dd69-5dfc-89fd-f51a84d64762",
+        "anchor": [ 0.0, 1.0, 0.1667 ]
+      },
+      "b": {
+        "block": "74ea10e1-d00f-59fa-aac9-860dea69d50a",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 5.0, 0.0, 1.1111, 5.0, 5.0, 1.1111, 5.0, 5.0, 5.5556, 5.0, 0.0, 5.5556, 0.0, 0.0, 1.1111, 0.0, 5.0, 1.1111, 0.0, 5.0, 5.5556, 0.0, 0.0, 5.5556, 5.0, 5.0, 0.0, 5.0, 43.75, 0.0, 5.0, 43.75, 6.6667, 5.0, 5.0, 6.6667, 0.0, 5.0, 0.0, 0.0, 43.75, 0.0, 0.0, 43.75, 6.6667, 0.0, 5.0, 6.6667, 5.0, 48.75, 0.0, 5.0, 48.75, 3.3333, 5.0, 43.75, 3.3333, 0.0, 48.75, 0.0, 0.0, 48.75, 3.3333, 0.0, 43.75, 3.3333, 5.0, 90.0, 0.0, 5.0, 90.0, 6.6667, 5.0, 48.75, 6.6667, 0.0, 90.0, 0.0, 0.0, 90.0, 6.6667, 0.0, 48.75, 6.6667, 5.0, 95.0, 0.0, 5.0, 95.0, 3.3333, 5.0, 90.0, 3.3333, 0.0, 95.0, 0.0, 0.0, 95.0, 3.3333, 0.0, 90.0, 3.3333, 5.0, 136.25, 0.0, 5.0, 136.25, 6.6667, 5.0, 95.0, 6.6667, 0.0, 136.25, 0.0, 0.0, 136.25, 6.6667, 0.0, 95.0, 6.6667, 5.0, 141.25, 0.0, 5.0, 141.25, 3.3333, 5.0, 136.25, 3.3333, 0.0, 141.25, 0.0, 0.0, 141.25, 3.3333, 0.0, 136.25, 3.3333, 5.0, 180.0, 0.0, 5.0, 180.0, 6.6667, 5.0, 141.25, 6.6667, 0.0, 180.0, 0.0, 0.0, 180.0, 6.6667, 0.0, 141.25, 6.6667, 5.0, 180.0, 1.1111, 5.0, 185.0, 1.1111, 5.0, 185.0, 5.5556, 5.0, 180.0, 5.5556, 0.0, 180.0, 1.1111, 0.0, 185.0, 1.1111, 0.0, 185.0, 5.5556, 0.0, 180.0, 5.5556 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 9, 16, 17, 9, 17, 18, 13, 21, 20, 13, 20, 19, 19, 20, 17, 19, 17, 16, 13, 9, 18, 13, 18, 21, 21, 18, 17, 21, 17, 20, 13, 19, 16, 13, 16, 9, 16, 22, 23, 16, 23, 24, 19, 27, 26, 19, 26, 25, 25, 26, 23, 25, 23, 22, 19, 16, 24, 19, 24, 27, 27, 24, 23, 27, 23, 26, 19, 25, 22, 19, 22, 16, 22, 28, 29, 22, 29, 30, 25, 33, 32, 25, 32, 31, 31, 32, 29, 31, 29, 28, 25, 22, 30, 25, 30, 33, 33, 30, 29, 33, 29, 32, 25, 31, 28, 25, 28, 22, 28, 34, 35, 28, 35, 36, 31, 39, 38, 31, 38, 37, 37, 38, 35, 37, 35, 34, 31, 28, 36, 31, 36, 39, 39, 36, 35, 39, 35, 38, 31, 37, 34, 31, 34, 28, 34, 40, 41, 34, 41, 42, 37, 45, 44, 37, 44, 43, 43, 44, 41, 43, 41, 40, 37, 34, 42, 37, 42, 45, 45, 42, 41, 45, 41, 44, 37, 43, 40, 37, 40, 34, 40, 46, 47, 40, 47, 48, 43, 51, 50, 43, 50, 49, 49, 50, 47, 49, 47, 46, 43, 40, 48, 43, 48, 51, 51, 48, 47, 51, 47, 50, 43, 49, 46, 43, 46, 40, 52, 53, 54, 52, 54, 55, 56, 59, 58, 56, 58, 57, 57, 58, 54, 57, 54, 53, 56, 52, 55, 56, 55, 59, 59, 55, 54, 59, 54, 58, 56, 57, 53, 56, 53, 52 ]
+      }
+    ]
+  },
+  "_note": "Jigumi upright on a four square pitch, half lapped from the front."
+}

@@ -1,0 +1,42 @@
+{
+  "id": "kumiko-pale",
+  "type": "texture",
+  "format": 1,
+  "units": "mm",
+  "model": "wood",
+  "species": "maple",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 90,
+    "pith": [
+      1.1,
+      0.2
+    ],
+    "seed": 12,
+    "centerSize": 1.4,
+    "ringThickness": 0.028571,
+    "ringBias": 0.1,
+    "ringSizeVariance": 0.07,
+    "ringVarianceScale": 4.6,
+    "barkThickness": 0.61,
+    "grainContrast": 0.35,
+    "largeWarpScale": 0.38,
+    "largeGrainStretch": 0.25,
+    "smallWarpStrength": 0.067,
+    "smallWarpScale": 2.5,
+    "fineWarpStrength": 0.005,
+    "fineWarpScale": 33.6,
+    "splotchScale": 0.46,
+    "splotchIntensity": 1.49,
+    "cellScale": 800,
+    "cellSize": 0.03,
+    "poreIntensity": 0.15,
+    "darkGrainColor": "#c9b18a",
+    "lightGrainColor": "#e8dcc4",
+    "roughness": 0.9,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

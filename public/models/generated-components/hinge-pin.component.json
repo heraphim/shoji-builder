@@ -1,0 +1,106 @@
+{
+  "id": "hinge-pin",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "innerHeight": "370",
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "6f8e7986-37c4-5cac-9184-b4eecfd50708",
+      "name": "hinge-pin.stl (1)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/3*#innerHeight - #pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "b2f91caf-c78b-5e9c-ac9e-9cb8ef1440e6",
+      "name": "hinge-pin.stl (2)",
+      "size": {
+        "x": "2/3*#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 120.0, 0.0 ]
+    },
+    {
+      "id": "a3f14ac4-2445-5626-8e75-37456a53020f",
+      "name": "hinge-pin.stl (3)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 121.6667, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "3de691e8-5548-5bb2-830d-01fbdebff6f7",
+      "a": {
+        "block": "6f8e7986-37c4-5cac-9184-b4eecfd50708",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b2f91caf-c78b-5e9c-ac9e-9cb8ef1440e6",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "77011954-3bfe-56ed-843c-c933fc1336cb",
+      "a": {
+        "block": "b2f91caf-c78b-5e9c-ac9e-9cb8ef1440e6",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "a3f14ac4-2445-5626-8e75-37456a53020f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 3.3333, 0.0, 0.0, 3.3333, 120.0, 0.0, 3.3333, 120.0, 3.3333, 3.3333, 0.0, 3.3333, 0.0, 0.0, 0.0, 0.0, 120.0, 0.0, 0.0, 120.0, 3.3333, 0.0, 0.0, 3.3333, 2.2222, 120.0, 0.0, 2.2222, 121.6667, 0.0, 2.2222, 121.6667, 3.3333, 2.2222, 120.0, 3.3333, 0.0, 121.6667, 0.0, 0.0, 121.6667, 3.3333, 3.3333, 121.6667, 0.0, 3.3333, 123.3333, 0.0, 3.3333, 123.3333, 3.3333, 3.3333, 121.6667, 3.3333, 0.0, 123.3333, 0.0, 0.0, 123.3333, 3.3333 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 5, 6, 13, 5, 13, 12, 12, 13, 10, 12, 10, 9, 5, 8, 11, 5, 11, 6, 6, 11, 10, 6, 10, 13, 5, 12, 9, 5, 9, 8, 14, 15, 16, 14, 16, 17, 12, 13, 19, 12, 19, 18, 18, 19, 16, 18, 16, 15, 12, 14, 17, 12, 17, 13, 13, 17, 16, 13, 16, 19, 12, 18, 15, 12, 15, 14 ]
+      }
+    ]
+  },
+  "_note": "Square pin for a knuckle hinge."
+}

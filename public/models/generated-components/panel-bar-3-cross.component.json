@@ -1,0 +1,213 @@
+{
+  "id": "panel-bar-3-cross",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "2807756d-e546-5754-8ccb-8b0b9f77bc3b",
+      "name": "panel-bar-3-cross.stl (1)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 1.1111 ]
+    },
+    {
+      "id": "c0bf0cbb-80a8-58da-ade5-d17bc3ef04db",
+      "name": "panel-bar-3-cross.stl (2)",
+      "size": {
+        "x": "1/4*#innerWidth - 3/2*#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "db14b12a-e496-5a5a-b4aa-3b105e6b4214",
+      "name": "panel-bar-3-cross.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 47.5, 0.0, 3.3333 ]
+    },
+    {
+      "id": "de0462aa-a858-5ccc-bfd1-1ef29210a743",
+      "name": "panel-bar-3-cross.stl (4)",
+      "size": {
+        "x": "1/4*#innerWidth - #kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 52.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "aad155f7-b393-5004-9012-a5941ecd01c2",
+      "name": "panel-bar-3-cross.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 97.5, 0.0, 3.3333 ]
+    },
+    {
+      "id": "e1175b8c-f469-54e9-b55c-659f8de9f41c",
+      "name": "panel-bar-3-cross.stl (6)",
+      "size": {
+        "x": "1/4*#innerWidth - 3/2*#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 102.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "e3c8ee33-493f-5b1a-a0aa-0d24c37f104b",
+      "name": "panel-bar-3-cross.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 145.0, 0.0, 1.1111 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "30f58bdd-68d5-5ccc-8051-e007c2da003e",
+      "a": {
+        "block": "c0bf0cbb-80a8-58da-ade5-d17bc3ef04db",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "db14b12a-e496-5a5a-b4aa-3b105e6b4214",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "31df457b-30a8-5987-8c41-26f5cec36c5a",
+      "a": {
+        "block": "db14b12a-e496-5a5a-b4aa-3b105e6b4214",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "de0462aa-a858-5ccc-bfd1-1ef29210a743",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "a8da9fc2-e436-53d6-b5b4-da0d47d9a24c",
+      "a": {
+        "block": "de0462aa-a858-5ccc-bfd1-1ef29210a743",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "aad155f7-b393-5004-9012-a5941ecd01c2",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "c576fdc4-36a7-56f1-a080-432bb3c7f3d7",
+      "a": {
+        "block": "aad155f7-b393-5004-9012-a5941ecd01c2",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "e1175b8c-f469-54e9-b55c-659f8de9f41c",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "9a88c724-628d-5cf7-ba2a-3fc4dfeafe4a",
+      "a": {
+        "block": "2807756d-e546-5754-8ccb-8b0b9f77bc3b",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "c0bf0cbb-80a8-58da-ade5-d17bc3ef04db",
+        "anchor": [ 0.0, 0.0, 0.1667 ]
+      }
+    },
+    {
+      "id": "15161d87-dcb9-5b93-bf04-b8269d3e5d12",
+      "a": {
+        "block": "e1175b8c-f469-54e9-b55c-659f8de9f41c",
+        "anchor": [ 1.0, 0.0, 0.1667 ]
+      },
+      "b": {
+        "block": "e3c8ee33-493f-5b1a-a0aa-0d24c37f104b",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 5.0, 0.0, 1.1111, 5.0, 5.0, 1.1111, 5.0, 5.0, 5.5556, 5.0, 0.0, 5.5556, 0.0, 0.0, 1.1111, 0.0, 5.0, 1.1111, 0.0, 5.0, 5.5556, 0.0, 0.0, 5.5556, 47.5, 0.0, 0.0, 47.5, 5.0, 0.0, 47.5, 5.0, 6.6667, 47.5, 0.0, 6.6667, 5.0, 0.0, 0.0, 5.0, 5.0, 0.0, 5.0, 5.0, 6.6667, 5.0, 0.0, 6.6667, 52.5, 0.0, 3.3333, 52.5, 5.0, 3.3333, 52.5, 5.0, 6.6667, 52.5, 0.0, 6.6667, 47.5, 0.0, 3.3333, 47.5, 5.0, 3.3333, 97.5, 0.0, 0.0, 97.5, 5.0, 0.0, 97.5, 5.0, 6.6667, 97.5, 0.0, 6.6667, 52.5, 0.0, 0.0, 52.5, 5.0, 0.0, 102.5, 0.0, 3.3333, 102.5, 5.0, 3.3333, 102.5, 5.0, 6.6667, 102.5, 0.0, 6.6667, 97.5, 0.0, 3.3333, 97.5, 5.0, 3.3333, 145.0, 0.0, 0.0, 145.0, 5.0, 0.0, 145.0, 5.0, 6.6667, 145.0, 0.0, 6.6667, 102.5, 0.0, 0.0, 102.5, 5.0, 0.0, 150.0, 0.0, 1.1111, 150.0, 5.0, 1.1111, 150.0, 5.0, 5.5556, 150.0, 0.0, 5.5556, 145.0, 0.0, 1.1111, 145.0, 5.0, 1.1111, 145.0, 5.0, 5.5556, 145.0, 0.0, 5.5556 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 20, 11, 10, 20, 10, 21, 21, 10, 18, 21, 18, 17, 20, 16, 19, 20, 19, 11, 11, 19, 18, 11, 18, 10, 20, 21, 17, 20, 17, 16, 22, 23, 24, 22, 24, 25, 26, 19, 18, 26, 18, 27, 27, 18, 24, 27, 24, 23, 26, 22, 25, 26, 25, 19, 19, 25, 24, 19, 24, 18, 26, 27, 23, 26, 23, 22, 28, 29, 30, 28, 30, 31, 32, 25, 24, 32, 24, 33, 33, 24, 30, 33, 30, 29, 32, 28, 31, 32, 31, 25, 25, 31, 30, 25, 30, 24, 32, 33, 29, 32, 29, 28, 34, 35, 36, 34, 36, 37, 38, 31, 30, 38, 30, 39, 39, 30, 36, 39, 36, 35, 38, 34, 37, 38, 37, 31, 31, 37, 36, 31, 36, 30, 38, 39, 35, 38, 35, 34, 40, 41, 42, 40, 42, 43, 44, 47, 46, 44, 46, 45, 45, 46, 42, 45, 42, 41, 44, 40, 43, 44, 43, 47, 47, 43, 42, 47, 42, 46, 44, 45, 41, 44, 41, 40 ]
+      }
+    ]
+  },
+  "_note": "Panel bar across, 3 cells."
+}

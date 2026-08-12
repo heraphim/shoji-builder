@@ -1,0 +1,157 @@
+{
+  "id": "key-stepped",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "937dc3d9-fa0f-50d7-8101-180682ae6dfa",
+      "name": "key-stepped.stl (1)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "#legThickness",
+        "z": "2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "b92dd37c-2b9d-52cd-8543-f2caed38c7b8",
+      "name": "key-stepped.stl (2)",
+      "size": {
+        "x": "3/8*#legThickness",
+        "y": "#legThickness",
+        "z": "2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 20.0, 0.0 ]
+    },
+    {
+      "id": "f0829c1f-9ce6-5d92-b793-b3feaa2a166c",
+      "name": "key-stepped.stl (3)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/4*#legThickness",
+        "z": "2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 40.0, 0.0 ]
+    },
+    {
+      "id": "085f9449-72b1-508b-9173-cb861058ffe7",
+      "name": "key-stepped.stl (4)",
+      "size": {
+        "x": "1/8*#legThickness",
+        "y": "1/2*#pegDiameter",
+        "z": "2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 45.0, 0.0 ]
+    },
+    {
+      "id": "04a3ee3d-7349-5cf6-8599-e94712ccc06a",
+      "name": "key-stepped.stl (5)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "3/4*#legThickness - 1/2*#pegDiameter",
+        "z": "2*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 46.6667, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "8d06490a-65c7-50e0-ae16-690b2e007624",
+      "a": {
+        "block": "937dc3d9-fa0f-50d7-8101-180682ae6dfa",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b92dd37c-2b9d-52cd-8543-f2caed38c7b8",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "e77bb1ba-95e8-59dc-b7b8-e14a2597d5dd",
+      "a": {
+        "block": "b92dd37c-2b9d-52cd-8543-f2caed38c7b8",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "f0829c1f-9ce6-5d92-b793-b3feaa2a166c",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "c27bc60a-d8c1-51f9-8f30-3e809530564c",
+      "a": {
+        "block": "f0829c1f-9ce6-5d92-b793-b3feaa2a166c",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "085f9449-72b1-508b-9173-cb861058ffe7",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "089218c9-f159-5a18-bf74-aee8ea1e55d9",
+      "a": {
+        "block": "085f9449-72b1-508b-9173-cb861058ffe7",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "04a3ee3d-7349-5cf6-8599-e94712ccc06a",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 0.0, 0.0, 10.0, 20.0, 0.0, 10.0, 20.0, 6.6667, 10.0, 0.0, 6.6667, 0.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 20.0, 6.6667, 0.0, 0.0, 6.6667, 7.5, 20.0, 0.0, 7.5, 40.0, 0.0, 7.5, 40.0, 6.6667, 7.5, 20.0, 6.6667, 0.0, 40.0, 0.0, 0.0, 40.0, 6.6667, 5.0, 40.0, 0.0, 5.0, 45.0, 0.0, 5.0, 45.0, 6.6667, 5.0, 40.0, 6.6667, 0.0, 45.0, 0.0, 0.0, 45.0, 6.6667, 2.5, 45.0, 0.0, 2.5, 46.6667, 0.0, 2.5, 46.6667, 6.6667, 2.5, 45.0, 6.6667, 0.0, 46.6667, 0.0, 0.0, 46.6667, 6.6667, 5.0, 46.6667, 0.0, 5.0, 60.0, 0.0, 5.0, 60.0, 6.6667, 5.0, 46.6667, 6.6667, 0.0, 60.0, 0.0, 0.0, 60.0, 6.6667 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 5, 6, 13, 5, 13, 12, 12, 13, 10, 12, 10, 9, 5, 8, 11, 5, 11, 6, 6, 11, 10, 6, 10, 13, 5, 12, 9, 5, 9, 8, 14, 15, 16, 14, 16, 17, 12, 13, 19, 12, 19, 18, 18, 19, 16, 18, 16, 15, 12, 14, 17, 12, 17, 13, 13, 17, 16, 13, 16, 19, 12, 18, 15, 12, 15, 14, 20, 21, 22, 20, 22, 23, 18, 19, 25, 18, 25, 24, 24, 25, 22, 24, 22, 21, 18, 20, 23, 18, 23, 19, 19, 23, 22, 19, 22, 25, 18, 24, 21, 18, 21, 20, 26, 27, 28, 26, 28, 29, 24, 25, 31, 24, 31, 30, 30, 31, 28, 30, 28, 27, 24, 26, 29, 24, 29, 25, 25, 29, 28, 25, 28, 31, 24, 30, 27, 24, 27, 26 ]
+      }
+    ]
+  },
+  "_note": "Stepped key for a through tenon - the rectangular answer to a wedge."
+}

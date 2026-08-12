@@ -1,0 +1,161 @@
+{
+  "id": "panel-batten",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "e821e493-954c-562c-ad98-cb9d79d8dc3e",
+      "name": "panel-batten.stl (1)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "b06b5075-5a96-5923-9c36-41cd6b2af0e3",
+      "name": "panel-batten.stl (2)",
+      "size": {
+        "x": "2/3*#innerWidth - 4*#kumikoThickness",
+        "y": "1/4*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "8d573495-1e55-5caa-a194-ea6968336ff0",
+      "name": "panel-batten.stl (3)",
+      "size": {
+        "x": "2/3*#innerWidth - 4*#kumikoThickness",
+        "y": "1/4*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 5.0, 0.0 ]
+    },
+    {
+      "id": "44dbb03b-d1de-5f67-b8cd-ad331f90e1e2",
+      "name": "panel-batten.stl (4)",
+      "size": {
+        "x": "2/3*#innerWidth - 4*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "3/2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 1.6667, 2.5 ]
+    },
+    {
+      "id": "c039a2c2-afa4-5323-8177-22ccc7278f02",
+      "name": "panel-batten.stl (5)",
+      "size": {
+        "x": "2*#kumikoThickness",
+        "y": "1/2*#kumikoWidth",
+        "z": "2*#kumikoThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 123.3333, 0.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "b663d726-dea3-5ff1-bea0-8b4119fe92d4",
+      "a": {
+        "block": "e821e493-954c-562c-ad98-cb9d79d8dc3e",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "b06b5075-5a96-5923-9c36-41cd6b2af0e3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "d92a3516-3fbd-5b38-89c8-22dcba18b7bd",
+      "a": {
+        "block": "b06b5075-5a96-5923-9c36-41cd6b2af0e3",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "44dbb03b-d1de-5f67-b8cd-ad331f90e1e2",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "aaeb354e-0d1d-5fd0-9ffe-680744a81bd3",
+      "a": {
+        "block": "b06b5075-5a96-5923-9c36-41cd6b2af0e3",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "c039a2c2-afa4-5323-8177-22ccc7278f02",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "1cb0dbb8-e229-5bad-8351-ebf52f8f5bc8",
+      "a": {
+        "block": "8d573495-1e55-5caa-a194-ea6968336ff0",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "44dbb03b-d1de-5f67-b8cd-ad331f90e1e2",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 10.0, 0.0, 0.0, 10.0, 3.3333, 0.0, 10.0, 3.3333, 10.0, 10.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 3.3333, 0.0, 0.0, 3.3333, 10.0, 0.0, 0.0, 10.0, 123.3333, 0.0, 0.0, 123.3333, 1.6667, 0.0, 123.3333, 1.6667, 10.0, 123.3333, 0.0, 10.0, 10.0, 1.6667, 0.0, 10.0, 1.6667, 10.0, 123.3333, 5.0, 0.0, 123.3333, 6.6667, 0.0, 123.3333, 6.6667, 10.0, 123.3333, 5.0, 10.0, 10.0, 5.0, 0.0, 10.0, 6.6667, 0.0, 10.0, 6.6667, 10.0, 10.0, 5.0, 10.0, 123.3333, 1.6667, 2.5, 123.3333, 5.0, 2.5, 10.0, 1.6667, 2.5, 10.0, 5.0, 2.5, 133.3333, 0.0, 0.0, 133.3333, 3.3333, 0.0, 133.3333, 3.3333, 10.0, 133.3333, 0.0, 10.0, 123.3333, 3.3333, 0.0, 123.3333, 3.3333, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 0, 3, 13, 0, 13, 12, 12, 13, 10, 12, 10, 9, 0, 8, 11, 0, 11, 3, 3, 11, 10, 3, 10, 13, 0, 12, 9, 0, 9, 8, 14, 15, 16, 14, 16, 17, 18, 21, 20, 18, 20, 19, 19, 20, 16, 19, 16, 15, 18, 14, 17, 18, 17, 21, 21, 17, 16, 21, 16, 20, 18, 19, 15, 18, 15, 14, 22, 23, 17, 22, 17, 10, 24, 13, 21, 24, 21, 25, 25, 21, 17, 25, 17, 23, 24, 22, 10, 24, 10, 13, 13, 10, 17, 13, 17, 21, 24, 25, 23, 24, 23, 22, 26, 27, 28, 26, 28, 29, 8, 11, 31, 8, 31, 30, 30, 31, 28, 30, 28, 27, 8, 26, 29, 8, 29, 11, 11, 29, 28, 11, 28, 31, 8, 30, 27, 8, 27, 26 ]
+      }
+    ]
+  },
+  "_note": "Batten behind a paper panel, housed and relieved."
+}

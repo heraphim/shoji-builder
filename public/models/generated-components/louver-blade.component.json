@@ -1,0 +1,164 @@
+{
+  "id": "louver-blade",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth",
+    "legThickness": "20",
+    "mortiseDepth": "2/3*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "e3b03e67-49a7-59eb-8dd6-8d65ea444a87",
+      "name": "louver-blade.stl (1)",
+      "size": {
+        "x": "#mortiseDepth",
+        "y": "1/4*#beamDepth",
+        "z": "3/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 1.25, 0.0 ]
+    },
+    {
+      "id": "1b832db6-8567-5ed0-b130-bac0ae103ef0",
+      "name": "louver-blade.stl (2)",
+      "size": {
+        "x": "1/2*#innerWidth - 1/2*#kumikoThickness",
+        "y": "1/2*#beamDepth",
+        "z": "3/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 13.3333, 0.0, 0.0 ]
+    },
+    {
+      "id": "f3c08874-a446-5316-b355-862bd955cbe1",
+      "name": "louver-blade.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "1/2*#beamDepth",
+        "z": "7/6*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 110.8333, 0.0, 0.0 ]
+    },
+    {
+      "id": "11de2117-4add-5e2e-a608-dc4b10c018bb",
+      "name": "louver-blade.stl (4)",
+      "size": {
+        "x": "1/2*#innerWidth - 1/2*#kumikoThickness",
+        "y": "1/2*#beamDepth",
+        "z": "3/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 115.8333, 0.0, 0.0 ]
+    },
+    {
+      "id": "333f5543-b6f6-5b18-ac8b-301968844da6",
+      "name": "louver-blade.stl (5)",
+      "size": {
+        "x": "#mortiseDepth",
+        "y": "1/4*#beamDepth",
+        "z": "3/2*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 213.3333, 1.25, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "7d63227d-23a9-5488-ace7-e2f6e3a14442",
+      "a": {
+        "block": "1b832db6-8567-5ed0-b130-bac0ae103ef0",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "f3c08874-a446-5316-b355-862bd955cbe1",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "1b538c77-ea6f-5dbe-bd8e-0ee29f3d9f35",
+      "a": {
+        "block": "f3c08874-a446-5316-b355-862bd955cbe1",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "11de2117-4add-5e2e-a608-dc4b10c018bb",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "62b84a6f-1782-5a23-8ba9-f934d4bb0970",
+      "a": {
+        "block": "e3b03e67-49a7-59eb-8dd6-8d65ea444a87",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "1b832db6-8567-5ed0-b130-bac0ae103ef0",
+        "anchor": [ 0.0, 0.25, 0.0 ]
+      }
+    },
+    {
+      "id": "0a8e39aa-8e24-5fbb-9ff4-8297d08a21db",
+      "a": {
+        "block": "11de2117-4add-5e2e-a608-dc4b10c018bb",
+        "anchor": [ 1.0, 0.25, 0.0 ]
+      },
+      "b": {
+        "block": "333f5543-b6f6-5b18-ac8b-301968844da6",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "mortiseDepth": 13.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 13.3333, 1.25, 0.0, 13.3333, 3.75, 0.0, 13.3333, 3.75, 10.0, 13.3333, 1.25, 10.0, 0.0, 1.25, 0.0, 0.0, 3.75, 0.0, 0.0, 3.75, 10.0, 0.0, 1.25, 10.0, 110.8333, 0.0, 0.0, 110.8333, 5.0, 0.0, 110.8333, 5.0, 10.0, 110.8333, 0.0, 10.0, 13.3333, 0.0, 0.0, 13.3333, 5.0, 0.0, 13.3333, 5.0, 10.0, 13.3333, 0.0, 10.0, 115.8333, 0.0, 0.0, 115.8333, 5.0, 0.0, 115.8333, 5.0, 7.7778, 115.8333, 0.0, 7.7778, 110.8333, 5.0, 7.7778, 110.8333, 0.0, 7.7778, 213.3333, 0.0, 0.0, 213.3333, 5.0, 0.0, 213.3333, 5.0, 10.0, 213.3333, 0.0, 10.0, 115.8333, 5.0, 10.0, 115.8333, 0.0, 10.0, 226.6667, 1.25, 0.0, 226.6667, 3.75, 0.0, 226.6667, 3.75, 10.0, 226.6667, 1.25, 10.0, 213.3333, 1.25, 0.0, 213.3333, 3.75, 0.0, 213.3333, 3.75, 10.0, 213.3333, 1.25, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 8, 21, 20, 8, 20, 9, 9, 20, 18, 9, 18, 17, 8, 16, 19, 8, 19, 21, 21, 19, 18, 21, 18, 20, 8, 9, 17, 8, 17, 16, 22, 23, 24, 22, 24, 25, 16, 27, 26, 16, 26, 17, 17, 26, 24, 17, 24, 23, 16, 22, 25, 16, 25, 27, 27, 25, 24, 27, 24, 26, 16, 17, 23, 16, 23, 22, 28, 29, 30, 28, 30, 31, 32, 35, 34, 32, 34, 33, 33, 34, 30, 33, 30, 29, 32, 28, 31, 32, 31, 35, 35, 31, 30, 35, 30, 34, 32, 33, 29, 32, 29, 28 ]
+      }
+    ]
+  },
+  "_note": "Louvre blade, tenoned both ends, mortised for the tie bar."
+}

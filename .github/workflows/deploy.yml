@@ -1,0 +1,55 @@
+# Build the site and publish it to GitHub Pages.
+#
+# Every push to main deploys — including the pushes the app itself makes when a
+# component, lamp or texture is saved from the browser, which is the whole point:
+# a save is a commit, and a commit is a rebuild, so the library the site offers is
+# the library the repository holds.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # so a deploy can be re-run from the Actions tab without an empty commit
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Saving three designs in a row queues three deploys; only the last one describes
+# the repository, so let it cancel the ones it has already overtaken. `pending`
+# rather than the run in progress: cancelling a deploy half way is how a Pages
+# site ends up serving nothing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # the repository name is the URL prefix the site is served under
+      - run: npm run build
+        env:
+          VITE_BASE: /${{ github.event.repository.name }}/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

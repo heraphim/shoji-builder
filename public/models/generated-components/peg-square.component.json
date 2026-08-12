@@ -1,0 +1,105 @@
+{
+  "id": "peg-square",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "dcd99783-09c8-5261-9957-e15628b34f9b",
+      "name": "peg-square.stl (1)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "3/2*#legThickness - #pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "b491b12b-1416-5fc5-ae0b-7c61ee19b29a",
+      "name": "peg-square.stl (2)",
+      "size": {
+        "x": "2/3*#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 26.6667, 0.0 ]
+    },
+    {
+      "id": "2a8d129b-65a7-5d94-81d4-4d751f7151e0",
+      "name": "peg-square.stl (3)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 28.3333, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "342b4d85-3df7-5534-bcba-13231a76c822",
+      "a": {
+        "block": "dcd99783-09c8-5261-9957-e15628b34f9b",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b491b12b-1416-5fc5-ae0b-7c61ee19b29a",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "83508cb1-7a90-5419-b9d4-5764f01e3086",
+      "a": {
+        "block": "b491b12b-1416-5fc5-ae0b-7c61ee19b29a",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "2a8d129b-65a7-5d94-81d4-4d751f7151e0",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 3.3333, 0.0, 0.0, 3.3333, 26.6667, 0.0, 3.3333, 26.6667, 3.3333, 3.3333, 0.0, 3.3333, 0.0, 0.0, 0.0, 0.0, 26.6667, 0.0, 0.0, 26.6667, 3.3333, 0.0, 0.0, 3.3333, 2.2222, 26.6667, 0.0, 2.2222, 28.3333, 0.0, 2.2222, 28.3333, 3.3333, 2.2222, 26.6667, 3.3333, 0.0, 28.3333, 0.0, 0.0, 28.3333, 3.3333, 3.3333, 28.3333, 0.0, 3.3333, 30.0, 0.0, 3.3333, 30.0, 3.3333, 3.3333, 28.3333, 3.3333, 0.0, 30.0, 0.0, 0.0, 30.0, 3.3333 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 5, 6, 13, 5, 13, 12, 12, 13, 10, 12, 10, 9, 5, 8, 11, 5, 11, 6, 6, 11, 10, 6, 10, 13, 5, 12, 9, 5, 9, 8, 14, 15, 16, 14, 16, 17, 12, 13, 19, 12, 19, 18, 18, 19, 16, 18, 16, 15, 12, 14, 17, 12, 17, 13, 13, 17, 16, 13, 16, 19, 12, 18, 15, 12, 15, 14 ]
+      }
+    ]
+  },
+  "_note": "Square peg with a withdrawal notch."
+}

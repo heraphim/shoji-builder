@@ -1,0 +1,13 @@
+{
+  // The __*check.ts harnesses. Same settings as the app, plus Node's types and
+  // without `noEmit`'s companions that a script does not want — they are run by
+  // bundling to ESM and executing under Node (see the header of each check).
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.check.tsbuildinfo",
+    "types": ["vite/client", "node"],
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/__*.ts"],
+  "exclude": []
+}

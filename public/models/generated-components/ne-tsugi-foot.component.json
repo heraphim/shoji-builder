@@ -1,0 +1,183 @@
+{
+  "id": "ne-tsugi-foot",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "1c8bd0dc-efeb-5a65-99ec-08005709023a",
+      "name": "ne-tsugi-foot.stl (1)",
+      "size": {
+        "x": "#legThickness",
+        "y": "2*#legThickness",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "2d6e2365-623b-5c78-95f5-e26eb7846acf",
+      "name": "ne-tsugi-foot.stl (2)",
+      "size": {
+        "x": "3/4*#legThickness",
+        "y": "3/4*#legThickness",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 40.0, 0.0 ]
+    },
+    {
+      "id": "3830564f-3dd8-5e14-815b-ac9ef3c81f3f",
+      "name": "ne-tsugi-foot.stl (3)",
+      "size": {
+        "x": "3/8*#legThickness",
+        "y": "#pegDiameter",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.0, 55.0, 0.0 ]
+    },
+    {
+      "id": "b656ed52-0e73-55a3-89bc-8def6f765422",
+      "name": "ne-tsugi-foot.stl (4)",
+      "size": {
+        "x": "1/8*#legThickness",
+        "y": "#pegDiameter",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 17.5, 55.0, 0.0 ]
+    },
+    {
+      "id": "c27865b0-ebc3-5187-9a00-78ed1ec6c2ec",
+      "name": "ne-tsugi-foot.stl (5)",
+      "size": {
+        "x": "3/4*#legThickness",
+        "y": "1/4*#legThickness - #pegDiameter",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 5.0, 58.3333, 0.0 ]
+    },
+    {
+      "id": "a8e8bd7c-0924-53f4-b169-7f5476ebf44b",
+      "name": "ne-tsugi-foot.stl (6)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "#legThickness",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 10.0, 60.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "1a26d226-e7e5-5873-9fd7-f809ea49a38f",
+      "a": {
+        "block": "1c8bd0dc-efeb-5a65-99ec-08005709023a",
+        "anchor": [ 1.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "2d6e2365-623b-5c78-95f5-e26eb7846acf",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "239441e1-9917-5c4b-85df-f2cbcb715968",
+      "a": {
+        "block": "2d6e2365-623b-5c78-95f5-e26eb7846acf",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "3830564f-3dd8-5e14-815b-ac9ef3c81f3f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "592a6ca1-799b-5c37-93fd-0bccf6b3ab79",
+      "a": {
+        "block": "2d6e2365-623b-5c78-95f5-e26eb7846acf",
+        "anchor": [ 1.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b656ed52-0e73-55a3-89bc-8def6f765422",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "232f8297-643f-54d7-afd9-a1a4a74acb80",
+      "a": {
+        "block": "3830564f-3dd8-5e14-815b-ac9ef3c81f3f",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "c27865b0-ebc3-5187-9a00-78ed1ec6c2ec",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "e922ed29-bcff-5686-a312-82ae114b7394",
+      "a": {
+        "block": "c27865b0-ebc3-5187-9a00-78ed1ec6c2ec",
+        "anchor": [ 1.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "a8e8bd7c-0924-53f4-b169-7f5476ebf44b",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 20.0, 0.0, 0.0, 20.0, 40.0, 0.0, 20.0, 40.0, 20.0, 20.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 40.0, 0.0, 0.0, 40.0, 20.0, 0.0, 0.0, 20.0, 20.0, 55.0, 0.0, 20.0, 55.0, 20.0, 5.0, 40.0, 0.0, 5.0, 55.0, 0.0, 5.0, 55.0, 20.0, 5.0, 40.0, 20.0, 12.5, 55.0, 0.0, 12.5, 58.3333, 0.0, 12.5, 58.3333, 20.0, 12.5, 55.0, 20.0, 5.0, 58.3333, 0.0, 5.0, 58.3333, 20.0, 20.0, 58.3333, 0.0, 20.0, 58.3333, 20.0, 17.5, 55.0, 0.0, 17.5, 58.3333, 0.0, 17.5, 58.3333, 20.0, 17.5, 55.0, 20.0, 20.0, 60.0, 0.0, 20.0, 60.0, 20.0, 5.0, 60.0, 0.0, 5.0, 60.0, 20.0, 20.0, 80.0, 0.0, 20.0, 80.0, 20.0, 10.0, 60.0, 0.0, 10.0, 80.0, 0.0, 10.0, 80.0, 20.0, 10.0, 60.0, 20.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 1, 8, 9, 1, 9, 2, 10, 13, 12, 10, 12, 11, 11, 12, 9, 11, 9, 8, 10, 1, 2, 10, 2, 13, 13, 2, 9, 13, 9, 12, 10, 11, 8, 10, 8, 1, 14, 15, 16, 14, 16, 17, 11, 12, 19, 11, 19, 18, 18, 19, 16, 18, 16, 15, 11, 14, 17, 11, 17, 12, 12, 17, 16, 12, 16, 19, 11, 18, 15, 11, 15, 14, 8, 20, 21, 8, 21, 9, 22, 25, 24, 22, 24, 23, 23, 24, 21, 23, 21, 20, 22, 8, 9, 22, 9, 25, 25, 9, 21, 25, 21, 24, 22, 23, 20, 22, 20, 8, 20, 26, 27, 20, 27, 21, 18, 19, 29, 18, 29, 28, 28, 29, 27, 28, 27, 26, 18, 20, 21, 18, 21, 19, 19, 21, 27, 19, 27, 29, 18, 28, 26, 18, 26, 20, 26, 30, 31, 26, 31, 27, 32, 35, 34, 32, 34, 33, 33, 34, 31, 33, 31, 30, 32, 26, 27, 32, 27, 35, 35, 27, 31, 35, 31, 34, 32, 33, 30, 32, 30, 26 ]
+      }
+    ]
+  },
+  "_note": "Foot splice: the new foot, stepped to match."
+}

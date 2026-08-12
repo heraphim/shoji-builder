@@ -1,0 +1,105 @@
+{
+  "id": "pin-drawbore",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "23329a1f-498a-5401-8a2e-3312b0763ded",
+      "name": "pin-drawbore.stl (1)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "2/3*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "41c7a8b1-47e0-501d-bd4b-c5a48a55087f",
+      "name": "pin-drawbore.stl (2)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "5/2*#legThickness - #pegDiameter",
+        "z": "#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 1.6667, 0.0 ]
+    },
+    {
+      "id": "9876e64d-0824-5cdd-82cc-aa0516827ff5",
+      "name": "pin-drawbore.stl (3)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "1/2*#pegDiameter",
+        "z": "2/3*#pegDiameter"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 48.3333, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "a197c158-abc4-5527-ab12-01b6b0b42448",
+      "a": {
+        "block": "23329a1f-498a-5401-8a2e-3312b0763ded",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "41c7a8b1-47e0-501d-bd4b-c5a48a55087f",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "2a8a3931-d1ff-5b42-a181-8255ad487c4f",
+      "a": {
+        "block": "41c7a8b1-47e0-501d-bd4b-c5a48a55087f",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "9876e64d-0824-5cdd-82cc-aa0516827ff5",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 3.3333, 0.0, 0.0, 3.3333, 1.6667, 0.0, 3.3333, 1.6667, 2.2222, 3.3333, 0.0, 2.2222, 0.0, 0.0, 0.0, 0.0, 1.6667, 0.0, 0.0, 1.6667, 2.2222, 0.0, 0.0, 2.2222, 3.3333, 48.3333, 0.0, 3.3333, 48.3333, 3.3333, 3.3333, 1.6667, 3.3333, 0.0, 48.3333, 0.0, 0.0, 48.3333, 3.3333, 0.0, 1.6667, 3.3333, 3.3333, 50.0, 0.0, 3.3333, 50.0, 2.2222, 3.3333, 48.3333, 2.2222, 0.0, 50.0, 0.0, 0.0, 50.0, 2.2222, 0.0, 48.3333, 2.2222 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 1, 8, 9, 1, 9, 10, 5, 13, 12, 5, 12, 11, 11, 12, 9, 11, 9, 8, 5, 1, 10, 5, 10, 13, 13, 10, 9, 13, 9, 12, 5, 11, 8, 5, 8, 1, 8, 14, 15, 8, 15, 16, 11, 19, 18, 11, 18, 17, 17, 18, 15, 17, 15, 14, 11, 8, 16, 11, 16, 19, 19, 16, 15, 19, 15, 18, 11, 17, 14, 11, 14, 8 ]
+      }
+    ]
+  },
+  "_note": "Drawbore pin, notched at both ends."
+}

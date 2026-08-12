@@ -1,0 +1,271 @@
+/**
+ * Where the three libraries are read from, and where a save goes.
+ *
+ * A component, a lamp and a texture are the same round trip at three levels, and
+ * all three used to end the same way: the browser downloaded a file and you
+ * dropped it into `public/models/…` by hand, because a page has nowhere to write.
+ *
+ * Deployed, it has somewhere. The site is GitHub Pages, Pages is a branch of a
+ * repository, and a repository can be written to — over the contents API, with a
+ * token. So a save commits the file, and the push rebuilds the site: the design
+ * is in the library for good rather than for this session.
+ *
+ * ## The token
+ *
+ * Typed into the settings panel once and kept in this browser's localStorage. It
+ * is never in the source, never in the bundle, and never sent anywhere but
+ * api.github.com. Nobody else loading the site has it, which is what makes a
+ * public read-only site with a private save button possible at all.
+ *
+ * ## Two modes, not one with patches
+ *
+ * Without a token every read is a plain fetch of what the site serves, and a
+ * save is the old download — which is exactly what a visitor should get.
+ *
+ * With one, *every* read goes through the API instead, including reads that the
+ * site could have served. It is the slower path, and it is the right one: the
+ * site is a build, so between saving a file and the rebuild finishing it serves
+ * the version before the save. Reading the branch means what you open is what
+ * you last saved, rather than what you saved the time before — worth more than
+ * the hundred milliseconds it costs the one person holding a token.
+ */
+
+/** The three libraries, which are the three folders under `public/models`. */
+export type Library = "components" | "lamps" | "textures";
+
+/** Everything a write needs, as typed into the settings panel. */
+export interface RepoConfig {
+  owner: string;
+  repo: string;
+  branch: string;
+  /** A fine-grained token with Contents: read and write on that repository. */
+  token: string;
+}
+
+const CONFIG_KEY = "shoji-builder.repo";
+
+/** The saved settings, or null when this browser has never been given a token. */
+export function readRepoConfig(): RepoConfig | null {
+  try {
+    const raw = localStorage.getItem(CONFIG_KEY);
+    if (!raw) return null;
+    const saved = JSON.parse(raw) as Partial<RepoConfig>;
+    if (!saved.owner || !saved.repo || !saved.token) return null;
+    return {
+      owner: saved.owner,
+      repo: saved.repo,
+      branch: saved.branch || "main",
+      token: saved.token,
+    };
+  } catch {
+    // Unreadable settings are settings that were never there. localStorage also
+    // throws outright when the browser has storage switched off, and a
+    // configurator that will not start because of a preferences read is worse
+    // than one that cannot save.
+    return null;
+  }
+}
+
+/** Save the settings, or forget them when handed null. */
+export function writeRepoConfig(config: RepoConfig | null): void {
+  try {
+    if (config) localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+    else localStorage.removeItem(CONFIG_KEY);
+  } catch {
+    // as above: nothing here is worth taking the app down for
+  }
+}
+
+/** Whether saving writes to the repository or falls back to a download. */
+export function canWriteToRepo(): boolean {
+  return readRepoConfig() !== null;
+}
+
+// ---------------------------------------------------------------------------
+// What the site itself serves
+// ---------------------------------------------------------------------------
+
+/**
+ * A path into the deployed site.
+ *
+ * `BASE_URL` rather than a leading slash, because Pages serves the app from
+ * `/<repo>/` and not from the root: an absolute `/models/…` there asks
+ * github.io for a file one directory above anything this project ever deployed.
+ */
+export function siteUrl(path: string): string {
+  return `${import.meta.env.BASE_URL}${path}`;
+}
+
+// ---------------------------------------------------------------------------
+// The repository
+// ---------------------------------------------------------------------------
+
+// The site serves the libraries at `models/…`; in the repository they are the
+// sources under `public/`, which is what the contents API has to be given.
+const repoPath = (lib: Library, file?: string) =>
+  `public/models/${lib}${file ? `/${encodeURIComponent(file)}` : ""}`;
+
+function contents(
+  config: RepoConfig,
+  path: string,
+  init?: RequestInit & { headers?: Record<string, string> }
+): Promise<Response> {
+  return fetch(
+    `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`,
+    {
+      ...init,
+      // The API is the fresh side of the two; letting the browser answer from
+      // its cache would give up the only reason to be on it.
+      cache: "no-store",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${config.token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+        ...init?.headers,
+      },
+    }
+  );
+}
+
+/** GitHub's own explanation of a failure, which is nearly always the useful one. */
+async function apiError(res: Response): Promise<string> {
+  const body = (await res.json().catch(() => null)) as { message?: string } | null;
+  return body?.message ? `${body.message} (${res.status})` : `GitHub returned ${res.status}`;
+}
+
+function base64(text: string): string {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  // one byte at a time rather than spreading the array into fromCharCode, which
+  // blows the argument limit on a file of any size
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
+/**
+ * Check settings before they are kept, by reading the branch with them.
+ *
+ * A token that cannot see the repository is otherwise not found out until the
+ * first save, which is the worst moment to discover it — the design is finished
+ * and the error arrives instead of the file.
+ *
+ * @returns null when the settings work, or what went wrong.
+ */
+export async function checkRepoConfig(config: RepoConfig): Promise<string | null> {
+  try {
+    const res = await contents(
+      config,
+      `public/models?ref=${encodeURIComponent(config.branch)}`
+    );
+    if (res.ok || res.status === 404) return null;
+    return await apiError(res);
+  } catch (e) {
+    return e instanceof Error ? e.message : String(e);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The three operations every library needs
+// ---------------------------------------------------------------------------
+
+/** File names in one library. @throws if the listing cannot be had. */
+export async function listLibrary(lib: Library): Promise<string[]> {
+  const config = readRepoConfig();
+  if (config) {
+    const res = await contents(
+      config,
+      `${repoPath(lib)}?ref=${encodeURIComponent(config.branch)}`
+    );
+    // git has no empty directories, so a library nothing has been saved to yet
+    // is a 404 rather than an empty listing
+    if (res.status === 404) return [];
+    if (!res.ok) throw new Error(`${lib} library unavailable: ${await apiError(res)}`);
+    const entries = (await res.json()) as { name: string; type: string }[];
+    return entries
+      .filter((e) => e.type === "file" && e.name.endsWith(".json") && e.name !== "index.json")
+      .map((e) => e.name)
+      .sort();
+  }
+  // Static file serving has no directory index, so a Vite plugin bakes one in
+  // at build time — see vite.config.ts.
+  const res = await fetch(siteUrl(`models/${lib}/index.json`));
+  if (!res.ok) throw new Error(`${lib} library unavailable (${res.status})`);
+  return (await res.json()) as string[];
+}
+
+/** One library file, parsed. @throws on a missing file or one that is not JSON. */
+export async function readLibraryFile(lib: Library, file: string): Promise<unknown> {
+  const config = readRepoConfig();
+  if (config) {
+    const res = await contents(
+      config,
+      `${repoPath(lib, file)}?ref=${encodeURIComponent(config.branch)}`,
+      { headers: { Accept: "application/vnd.github.raw" } }
+    );
+    if (!res.ok) throw new Error(`Could not read ${file}: ${await apiError(res)}`);
+    return JSON.parse(await res.text());
+  }
+  const res = await fetch(siteUrl(`models/${lib}/${encodeURIComponent(file)}`));
+  if (!res.ok) throw new Error(`Could not read ${file} (${res.status})`);
+  return await res.json();
+}
+
+/** Hand the file to the browser to put in the user's downloads. */
+function download(file: string, text: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = file;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Put a design in the library: a commit when there is a token, a download when
+ * there is not.
+ *
+ * The write is two requests because the contents API needs the blob's `sha` to
+ * agree to replace it — which doubles as the check for whether this is a new
+ * file or an overwrite, and so for what the commit should be called.
+ *
+ * @returns what happened, in the words the file menu shows.
+ * @throws when the repository refuses the write.
+ */
+export async function saveLibraryFile(
+  lib: Library,
+  file: string,
+  data: unknown
+): Promise<string> {
+  const text = JSON.stringify(data, null, 2);
+  const config = readRepoConfig();
+  if (!config) {
+    download(file, text);
+    return `Saved ${file} to your downloads — drop it into public/models/${lib} to have it listed`;
+  }
+
+  const path = repoPath(lib, file);
+  const existing = await contents(
+    config,
+    `${path}?ref=${encodeURIComponent(config.branch)}`
+  );
+  let sha: string | undefined;
+  if (existing.ok) sha = ((await existing.json()) as { sha: string }).sha;
+  else if (existing.status !== 404) {
+    throw new Error(`Could not save ${file}: ${await apiError(existing)}`);
+  }
+
+  const res = await contents(config, path, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `${sha ? "Update" : "Add"} ${lib}/${file}`,
+      content: base64(text),
+      branch: config.branch,
+      ...(sha ? { sha } : {}),
+    }),
+  });
+  if (!res.ok) throw new Error(`Could not save ${file}: ${await apiError(res)}`);
+  return `Saved ${file} to the library — the site rebuilds with it in about a minute`;
+}

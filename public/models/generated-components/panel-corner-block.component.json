@@ -1,0 +1,182 @@
+{
+  "id": "panel-corner-block",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "innerHeight": "370"
+  },
+  "blocks": [
+    {
+      "id": "bb372e58-ad59-5e09-9fef-c57738bb6fe2",
+      "name": "panel-corner-block.stl (1)",
+      "size": {
+        "x": "3/2*#beamDepth",
+        "y": "#beamDepth",
+        "z": "3/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "8ecd2b4d-bfd2-5ca5-b610-e51bb9938b03",
+      "name": "panel-corner-block.stl (2)",
+      "size": {
+        "x": "3/2*#beamDepth",
+        "y": "-2*#beamDepth + 1/4*#innerHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 0.0 ]
+    },
+    {
+      "id": "84538c57-1a5f-5742-aeac-35dc9e504639",
+      "name": "panel-corner-block.stl (3)",
+      "size": {
+        "x": "#beamDepth",
+        "y": "-2*#beamDepth + 1/4*#innerHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 5.0 ]
+    },
+    {
+      "id": "33c20b94-9afc-53a3-b740-9ede12a8630a",
+      "name": "panel-corner-block.stl (4)",
+      "size": {
+        "x": "1/2*#beamDepth",
+        "y": "-2*#beamDepth + 1/4*#innerHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 10.0 ]
+    },
+    {
+      "id": "20655b46-6eb2-547e-b77e-b8905342ae1a",
+      "name": "panel-corner-block.stl (5)",
+      "size": {
+        "x": "1/2*#beamDepth",
+        "y": "-2*#beamDepth + 1/4*#innerHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 10.0, 10.0, 10.0 ]
+    },
+    {
+      "id": "0c90ae42-9ec8-54c5-b39a-8f7974076211",
+      "name": "panel-corner-block.stl (6)",
+      "size": {
+        "x": "3/2*#beamDepth",
+        "y": "#beamDepth",
+        "z": "3/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 82.5, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ca37cf8d-a77f-53b5-8318-905d562991bd",
+      "a": {
+        "block": "bb372e58-ad59-5e09-9fef-c57738bb6fe2",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "8ecd2b4d-bfd2-5ca5-b610-e51bb9938b03",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "024fccdc-09cc-50b1-93b2-6f8be331c6de",
+      "a": {
+        "block": "bb372e58-ad59-5e09-9fef-c57738bb6fe2",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "33c20b94-9afc-53a3-b740-9ede12a8630a",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "012ddf39-32bd-5de5-b6a1-6f0a7e6caa81",
+      "a": {
+        "block": "bb372e58-ad59-5e09-9fef-c57738bb6fe2",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "20655b46-6eb2-547e-b77e-b8905342ae1a",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "00378b6b-65f3-506d-b621-a0778b9a7790",
+      "a": {
+        "block": "8ecd2b4d-bfd2-5ca5-b610-e51bb9938b03",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "84538c57-1a5f-5742-aeac-35dc9e504639",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "23d9a17d-b810-5fab-b417-f4f1a5a57380",
+      "a": {
+        "block": "8ecd2b4d-bfd2-5ca5-b610-e51bb9938b03",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "0c90ae42-9ec8-54c5-b39a-8f7974076211",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 15.0, 0.0, 0.0, 15.0, 10.0, 0.0, 15.0, 10.0, 15.0, 15.0, 0.0, 15.0, 0.0, 0.0, 0.0, 0.0, 10.0, 0.0, 0.0, 10.0, 15.0, 0.0, 0.0, 15.0, 15.0, 82.5, 0.0, 15.0, 82.5, 5.0, 15.0, 10.0, 5.0, 0.0, 82.5, 0.0, 0.0, 82.5, 5.0, 0.0, 10.0, 5.0, 10.0, 10.0, 5.0, 10.0, 82.5, 5.0, 10.0, 82.5, 10.0, 10.0, 10.0, 10.0, 0.0, 82.5, 10.0, 0.0, 10.0, 10.0, 5.0, 10.0, 10.0, 5.0, 82.5, 10.0, 5.0, 82.5, 15.0, 5.0, 10.0, 15.0, 0.0, 82.5, 15.0, 15.0, 10.0, 10.0, 15.0, 82.5, 10.0, 15.0, 82.5, 15.0, 10.0, 82.5, 15.0, 10.0, 10.0, 15.0, 15.0, 92.5, 0.0, 15.0, 92.5, 15.0, 0.0, 92.5, 0.0, 0.0, 92.5, 15.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 1, 8, 9, 1, 9, 10, 5, 13, 12, 5, 12, 11, 11, 12, 9, 11, 9, 8, 5, 1, 10, 5, 10, 13, 13, 10, 9, 13, 9, 12, 5, 11, 8, 5, 8, 1, 14, 15, 16, 14, 16, 17, 13, 19, 18, 13, 18, 12, 12, 18, 16, 12, 16, 15, 13, 14, 17, 13, 17, 19, 19, 17, 16, 19, 16, 18, 13, 12, 15, 13, 15, 14, 20, 21, 22, 20, 22, 23, 19, 6, 24, 19, 24, 18, 18, 24, 22, 18, 22, 21, 19, 20, 23, 19, 23, 6, 6, 23, 22, 6, 22, 24, 19, 18, 21, 19, 21, 20, 25, 26, 27, 25, 27, 2, 17, 29, 28, 17, 28, 16, 16, 28, 27, 16, 27, 26, 17, 25, 2, 17, 2, 29, 29, 2, 27, 29, 27, 28, 17, 16, 26, 17, 26, 25, 8, 30, 31, 8, 31, 27, 11, 24, 33, 11, 33, 32, 32, 33, 31, 32, 31, 30, 11, 8, 27, 11, 27, 24, 24, 27, 31, 24, 31, 33, 11, 32, 30, 11, 30, 8 ]
+      }
+    ]
+  },
+  "_note": "Corner block grooved on two faces for a right-angled pair of panels."
+}

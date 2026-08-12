@@ -1,0 +1,134 @@
+{
+  "id": "lap-corner-a",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "8d29f3bd-002f-545a-beb7-f570f55c68c0",
+      "name": "lap-corner-a.stl (1)",
+      "size": {
+        "x": "1/4*#beamHeight",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "38a9b6d4-86ce-511f-ad9b-423f801bbad9",
+      "name": "lap-corner-a.stl (2)",
+      "size": {
+        "x": "#pegDiameter",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 3.75, 0.0, 0.0 ]
+    },
+    {
+      "id": "5dcd2fef-8467-5bd1-ab2d-fce34e6ce47e",
+      "name": "lap-corner-a.stl (3)",
+      "size": {
+        "x": "3/4*#beamHeight - #pegDiameter",
+        "y": "#beamHeight",
+        "z": "1/2*#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 7.0833, 0.0, 0.0 ]
+    },
+    {
+      "id": "c9bbdece-f8f2-5121-ac92-50b46ecabb6c",
+      "name": "lap-corner-a.stl (4)",
+      "size": {
+        "x": "-#beamHeight + 1/2*#innerWidth",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 15.0, 0.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "c019ff9a-ceef-5d40-b934-5bdd41efcb79",
+      "a": {
+        "block": "8d29f3bd-002f-545a-beb7-f570f55c68c0",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "38a9b6d4-86ce-511f-ad9b-423f801bbad9",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "9ae6270b-751e-55b0-a633-55aa83192481",
+      "a": {
+        "block": "38a9b6d4-86ce-511f-ad9b-423f801bbad9",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "5dcd2fef-8467-5bd1-ab2d-fce34e6ce47e",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "605abbd1-5808-5bd5-92c3-29c8d249798a",
+      "a": {
+        "block": "5dcd2fef-8467-5bd1-ab2d-fce34e6ce47e",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "c9bbdece-f8f2-5121-ac92-50b46ecabb6c",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 3.75, 0.0, 0.0, 3.75, 15.0, 0.0, 3.75, 15.0, 5.0, 3.75, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 15.0, 0.0, 0.0, 15.0, 5.0, 0.0, 0.0, 5.0, 7.0833, 0.0, 0.0, 7.0833, 15.0, 0.0, 7.0833, 15.0, 5.0, 7.0833, 0.0, 5.0, 15.0, 0.0, 0.0, 15.0, 15.0, 0.0, 15.0, 15.0, 5.0, 15.0, 0.0, 5.0, 100.0, 0.0, 0.0, 100.0, 15.0, 0.0, 100.0, 15.0, 10.0, 100.0, 0.0, 10.0, 15.0, 15.0, 10.0, 15.0, 0.0, 10.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 0, 3, 2, 0, 2, 1, 1, 2, 10, 1, 10, 9, 0, 8, 11, 0, 11, 3, 3, 11, 10, 3, 10, 2, 0, 1, 9, 0, 9, 8, 12, 13, 14, 12, 14, 15, 8, 11, 10, 8, 10, 9, 9, 10, 14, 9, 14, 13, 8, 12, 15, 8, 15, 11, 11, 15, 14, 11, 14, 10, 8, 9, 13, 8, 13, 12, 16, 17, 18, 16, 18, 19, 12, 21, 20, 12, 20, 13, 13, 20, 18, 13, 18, 17, 12, 16, 19, 12, 19, 21, 21, 19, 18, 21, 18, 20, 12, 13, 17, 12, 17, 16 ]
+      }
+    ]
+  },
+  "_note": "Half-lapped corner member, lapped from the front."
+}

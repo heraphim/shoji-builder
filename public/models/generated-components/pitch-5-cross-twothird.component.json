@@ -1,0 +1,317 @@
+{
+  "id": "pitch-5-cross-twothird",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerWidth": "200",
+    "kumikoThickness": "1/3*#beamHeight",
+    "kumikoWidth": "2/3*#beamDepth"
+  },
+  "blocks": [
+    {
+      "id": "614c8ec3-e072-565e-9f8a-550b6f04d57a",
+      "name": "pitch-5-cross-twothird.stl (1)",
+      "size": {
+        "x": "1/4*#beamHeight",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 1.1111 ]
+    },
+    {
+      "id": "8be25edb-a2fc-5fce-a633-6019fc4ff4ba",
+      "name": "pitch-5-cross-twothird.stl (2)",
+      "size": {
+        "x": "-1/4*#beamHeight + 1/5*#innerWidth - 1/2*#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 3.75, 0.0, 0.0 ]
+    },
+    {
+      "id": "bc37bd0d-6db8-5bdc-b627-ac28f500a450",
+      "name": "pitch-5-cross-twothird.stl (3)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 37.5, 0.0, 4.4444 ]
+    },
+    {
+      "id": "c66eddad-1cad-5b96-9887-da5707ba8708",
+      "name": "pitch-5-cross-twothird.stl (4)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 42.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "05671d30-56c6-5f34-bac6-11dec7adc755",
+      "name": "pitch-5-cross-twothird.stl (5)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 77.5, 0.0, 4.4444 ]
+    },
+    {
+      "id": "c0002818-9924-5e38-8203-da5ccac865f2",
+      "name": "pitch-5-cross-twothird.stl (6)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 82.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "01f69b92-b9d1-5dcb-b64a-87273d8aa7e8",
+      "name": "pitch-5-cross-twothird.stl (7)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 117.5, 0.0, 4.4444 ]
+    },
+    {
+      "id": "0e6254d7-56b6-536c-a446-cd4d36add439",
+      "name": "pitch-5-cross-twothird.stl (8)",
+      "size": {
+        "x": "1/5*#innerWidth - #kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 122.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "f8fbc044-7e4b-5491-a018-9cd6dfb07c5a",
+      "name": "pitch-5-cross-twothird.stl (9)",
+      "size": {
+        "x": "#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "1/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 157.5, 0.0, 4.4444 ]
+    },
+    {
+      "id": "c18c568d-a7a0-5b7c-857d-ee9e3727dde3",
+      "name": "pitch-5-cross-twothird.stl (10)",
+      "size": {
+        "x": "-1/4*#beamHeight + 1/5*#innerWidth - 1/2*#kumikoThickness",
+        "y": "#kumikoThickness",
+        "z": "#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 162.5, 0.0, 0.0 ]
+    },
+    {
+      "id": "40200ea6-c69e-59dd-b39a-5aee1c72ed06",
+      "name": "pitch-5-cross-twothird.stl (11)",
+      "size": {
+        "x": "1/4*#beamHeight",
+        "y": "#kumikoThickness",
+        "z": "2/3*#kumikoWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 196.25, 0.0, 1.1111 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "98eb398a-3db9-55a0-b469-48b12185a2ca",
+      "a": {
+        "block": "8be25edb-a2fc-5fce-a633-6019fc4ff4ba",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "bc37bd0d-6db8-5bdc-b627-ac28f500a450",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "b403d789-4eec-5022-bfa0-e26734c8b76c",
+      "a": {
+        "block": "bc37bd0d-6db8-5bdc-b627-ac28f500a450",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "c66eddad-1cad-5b96-9887-da5707ba8708",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "ce8986d1-6b05-5c30-8eb9-a78ae115b33e",
+      "a": {
+        "block": "c66eddad-1cad-5b96-9887-da5707ba8708",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "05671d30-56c6-5f34-bac6-11dec7adc755",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "087a31d7-c424-5c35-b111-81878b000709",
+      "a": {
+        "block": "05671d30-56c6-5f34-bac6-11dec7adc755",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "c0002818-9924-5e38-8203-da5ccac865f2",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "22b16241-f9be-5149-b1cf-d05a8c05a53d",
+      "a": {
+        "block": "c0002818-9924-5e38-8203-da5ccac865f2",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "01f69b92-b9d1-5dcb-b64a-87273d8aa7e8",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "b3234945-8dd9-56a4-ac19-038e367c7a19",
+      "a": {
+        "block": "01f69b92-b9d1-5dcb-b64a-87273d8aa7e8",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "0e6254d7-56b6-536c-a446-cd4d36add439",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "99dab304-e900-5ddc-abef-2e959fbfa901",
+      "a": {
+        "block": "0e6254d7-56b6-536c-a446-cd4d36add439",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "f8fbc044-7e4b-5491-a018-9cd6dfb07c5a",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "bd7a34d8-ef2b-5ee2-b579-5dec0e4bb448",
+      "a": {
+        "block": "f8fbc044-7e4b-5491-a018-9cd6dfb07c5a",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      },
+      "b": {
+        "block": "c18c568d-a7a0-5b7c-857d-ee9e3727dde3",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "45d92b16-aeae-5ff5-aae6-ed6d10e1eefd",
+      "a": {
+        "block": "614c8ec3-e072-565e-9f8a-550b6f04d57a",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      },
+      "b": {
+        "block": "8be25edb-a2fc-5fce-a633-6019fc4ff4ba",
+        "anchor": [ 0.0, 0.0, 0.1667 ]
+      }
+    },
+    {
+      "id": "9c97f6da-e625-5a55-87f4-b6bd8efed91d",
+      "a": {
+        "block": "c18c568d-a7a0-5b7c-857d-ee9e3727dde3",
+        "anchor": [ 1.0, 0.0, 0.1667 ]
+      },
+      "b": {
+        "block": "40200ea6-c69e-59dd-b39a-5aee1c72ed06",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "kumikoThickness": 5.0,
+      "kumikoWidth": 6.6667,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0
+    },
+    "solids": [
+      {
+        "vertices": [ 3.75, 0.0, 1.1111, 3.75, 5.0, 1.1111, 3.75, 5.0, 5.5556, 3.75, 0.0, 5.5556, 0.0, 0.0, 1.1111, 0.0, 5.0, 1.1111, 0.0, 5.0, 5.5556, 0.0, 0.0, 5.5556, 37.5, 0.0, 0.0, 37.5, 5.0, 0.0, 37.5, 5.0, 6.6667, 37.5, 0.0, 6.6667, 3.75, 0.0, 0.0, 3.75, 5.0, 0.0, 3.75, 5.0, 6.6667, 3.75, 0.0, 6.6667, 42.5, 0.0, 4.4444, 42.5, 5.0, 4.4444, 42.5, 5.0, 6.6667, 42.5, 0.0, 6.6667, 37.5, 0.0, 4.4444, 37.5, 5.0, 4.4444, 77.5, 0.0, 0.0, 77.5, 5.0, 0.0, 77.5, 5.0, 6.6667, 77.5, 0.0, 6.6667, 42.5, 0.0, 0.0, 42.5, 5.0, 0.0, 82.5, 0.0, 4.4444, 82.5, 5.0, 4.4444, 82.5, 5.0, 6.6667, 82.5, 0.0, 6.6667, 77.5, 0.0, 4.4444, 77.5, 5.0, 4.4444, 117.5, 0.0, 0.0, 117.5, 5.0, 0.0, 117.5, 5.0, 6.6667, 117.5, 0.0, 6.6667, 82.5, 0.0, 0.0, 82.5, 5.0, 0.0, 122.5, 0.0, 4.4444, 122.5, 5.0, 4.4444, 122.5, 5.0, 6.6667, 122.5, 0.0, 6.6667, 117.5, 0.0, 4.4444, 117.5, 5.0, 4.4444, 157.5, 0.0, 0.0, 157.5, 5.0, 0.0, 157.5, 5.0, 6.6667, 157.5, 0.0, 6.6667, 122.5, 0.0, 0.0, 122.5, 5.0, 0.0, 162.5, 0.0, 4.4444, 162.5, 5.0, 4.4444, 162.5, 5.0, 6.6667, 162.5, 0.0, 6.6667, 157.5, 0.0, 4.4444, 157.5, 5.0, 4.4444, 196.25, 0.0, 0.0, 196.25, 5.0, 0.0, 196.25, 5.0, 6.6667, 196.25, 0.0, 6.6667, 162.5, 0.0, 0.0, 162.5, 5.0, 0.0, 200.0, 0.0, 1.1111, 200.0, 5.0, 1.1111, 200.0, 5.0, 5.5556, 200.0, 0.0, 5.5556, 196.25, 0.0, 1.1111, 196.25, 5.0, 1.1111, 196.25, 5.0, 5.5556, 196.25, 0.0, 5.5556 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 20, 11, 10, 20, 10, 21, 21, 10, 18, 21, 18, 17, 20, 16, 19, 20, 19, 11, 11, 19, 18, 11, 18, 10, 20, 21, 17, 20, 17, 16, 22, 23, 24, 22, 24, 25, 26, 19, 18, 26, 18, 27, 27, 18, 24, 27, 24, 23, 26, 22, 25, 26, 25, 19, 19, 25, 24, 19, 24, 18, 26, 27, 23, 26, 23, 22, 28, 29, 30, 28, 30, 31, 32, 25, 24, 32, 24, 33, 33, 24, 30, 33, 30, 29, 32, 28, 31, 32, 31, 25, 25, 31, 30, 25, 30, 24, 32, 33, 29, 32, 29, 28, 34, 35, 36, 34, 36, 37, 38, 31, 30, 38, 30, 39, 39, 30, 36, 39, 36, 35, 38, 34, 37, 38, 37, 31, 31, 37, 36, 31, 36, 30, 38, 39, 35, 38, 35, 34, 40, 41, 42, 40, 42, 43, 44, 37, 36, 44, 36, 45, 45, 36, 42, 45, 42, 41, 44, 40, 43, 44, 43, 37, 37, 43, 42, 37, 42, 36, 44, 45, 41, 44, 41, 40, 46, 47, 48, 46, 48, 49, 50, 43, 42, 50, 42, 51, 51, 42, 48, 51, 48, 47, 50, 46, 49, 50, 49, 43, 43, 49, 48, 43, 48, 42, 50, 51, 47, 50, 47, 46, 52, 53, 54, 52, 54, 55, 56, 49, 48, 56, 48, 57, 57, 48, 54, 57, 54, 53, 56, 52, 55, 56, 55, 49, 49, 55, 54, 49, 54, 48, 56, 57, 53, 56, 53, 52, 58, 59, 60, 58, 60, 61, 62, 55, 54, 62, 54, 63, 63, 54, 60, 63, 60, 59, 62, 58, 61, 62, 61, 55, 55, 61, 60, 55, 60, 54, 62, 63, 59, 62, 59, 58, 64, 65, 66, 64, 66, 67, 68, 71, 70, 68, 70, 69, 69, 70, 66, 69, 66, 65, 68, 64, 67, 68, 67, 71, 71, 67, 66, 71, 66, 70, 68, 69, 65, 68, 65, 64 ]
+      }
+    ]
+  },
+  "_note": "Three-layer lattice bar, 5 cells, lapped twothird depth."
+}

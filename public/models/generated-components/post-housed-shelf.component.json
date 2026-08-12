@@ -1,0 +1,318 @@
+{
+  "id": "post-housed-shelf",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamHeight": "15",
+    "innerHeight": "370",
+    "legExtraBottom": "40",
+    "legExtraTop": "20",
+    "legThickness": "20",
+    "mortiseDepth": "2/3*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "560cd2fc-d09b-5717-963b-cbfbda03788b",
+      "name": "post-housed-shelf.stl (1)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#legExtraBottom",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 0.0, 0.0 ]
+    },
+    {
+      "id": "d5a02c6d-7b08-56a2-b1df-ca83c9cc0cbf",
+      "name": "post-housed-shelf.stl (2)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "#legThickness - #mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 40.0, 0.0 ]
+    },
+    {
+      "id": "437146bd-9a8e-55c7-b75e-690c076ed9a3",
+      "name": "post-housed-shelf.stl (3)",
+      "size": {
+        "x": "1/3*#legThickness",
+        "y": "#beamHeight",
+        "z": "#mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 40.0, 6.6667 ]
+    },
+    {
+      "id": "bdf55d03-bc1e-5fb2-9439-e7cabbe03fc1",
+      "name": "post-housed-shelf.stl (4)",
+      "size": {
+        "x": "1/3*#legThickness",
+        "y": "#beamHeight",
+        "z": "#mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 13.3333, 40.0, 6.6667 ]
+    },
+    {
+      "id": "85526eef-e3f0-56ee-813c-7b92966a670e",
+      "name": "post-housed-shelf.stl (5)",
+      "size": {
+        "x": "#legThickness",
+        "y": "-1/2*#beamDepth - #beamHeight + 1/2*#innerHeight - 1/2*#legExtraBottom + 1/2*#legExtraTop",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 55.0, 0.0 ]
+    },
+    {
+      "id": "51cbeb30-73f5-51bf-b6a2-684102103fe0",
+      "name": "post-housed-shelf.stl (6)",
+      "size": {
+        "x": "2/3*#legThickness",
+        "y": "#beamDepth",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 210.0, 0.0 ]
+    },
+    {
+      "id": "fa452d5c-f148-5296-8301-2c590f93de5c",
+      "name": "post-housed-shelf.stl (7)",
+      "size": {
+        "x": "#legThickness",
+        "y": "-1/2*#beamDepth - #beamHeight + 1/2*#innerHeight + 1/2*#legExtraBottom - 1/2*#legExtraTop",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 220.0, 0.0 ]
+    },
+    {
+      "id": "ee1cff4a-5c2e-5e9e-a18a-8c117406d7d3",
+      "name": "post-housed-shelf.stl (8)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#beamHeight",
+        "z": "#legThickness - #mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [ 0.0, 395.0, 0.0 ]
+    },
+    {
+      "id": "c68ef51c-3d19-5fa5-b765-c12ef489da50",
+      "name": "post-housed-shelf.stl (9)",
+      "size": {
+        "x": "1/3*#legThickness",
+        "y": "#beamHeight",
+        "z": "#mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 395.0, 6.6667 ]
+    },
+    {
+      "id": "719f4c20-59c2-5276-88f4-3cc0680b1073",
+      "name": "post-housed-shelf.stl (10)",
+      "size": {
+        "x": "1/3*#legThickness",
+        "y": "#beamHeight",
+        "z": "#mortiseDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 13.3333, 395.0, 6.6667 ]
+    },
+    {
+      "id": "a596e28f-a6f6-546a-bb2e-8dd28f3eb102",
+      "name": "post-housed-shelf.stl (11)",
+      "size": {
+        "x": "#legThickness",
+        "y": "#legExtraTop",
+        "z": "#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 410.0, 0.0 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "57575270-79a9-5041-b630-799ba165b317",
+      "a": {
+        "block": "560cd2fc-d09b-5717-963b-cbfbda03788b",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "d5a02c6d-7b08-56a2-b1df-ca83c9cc0cbf",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "9beaaae7-95bd-5cdb-9ee5-7bec808137c4",
+      "a": {
+        "block": "560cd2fc-d09b-5717-963b-cbfbda03788b",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "437146bd-9a8e-55c7-b75e-690c076ed9a3",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "7e7a0794-a08b-5661-9aa3-4141e044f5fc",
+      "a": {
+        "block": "560cd2fc-d09b-5717-963b-cbfbda03788b",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "bdf55d03-bc1e-5fb2-9439-e7cabbe03fc1",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "5a62bb09-a049-526b-a360-db91f3a57460",
+      "a": {
+        "block": "d5a02c6d-7b08-56a2-b1df-ca83c9cc0cbf",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "85526eef-e3f0-56ee-813c-7b92966a670e",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "553ab864-cdb2-5c64-a5bd-fef8fcfdcae3",
+      "a": {
+        "block": "85526eef-e3f0-56ee-813c-7b92966a670e",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "51cbeb30-73f5-51bf-b6a2-684102103fe0",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "886ca710-b5f4-512f-ab08-cff6e0a6cd79",
+      "a": {
+        "block": "51cbeb30-73f5-51bf-b6a2-684102103fe0",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "fa452d5c-f148-5296-8301-2c590f93de5c",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "de21a83b-0fd4-5fe7-94b0-4004ec511d4e",
+      "a": {
+        "block": "fa452d5c-f148-5296-8301-2c590f93de5c",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "ee1cff4a-5c2e-5e9e-a18a-8c117406d7d3",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "609b1d11-9d5a-5f3e-acb4-474ea1b1557e",
+      "a": {
+        "block": "fa452d5c-f148-5296-8301-2c590f93de5c",
+        "anchor": [ 0.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "c68ef51c-3d19-5fa5-b765-c12ef489da50",
+        "anchor": [ 0.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "0cae9ce3-14b6-50cf-a079-8730fbbb7a5d",
+      "a": {
+        "block": "fa452d5c-f148-5296-8301-2c590f93de5c",
+        "anchor": [ 1.0, 1.0, 1.0 ]
+      },
+      "b": {
+        "block": "719f4c20-59c2-5276-88f4-3cc0680b1073",
+        "anchor": [ 1.0, 0.0, 1.0 ]
+      }
+    },
+    {
+      "id": "21ea8f7c-c049-5673-9a2f-3315444f8649",
+      "a": {
+        "block": "ee1cff4a-5c2e-5e9e-a18a-8c117406d7d3",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "a596e28f-a6f6-546a-bb2e-8dd28f3eb102",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "mortiseDepth": 13.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 20.0, 0.0, 0.0, 20.0, 40.0, 0.0, 20.0, 40.0, 20.0, 20.0, 0.0, 20.0, 0.0, 0.0, 0.0, 0.0, 40.0, 0.0, 0.0, 40.0, 20.0, 0.0, 0.0, 20.0, 20.0, 55.0, 0.0, 20.0, 55.0, 6.6667, 20.0, 40.0, 6.6667, 0.0, 55.0, 0.0, 0.0, 55.0, 6.6667, 0.0, 40.0, 6.6667, 6.6667, 40.0, 6.6667, 6.6667, 55.0, 6.6667, 6.6667, 55.0, 20.0, 6.6667, 40.0, 20.0, 0.0, 55.0, 20.0, 20.0, 55.0, 20.0, 13.3333, 40.0, 6.6667, 13.3333, 55.0, 6.6667, 13.3333, 55.0, 20.0, 13.3333, 40.0, 20.0, 20.0, 210.0, 0.0, 20.0, 210.0, 20.0, 0.0, 210.0, 0.0, 0.0, 210.0, 20.0, 13.3333, 210.0, 0.0, 13.3333, 220.0, 0.0, 13.3333, 220.0, 20.0, 13.3333, 210.0, 20.0, 0.0, 220.0, 0.0, 0.0, 220.0, 20.0, 20.0, 220.0, 0.0, 20.0, 395.0, 0.0, 20.0, 395.0, 20.0, 20.0, 220.0, 20.0, 0.0, 395.0, 0.0, 0.0, 395.0, 20.0, 20.0, 410.0, 0.0, 20.0, 410.0, 6.6667, 20.0, 395.0, 6.6667, 0.0, 410.0, 0.0, 0.0, 410.0, 6.6667, 0.0, 395.0, 6.6667, 6.6667, 395.0, 6.6667, 6.6667, 410.0, 6.6667, 6.6667, 410.0, 20.0, 6.6667, 395.0, 20.0, 0.0, 410.0, 20.0, 20.0, 410.0, 20.0, 13.3333, 395.0, 6.6667, 13.3333, 410.0, 6.6667, 13.3333, 410.0, 20.0, 13.3333, 395.0, 20.0, 20.0, 430.0, 0.0, 20.0, 430.0, 20.0, 0.0, 430.0, 0.0, 0.0, 430.0, 20.0 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 1, 8, 9, 1, 9, 10, 5, 13, 12, 5, 12, 11, 11, 12, 9, 11, 9, 8, 5, 1, 10, 5, 10, 13, 13, 10, 9, 13, 9, 12, 5, 11, 8, 5, 8, 1, 14, 15, 16, 14, 16, 17, 13, 6, 18, 13, 18, 12, 12, 18, 16, 12, 16, 15, 13, 14, 17, 13, 17, 6, 6, 17, 16, 6, 16, 18, 13, 12, 15, 13, 15, 14, 10, 9, 19, 10, 19, 2, 20, 23, 22, 20, 22, 21, 21, 22, 19, 21, 19, 9, 20, 10, 2, 20, 2, 23, 23, 2, 19, 23, 19, 22, 20, 21, 9, 20, 9, 10, 8, 24, 25, 8, 25, 19, 11, 18, 27, 11, 27, 26, 26, 27, 25, 26, 25, 24, 11, 8, 19, 11, 19, 18, 18, 19, 25, 18, 25, 27, 11, 26, 24, 11, 24, 8, 28, 29, 30, 28, 30, 31, 26, 27, 33, 26, 33, 32, 32, 33, 30, 32, 30, 29, 26, 28, 31, 26, 31, 27, 27, 31, 30, 27, 30, 33, 26, 32, 29, 26, 29, 28, 34, 35, 36, 34, 36, 37, 32, 33, 39, 32, 39, 38, 38, 39, 36, 38, 36, 35, 32, 34, 37, 32, 37, 33, 33, 37, 36, 33, 36, 39, 32, 38, 35, 32, 35, 34, 35, 40, 41, 35, 41, 42, 38, 45, 44, 38, 44, 43, 43, 44, 41, 43, 41, 40, 38, 35, 42, 38, 42, 45, 45, 42, 41, 45, 41, 44, 38, 43, 40, 38, 40, 35, 46, 47, 48, 46, 48, 49, 45, 39, 50, 45, 50, 44, 44, 50, 48, 44, 48, 47, 45, 46, 49, 45, 49, 39, 39, 49, 48, 39, 48, 50, 45, 44, 47, 45, 47, 46, 42, 41, 51, 42, 51, 36, 52, 55, 54, 52, 54, 53, 53, 54, 51, 53, 51, 41, 52, 42, 36, 52, 36, 55, 55, 36, 51, 55, 51, 54, 52, 53, 41, 52, 41, 42, 40, 56, 57, 40, 57, 51, 43, 50, 59, 43, 59, 58, 58, 59, 57, 58, 57, 56, 43, 40, 51, 43, 51, 50, 50, 51, 57, 50, 57, 59, 43, 58, 56, 43, 56, 40 ]
+      }
+    ]
+  },
+  "_note": "Post dadoed right across for a shelf."
+}

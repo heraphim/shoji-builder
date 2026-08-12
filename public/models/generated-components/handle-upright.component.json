@@ -1,0 +1,184 @@
+{
+  "id": "handle-upright",
+  "type": "component",
+  "format": 4,
+  "units": "mm",
+  "variables": {
+    "legExtraTop": "20",
+    "legThickness": "20",
+    "pegDiameter": "1/6*#legThickness"
+  },
+  "blocks": [
+    {
+      "id": "1c64c833-360a-54f6-a655-13a3221da2b7",
+      "name": "handle-upright.stl (1)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/2*#legThickness",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 2.5, 0.0, 2.5 ]
+    },
+    {
+      "id": "db653f0b-0725-55e8-b342-09df9f14d28d",
+      "name": "handle-upright.stl (2)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "1/2*#legExtraTop + 1/2*#legThickness - 1/2*#pegDiameter",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 10.0, 0.0 ]
+    },
+    {
+      "id": "b61addb8-f89f-5c07-85dc-531f78fbf46d",
+      "name": "handle-upright.stl (3)",
+      "size": {
+        "x": "1/8*#legThickness",
+        "y": "#pegDiameter",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 0.0, 28.3333, 0.0 ]
+    },
+    {
+      "id": "eea798cc-4fb9-5533-92b8-fe0bc64a35af",
+      "name": "handle-upright.stl (4)",
+      "size": {
+        "x": "3/8*#legThickness - #pegDiameter",
+        "y": "#pegDiameter",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 5.8333, 28.3333, 0.0 ]
+    },
+    {
+      "id": "46b10f15-9496-51f7-9b44-87ba9eeac0a5",
+      "name": "handle-upright.stl (5)",
+      "size": {
+        "x": "1/2*#legThickness",
+        "y": "1/2*#legExtraTop + 1/2*#legThickness - 1/2*#pegDiameter",
+        "z": "1/2*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "set"
+      },
+      "origin": [ 0.0, 31.6667, 0.0 ]
+    },
+    {
+      "id": "e5191558-406b-5b70-a8c1-98699619dd7a",
+      "name": "handle-upright.stl (6)",
+      "size": {
+        "x": "1/4*#legThickness",
+        "y": "1/2*#legThickness",
+        "z": "1/4*#legThickness"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [ 2.5, 50.0, 2.5 ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "cff29cb2-1bfc-53e2-a217-96dacf86762d",
+      "a": {
+        "block": "db653f0b-0725-55e8-b342-09df9f14d28d",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "b61addb8-f89f-5c07-85dc-531f78fbf46d",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "9f1de01c-bdae-5a64-8e8a-c892b1b2bb6f",
+      "a": {
+        "block": "db653f0b-0725-55e8-b342-09df9f14d28d",
+        "anchor": [ 1.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "eea798cc-4fb9-5533-92b8-fe0bc64a35af",
+        "anchor": [ 1.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "96556777-a7ca-5860-9fd1-88b55361349f",
+      "a": {
+        "block": "b61addb8-f89f-5c07-85dc-531f78fbf46d",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "46b10f15-9496-51f7-9b44-87ba9eeac0a5",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    },
+    {
+      "id": "622e7b65-6d20-57e5-a397-46df44f2d491",
+      "a": {
+        "block": "1c64c833-360a-54f6-a655-13a3221da2b7",
+        "anchor": [ 0.0, 1.0, 0.0 ]
+      },
+      "b": {
+        "block": "db653f0b-0725-55e8-b342-09df9f14d28d",
+        "anchor": [ 0.25, 0.0, 0.25 ]
+      }
+    },
+    {
+      "id": "106d7cf6-80de-5c55-8643-d53de0e61fa1",
+      "a": {
+        "block": "46b10f15-9496-51f7-9b44-87ba9eeac0a5",
+        "anchor": [ 0.25, 1.0, 0.25 ]
+      },
+      "b": {
+        "block": "e5191558-406b-5b70-a8c1-98699619dd7a",
+        "anchor": [ 0.0, 0.0, 0.0 ]
+      }
+    }
+  ],
+  "measurements": [],
+  "preview": {
+    "variables": {
+      "beamDepth": 10.0,
+      "beamExtra": 20.0,
+      "beamHeight": 15.0,
+      "frameHeight": 7.0,
+      "frameWidth": 7.0,
+      "innerDepth": 200.0,
+      "innerHeight": 370.0,
+      "innerWidth": 200.0,
+      "legExtraBottom": 40.0,
+      "legExtraTop": 20.0,
+      "legThickness": 20.0,
+      "pegDiameter": 3.3333
+    },
+    "solids": [
+      {
+        "vertices": [ 7.5, 0.0, 2.5, 7.5, 10.0, 2.5, 7.5, 10.0, 7.5, 7.5, 0.0, 7.5, 2.5, 0.0, 2.5, 2.5, 10.0, 2.5, 2.5, 10.0, 7.5, 2.5, 0.0, 7.5, 10.0, 10.0, 0.0, 10.0, 28.3333, 0.0, 10.0, 28.3333, 10.0, 10.0, 10.0, 10.0, 0.0, 10.0, 0.0, 0.0, 28.3333, 0.0, 0.0, 28.3333, 10.0, 0.0, 10.0, 10.0, 2.5, 28.3333, 0.0, 2.5, 31.6667, 0.0, 2.5, 31.6667, 10.0, 2.5, 28.3333, 10.0, 0.0, 31.6667, 0.0, 0.0, 31.6667, 10.0, 10.0, 31.6667, 0.0, 10.0, 31.6667, 10.0, 5.8333, 28.3333, 0.0, 5.8333, 31.6667, 0.0, 5.8333, 31.6667, 10.0, 5.8333, 28.3333, 10.0, 10.0, 50.0, 0.0, 10.0, 50.0, 10.0, 0.0, 50.0, 0.0, 0.0, 50.0, 10.0, 7.5, 50.0, 2.5, 7.5, 60.0, 2.5, 7.5, 60.0, 7.5, 7.5, 50.0, 7.5, 2.5, 50.0, 2.5, 2.5, 60.0, 2.5, 2.5, 60.0, 7.5, 2.5, 50.0, 7.5 ],
+        "triangles": [ 0, 1, 2, 0, 2, 3, 4, 7, 6, 4, 6, 5, 5, 6, 2, 5, 2, 1, 4, 0, 3, 4, 3, 7, 7, 3, 2, 7, 2, 6, 4, 5, 1, 4, 1, 0, 8, 9, 10, 8, 10, 11, 12, 15, 14, 12, 14, 13, 13, 14, 10, 13, 10, 9, 12, 8, 11, 12, 11, 15, 15, 11, 10, 15, 10, 14, 12, 13, 9, 12, 9, 8, 16, 17, 18, 16, 18, 19, 13, 14, 21, 13, 21, 20, 20, 21, 18, 20, 18, 17, 13, 16, 19, 13, 19, 14, 14, 19, 18, 14, 18, 21, 13, 20, 17, 13, 17, 16, 9, 22, 23, 9, 23, 10, 24, 27, 26, 24, 26, 25, 25, 26, 23, 25, 23, 22, 24, 9, 10, 24, 10, 27, 27, 10, 23, 27, 23, 26, 24, 25, 22, 24, 22, 9, 22, 28, 29, 22, 29, 23, 20, 21, 31, 20, 31, 30, 30, 31, 29, 30, 29, 28, 20, 22, 23, 20, 23, 21, 21, 23, 29, 21, 29, 31, 20, 30, 28, 20, 28, 22, 32, 33, 34, 32, 34, 35, 36, 39, 38, 36, 38, 37, 37, 38, 34, 37, 34, 33, 36, 32, 35, 36, 35, 39, 39, 35, 34, 39, 34, 38, 36, 37, 33, 36, 33, 32 ]
+      }
+    ]
+  },
+  "_note": "Handle upright, tenoned both ends, pinned through."
+}
