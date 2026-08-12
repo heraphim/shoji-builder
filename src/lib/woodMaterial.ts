@@ -137,6 +137,39 @@ const float WOOD_TAU = 6.283185307179586;
 const float RING_SOFTNESS = 0.2;
 
 /**
+ * The steepest the *timber's* own surface may turn inside one pixel, as a
+ * gradient.
+ *
+ * 0.75 is a thirty-seven-degree slope. Far steeper than any planed board and
+ * still, unmistakably, a surface — which is all this one has to be, because
+ * what reads the timber's normal is a lobe nearly ten degrees wide and a
+ * diffuse term that does not care.
+ */
+const float TIMBER_SLOPE = 0.75;
+
+/**
+ * The steepest the *film* may turn, which is six times less, and the reason the
+ * ring boundaries stopped coming back as a field of white specks.
+ *
+ * These two started as one constant and that was the bug. The ring field is a
+ * sawtooth and its drop is a cliff; the timber can wear a cliff at thirty-seven
+ * degrees because nothing reading it is sharper than the cliff. A varnish is
+ * the opposite case in every respect — it is a mirror a couple of degrees wide,
+ * so a normal allowed to tip thirty-seven degrees between one pixel and the next
+ * will, somewhere along every ring, happen to point at a lamp and return the
+ * whole of it. That is what the stipple was: not the pores, not the
+ * anti-aliasing, and not something a wider lobe could reach, because the tilt
+ * that finds the light is an order of magnitude larger than the lobe is.
+ *
+ * The number is the physics of the film rather than a tuning. A finish is a
+ * liquid that levelled and then set: it cannot hold a cliff, and what it leaves
+ * over one is a slope of a few degrees. 0.12 is seven of them — still visibly
+ * telegraphing the grain into the reflection, which is the whole point of
+ * {@link FILM_RELIEF}, and no longer able to mirror a bulb from a single pixel.
+ */
+const float FILM_SLOPE = 0.12;
+
+/**
  * The surface, as one number, left behind by the last call to woodColor().
  *
  * 1 is earlywood — the pale, open, spring growth, which stands slightly proud
@@ -450,8 +483,12 @@ vec3 woodColor(vec3 objectPosition) {
  * is called twice against two different surfaces: the timber, and the film of
  * varnish lying on it. They are not equally rough and the second one is the
  * whole reason a polished board looks polished. See "uWoodFilmRelief".
+ *
+ * "maxSlope" is a parameter for the same reason and it is the more important of
+ * the two. See {@link TIMBER_SLOPE} and {@link FILM_SLOPE}.
  */
-vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height, float relief) {
+vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height, float relief,
+                       float maxSlope) {
   vec3 dpdx = dFdx(surfacePosition);
   vec3 dpdy = dFdy(surfacePosition);
   float dhdx = dFdx(height);
@@ -497,10 +534,7 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height, float re
   // enormous, and the normal tips past the surface's own horizon - N dot L turns
   // negative and the fragment goes black. On a planed board that is not grain,
   // it is a row of dots along every ring, which is exactly what it looked like.
-  //
-  // 0.75 is a thirty-seven-degree slope. Far steeper than any planed timber and
-  // still, unmistakably, a surface.
-  float limit = abs(det) * 0.75;
+  float limit = abs(det) * maxSlope;
   float steep = length(gradient);
   if (steep > limit) gradient *= limit / steep;
 
@@ -557,6 +591,40 @@ const FILM_RELIEF = 0.24;
  * thing that stops a finish being uniform is not two independent effects.
  */
 const GLOSS_VARIANCE = 0.58;
+
+/**
+ * How big the lights in this app are, expressed as the roughness that would
+ * spread a highlight by the same amount.
+ *
+ * Every light in the app is a delta light — `directionalLight` and
+ * `pointLight`, see `SceneLights` and `ShowcaseScene` — which means it has no
+ * size at all. A highlight is the reflected *image* of the source, so a source
+ * of no size reflects as a point, spread only by the material's own lobe. On a
+ * gloss finish that lobe is 0.37° across: the varnish was mirroring something
+ * sharper than the sun, at a peak radiance six hundred times the bare timber's,
+ * and it landed as a hard white blob rather than as the long soft streak a
+ * board under a window or a bulb actually shows.
+ *
+ * The stipple in it was the same fact seen from the other side. A lobe that
+ * narrow is decided by a normal wobble of six thousandths of a radian, which is
+ * less than the grain in the film puts across one pixel — so pixels fell in and
+ * out of the highlight and it came back as a field of dots. Nothing was wrong
+ * with the anti-aliasing below; it was measuring a real variance against a lobe
+ * no variance could be small enough for.
+ *
+ * 0.25 is a 2.3° lobe, which is about what a bulb across a room subtends, and
+ * it drops the peak by a factor of forty. Added in quadrature rather than as a
+ * floor, and that is the point rather than a nicety: what a highlight's width
+ * is, is the material's lobe convolved with the source's disc, and widths under
+ * convolution add as squares. A matte film is already twenty times wider than
+ * any source in the room and is left alone by the same arithmetic that opens a
+ * gloss one right up.
+ *
+ * This is the cheap half of the real answer. The expensive half is giving the
+ * clearcoat an environment to reflect instead of four points, which is what a
+ * gloss finish is mostly made of and what this constant is standing in for.
+ */
+const SOURCE_ROUGHNESS = 0.25;
 
 type WoodUniforms = Record<string, THREE.IUniform>;
 
@@ -669,7 +737,15 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
     const hadClearcoat = this.clearcoat > 0;
     this.roughness = params.roughness;
     this.clearcoat = params.clearcoat;
-    this.clearcoatRoughness = params.clearcoatRoughness;
+    // The authored roughness is what the finish is; what reaches the renderer is
+    // that convolved with how big the lights are. See {@link SOURCE_ROUGHNESS}.
+    // Only here — `filled` and the film relief above read the authored value on
+    // purpose, because those are asking how many coats went on, and the size of
+    // a lamp on the other side of the room has nothing to say about that.
+    this.clearcoatRoughness = Math.min(
+      1,
+      Math.hypot(params.clearcoatRoughness, SOURCE_ROUGHNESS)
+    );
     if (hadClearcoat !== params.clearcoat > 0) this.needsUpdate = true;
   }
 
@@ -709,7 +785,7 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
         "#include <normal_fragment_maps>",
         `#include <normal_fragment_maps>
   if (uWoodRelief > 0.0) {
-    normal = woodPerturbNormal(normal, -vViewPosition, gWoodField, uWoodRelief);
+    normal = woodPerturbNormal(normal, -vViewPosition, gWoodField, uWoodRelief, TIMBER_SLOPE);
   }`
       )
       // The varnish, which is a second surface and needs telling so.
@@ -727,7 +803,7 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
         `#include <clearcoat_normal_fragment_begin>
 #ifdef USE_CLEARCOAT
   if (uWoodFilmRelief > 0.0) {
-    clearcoatNormal = woodPerturbNormal(clearcoatNormal, -vViewPosition, gWoodField, uWoodFilmRelief);
+    clearcoatNormal = woodPerturbNormal(clearcoatNormal, -vViewPosition, gWoodField, uWoodFilmRelief, FILM_SLOPE);
     vec3 filmDx = dFdx(clearcoatNormal);
     vec3 filmDy = dFdy(clearcoatNormal);
     gWoodFilmVariance = dot(filmDx, filmDx) + dot(filmDy, filmDy);
