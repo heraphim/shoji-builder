@@ -64,7 +64,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     built: true,
   },
   { id: "anime", label: "Anime", note: "Warm cels, hard light, drawn edges.", built: true },
-  { id: "cartoon", label: "Cartoon", note: "Flat colour under a heavy ink line.", built: false },
+  { id: "cartoon", label: "Cartoon", note: "Flat colour under a heavy ink line.", built: true },
   {
     id: "ghibli",
     label: "Studio Ghibli",

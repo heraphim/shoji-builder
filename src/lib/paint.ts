@@ -195,33 +195,53 @@ vec2 pWander(vec2 uv) {
 /**
  * How much of a step there is at this pixel: in depth, and in tone.
  *
- * The depth term is the **second** difference and not the first. A floor
- * running away from the camera has an enormous first difference and no edge in
- * it at all, and every outline shader that compares a pixel with its neighbour
- * draws the floor. Comparing a pixel with the *average* of its two neighbours
- * cancels any surface of constant slope however steeply it is turned away, and
- * what is left is exactly what an outline is: a silhouette, or a crease.
+ * ## The depth term
  *
- * Divided by the distance, because the same physical step is a smaller depth
- * difference further off, and a line that fades out across the room is a line
- * that stops drawing the far side of the bed.
+ * Three decisions, and each one is a thing an outline shader gets wrong.
  *
- * The tone term is a plain gradient of luminance, relative to the local level
- * so that it means the same thing in the lit part of the picture as in the
- * dark. It is what catches a shadow's edge and the boundary between two colours
- * of the same depth — neither of which is a silhouette, and both of which an
- * inked drawing has a line at.
+ * **The second difference, not the first.** A floor running away from the
+ * camera has an enormous depth gradient and no edge in it at all, and every
+ * outline that compares a pixel with its neighbour draws the floor. Comparing a
+ * pixel with the average of its two neighbours cancels any surface of constant
+ * slope, and what is left is what an outline actually is: a silhouette, a
+ * crease, or a curve.
+ *
+ * **Measured on the buffer's own depth rather than on the view distance.** This
+ * is the part that took two goes. In view space a *flat* surface seen at an
+ * angle is a rational function of screen position, not a linear one, so its
+ * second difference is not zero and the wall gets a line down it. The value in
+ * the depth buffer is affine in 1/z, and 1/z is exactly linear across a plane —
+ * so on the raw buffer a plane's second difference is zero however steeply it
+ * is turned away, at any distance, with no threshold to tune.
+ *
+ * **Scaled back to a fraction of the distance.** The price of working in 1/z is
+ * that the same physical step is a hundred times smaller in the buffer at ten
+ * times the range. Multiplying by z over the projection's own near-far constant
+ * undoes exactly that, and what comes back is the size of the step *as a
+ * fraction of how far away it is* — 0.5 at a silhouette, a hundredth at a
+ * crease, zero on a plane. Those numbers mean the same thing at the near edge
+ * of the nightstand and at the far corner of the room, which is what lets one
+ * threshold serve the whole picture.
+ *
+ * ## The tone term
+ *
+ * A plain gradient of luminance, relative to the local level so that it means
+ * the same thing in the lit part of the picture as in the dark. It is what
+ * catches a shadow's edge and the boundary between two colours at the same
+ * depth — neither of which is a silhouette, and both of which an inked drawing
+ * has a line at.
  */
 vec2 pEdges(vec2 uv) {
   vec2 w = texelSize * max(uInkWidth, 0.5) * pScale();
 
-  float z0 = getViewZ(readDepth(uv));
-  float zl = getViewZ(readDepth(uv - vec2(w.x, 0.0)));
-  float zr = getViewZ(readDepth(uv + vec2(w.x, 0.0)));
-  float zd = getViewZ(readDepth(uv - vec2(0.0, w.y)));
-  float zu = getViewZ(readDepth(uv + vec2(0.0, w.y)));
-  float curve = abs(zl + zr - 2.0 * z0) + abs(zd + zu - 2.0 * z0);
-  float depthEdge = curve / max(abs(z0) * 0.02, 1.0);
+  float d0 = readDepth(uv);
+  float dl = readDepth(uv - vec2(w.x, 0.0));
+  float dr = readDepth(uv + vec2(w.x, 0.0));
+  float dd = readDepth(uv - vec2(0.0, w.y));
+  float du = readDepth(uv + vec2(0.0, w.y));
+  float curve = abs(dl + dr - 2.0 * d0) + abs(dd + du - 2.0 * d0);
+  float k = cameraNear * cameraFar / max(cameraFar - cameraNear, 1e-6);
+  float depthEdge = curve * abs(getViewZ(d0)) / max(k, 1e-6);
 
   float l0 = pLuma(texture2D(inputBuffer, uv).rgb);
   float ll = pLuma(texture2D(inputBuffer, uv - vec2(w.x, 0.0)).rgb);
@@ -275,20 +295,27 @@ void mainImage(const in vec4 inputColor, const in vec2 uv, const in float depth,
     c = clamp(HSLToRGB(hsl), 0.0, 1.0);
   }
 
+  // The two edge signals are on scales that have nothing to do with each other
+  // — one is a fraction of a distance and the other a fraction of a brightness
+  // — so each is put through its own curve first and only then weighted. Added
+  // rather than maxed: a silhouette that is also a tone change is the darkest
+  // line in a drawing, and it should be.
   vec2 edges = pEdges(puv);
-  float raw = edges.x * uInkDepth + edges.y * uInkLuma;
+  float line = smoothstep(0.004, 0.030, edges.x) * uInkDepth
+             + smoothstep(0.15, 0.62, edges.y) * uInkLuma;
 
-  // The wash pools where it stops. Taken off a much lower threshold than the
-  // line is, because the pooling is wide and soft and the line is neither —
-  // they are the same measurement read at two different distances.
+  // The wash pools where it stops. Off a much lower threshold and a wider foot
+  // than the line, because the pooling is broad and soft and the line is
+  // neither — the same measurement read at two different distances.
   if (uBleed > 0.0) {
-    c *= 1.0 - uBleed * smoothstep(0.04, 0.7, raw);
+    float pool = smoothstep(0.0008, 0.02, edges.x) + smoothstep(0.06, 0.45, edges.y);
+    c *= 1.0 - uBleed * clamp(pool, 0.0, 1.0);
   }
 
   c = mix(c, uPaperColor, uLift * (1.0 - pLuma(c)));
 
   if (uInk > 0.0) {
-    c = mix(c, uInkColor, uInk * smoothstep(0.32, 0.95, raw));
+    c = mix(c, uInkColor, uInk * clamp(line, 0.0, 1.0));
   }
 
   // The sheet, last, because it is under everything and over everything: the

@@ -124,13 +124,55 @@ const ANIME: ShowcaseLook = {
   facet: 0,
 };
 
+/**
+ * Cartoon: flat colour under a heavy ink line.
+ *
+ * The difference from the anime cel is not the palette, it is the *count*. Four
+ * tones instead of six and a hard boundary between them, which is few enough
+ * that a whole nightstand is one brown with a second brown where the lamp
+ * reaches it, and a line thick enough to be the drawing rather than the edge of
+ * one. The colour is pushed hard for the same reason a comic's is: with four
+ * tones and a black line there is nothing else left to tell two objects apart.
+ *
+ * Almost no surface detail survives — a grain is a fine pattern and this style
+ * has four values to render it in, which is a field of specks rather than a
+ * board.
+ */
+const CARTOON: ShowcaseLook = {
+  background: "#241608",
+  paint: {
+    ...NO_PAINT,
+    exposure: 2.1,
+    bands: 4,
+    bandSoft: 0.07,
+    ink: 1,
+    inkColor: "#150d07",
+    inkWidth: 3,
+    inkFromDepth: 1.25,
+    inkFromLuma: 0.9,
+    saturation: 1.45,
+    tint: "#fff0dd",
+    lift: 0.03,
+    paperColor: "#fff6e6",
+    contrast: 1.24,
+  },
+  bloom: { intensity: 0.8, threshold: 0.62, smoothing: 0.5 },
+  vignette: { offset: 0.4, darkness: 0.34 },
+  ambient: 2.9,
+  fill: 0.7,
+  fillColor: "#ffcf9a",
+  bulb: 1,
+  detail: 0.1,
+  facet: 0,
+};
+
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   realistic: REALISTIC,
   anime: ANIME,
+  cartoon: CARTOON,
   // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
   // menu offering them. Pointed at the photograph rather than left out so that
   // this stays a total record and nothing has to check for a hole in it.
-  cartoon: REALISTIC,
   ghibli: REALISTIC,
   watercolor: REALISTIC,
   inkWash: REALISTIC,

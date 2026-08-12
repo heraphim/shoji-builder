@@ -2117,6 +2117,35 @@ select.view-mode option:disabled {
   --sc-thumb-shadow: 0 0 0 2px rgba(59, 36, 21, 0.9);
 }
 
+/* Cartoon.
+
+   The same idea as the anime chrome pushed to where the scene is: a solid fill,
+   a two-pixel black keyline round everything, and a hard drop under it instead
+   of a soft shadow — which is what a shadow is when it is drawn rather than
+   photographed. Nothing here is translucent, because there are four tones in
+   the picture behind it and a control that let them through would be a control
+   with four tones in it. */
+.showcase[data-style="cartoon"] {
+  --sc-page: #241608;
+  --sc-panel: #462c16;
+  --sc-panel-lit: #6b421f;
+  --sc-border: #150d07;
+  --sc-border-lit: #150d07;
+  --sc-text: #fff3dd;
+  --sc-text-dim: #d5ab7c;
+  --sc-accent: #ffa42b;
+  --sc-radius: 8px;
+  --sc-pill: 6px;
+  --sc-line: 2px;
+  --sc-blur: none;
+  --sc-shadow: 3px 3px 0 #150d07;
+  --sc-inset: none;
+  --sc-track: #150d07;
+  --sc-track-shadow: none;
+  --sc-thumb: #ffa42b;
+  --sc-thumb-shadow: 0 0 0 2px #150d07;
+}
+
 .showcase {
   position: absolute;
   inset: 0;
@@ -2193,7 +2222,7 @@ select.view-mode option:disabled {
   position: relative;
   max-width: 100%;
   padding: 9px 16px;
-  border: 1px solid var(--sc-border);
+  border: var(--sc-line, 1px) solid var(--sc-border);
   /* A pill by default, because a photograph's chrome is a lozenge of glass. A
      drawn style sets it square-ish instead: a brush does not draw a pill, and
      the button has to look like it came off the same board as the picture. */
@@ -2242,7 +2271,7 @@ select.view-mode option:disabled {
   width: 38px;
   height: 38px;
   padding: 0;
-  border: 1px solid var(--sc-border);
+  border: var(--sc-line, 1px) solid var(--sc-border);
   border-radius: 50%;
   background: var(--sc-panel);
   -webkit-backdrop-filter: var(--sc-blur);
@@ -2323,7 +2352,7 @@ select.view-mode option:disabled {
   flex-direction: column;
   gap: 2px;
   padding: 6px;
-  border: 1px solid var(--sc-border);
+  border: var(--sc-line, 1px) solid var(--sc-border);
   border-radius: var(--sc-radius);
   background: var(--sc-panel);
   -webkit-backdrop-filter: var(--sc-blur);
@@ -2377,7 +2406,7 @@ select.view-mode option:disabled {
 .showcase-menu-tag {
   flex: 0 0 auto;
   padding: 1px 7px;
-  border: 1px solid var(--sc-border);
+  border: var(--sc-line, 1px) solid var(--sc-border);
   border-radius: 999px;
   font-size: 10px;
   letter-spacing: 0.08em;
@@ -2437,7 +2466,7 @@ select.view-mode option:disabled {
   align-items: center;
   gap: 8px 12px;
   padding: 10px 14px;
-  border: 1px solid var(--sc-border);
+  border: var(--sc-line, 1px) solid var(--sc-border);
   border-radius: 12px;
   background: var(--sc-panel);
   -webkit-backdrop-filter: var(--sc-blur);
