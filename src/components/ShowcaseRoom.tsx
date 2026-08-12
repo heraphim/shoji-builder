@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 import { WoodMaterial } from "../lib/woodMaterial";
 import { woodPreset } from "../lib/wood";
@@ -6,6 +6,7 @@ import { ClothMaterial, PaperMaterial, PlasterMaterial } from "../lib/surfaces";
 import { ricePaperTexture } from "../lib/ricePaper";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { MeshReflectorMaterial } from "@react-three/drei";
+import { Prop, preloadProps, type PropFit } from "./ShowcaseProps";
 import { siteUrl } from "../lib/library";
 
 /**
@@ -70,9 +71,6 @@ export const WINDOW = {
   y: [260, 1300] as const,
 };
 
-/** How far the bed runs before it ends. The mattress goes all the way. */
-const BED_END = 2000;
-
 /**
  * Where the bed starts, in x.
  *
@@ -82,10 +80,7 @@ const BED_END = 2000;
  * and the only thing that keeps it from taking over a photograph of something
  * small is distance.
  */
-const BED_X = 640;
-
-/** And where it ends. The far post stands here, matching the near one. */
-const BED_FAR = 2400;
+const BED_X = 620;
 
 /**
  * The pendant over the middle of the room, in room coordinates.
@@ -195,6 +190,50 @@ function rodAlongX(
 }
 
 /**
+ * How far the nightstand stands to the right of the lamp.
+ *
+ * Pushed over until it is almost against the bed, which is where a nightstand
+ * lives — there is nothing to reach it for from the other side. It leaves the
+ * lamp about 70 mm off the middle of a 1,114 mm top, which is six per cent and
+ * reads as a lamp somebody put down rather than as one that was measured into
+ * place.
+ */
+const NIGHTSTAND_X = 70;
+
+/**
+ * The nightstand: a side table, placed by its top rather than by its feet.
+ *
+ * The anchor is the middle of the *upper* face, which is the one surface in this
+ * whole room whose position actually matters — the lamp stands on it, the room
+ * is laid out around it, and `TABLE_Y` is defined as it. Placing furniture by
+ * its base and hoping the height comes out right is how a lamp ends up floating.
+ */
+const NIGHTSTAND: Omit<PropFit, "dress" | "fallback"> = {
+  file: "nightstand.glb",
+  height: TABLE_Y - FLOOR_Y,
+  anchor: [0.5, 1, 0.5],
+  at: [NIGHTSTAND_X, TABLE_Y, 0],
+};
+
+/**
+ * The bed, placed by the corner nearest the nightstand and the wall.
+ *
+ * Turned a quarter, because the model lies along its own x with the head at one
+ * end, and in this room the head goes against the back wall and the length runs
+ * out towards the viewer. A negative quarter turn takes the model's +x onto the
+ * room's +z, which is the direction a bed points here.
+ */
+const BED: Omit<PropFit, "dress" | "fallback"> = {
+  file: "bed.glb",
+  length: 2050,
+  turn: -Math.PI / 2,
+  anchor: [0, 0, 0],
+  at: [BED_X, FLOOR_Y, WALL_Z + 30],
+};
+
+preloadProps([NIGHTSTAND.file, BED.file]);
+
+/**
  * The film of lacquer on the nightstand's top, and the lamp standing in it.
  *
  * A separate sheet a fraction of a millimetre above the timber rather than a
@@ -215,8 +254,13 @@ function rodAlongX(
  */
 function Lacquer() {
   return (
-    <mesh position={[0, TABLE_Y + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[552, 456]} />
+    <mesh position={[NIGHTSTAND_X, TABLE_Y + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Sized to the loaded nightstand's top, which measures 1114 x 796 once it
+          has been fitted to the room's table height — a little inside it, so the
+          film stops at the edge rather than hanging over it. Measured from the
+          model in the running scene rather than assumed: it is a much wider
+          table than the box it replaced. */}
+      <planeGeometry args={[1090, 772]} />
       <MeshReflectorMaterial
         // One extra pass. 512 across a 550 mm top is about a millimetre a texel,
         // which is far more than enough to hold the shape of a lamp — the
@@ -567,60 +611,6 @@ function useRoom() {
 
         floor: boxAt([-3200, SIDE_X + 120], [FLOOR_Y - 120, FLOOR_Y], [WALL_Z, 3000]),
 
-        // The nightstand: a top with an overhang and a moulding under it, a
-        // carcass set back, one drawer in a reveal, and a recessed plinth so it
-        // does not sit flat on the floor.
-        //
-        // Centred on the origin in both directions, because the lamp stands at
-        // the origin and a lamp pushed towards the front edge of the table it is
-        // on reads as one about to be knocked off.
-        top: boxAt([-278, 278], [TABLE_Y - 22, TABLE_Y], [-230, 230]),
-        lip: boxAt([-268, 268], [-34, -22], [-220, 220]),
-        carcass: boxAt([-246, 246], [-604, -34], [-200, 200]),
-        drawer: boxAt([-224, 224], [-246, -74], [-198, 210]),
-        drawerLip: boxAt([-224, 224], [-90, -74], [-198, 216]),
-        plinth: boxAt([-224, 224], [-676, -604], [-178, 178]),
-        knobStem: boxAt([-9, 9], [-169, -151], [210, 224]),
-        knob: new THREE.SphereGeometry(17, 24, 16).translate(0, -160, 230),
-
-        // the bed: a headboard panel between two posts, a mattress that runs the
-        // whole length of it, and a duvet turned down at the top
-        // The bed, as a bed is actually put together: a headboard between two
-        // posts, side rails between the posts and the foot, and legs under all
-        // four corners.
-        //
-        // It had one post, at the near end, and nothing at the far one — which
-        // is not a style of bed, it is half a bed. And it stood on nothing: the
-        // rails ran from the headboard to the foot with a metre of air beneath
-        // them. Neither is visible from the default camera, and both are
-        // obvious the moment you orbit, which is the whole point of being able
-        // to.
-        headboard: boxAt([BED_X, BED_FAR], [-300, 610], [WALL_Z, WALL_Z + 46]),
-        headRail: boxAt([BED_X, BED_FAR], [610, 668], [WALL_Z - 14, WALL_Z + 60]),
-        postNear: boxAt([BED_X, BED_X + 96], [FLOOR_Y, 706], [WALL_Z, WALL_Z + 96]),
-        postFar: boxAt([BED_FAR - 96, BED_FAR], [FLOOR_Y, 706], [WALL_Z, WALL_Z + 96]),
-        capNear: boxAt([BED_X - 16, BED_X + 112], [706, 730], [WALL_Z - 16, WALL_Z + 112]),
-        capFar: boxAt([BED_FAR - 112, BED_FAR + 16], [706, 730], [WALL_Z - 16, WALL_Z + 112]),
-
-        railNear: boxAt([BED_X + 12, BED_X + 78], [-350, -250], [WALL_Z + 46, BED_END]),
-        railFar: boxAt([BED_FAR - 78, BED_FAR - 12], [-350, -250], [WALL_Z + 46, BED_END]),
-        railFoot: boxAt([BED_X + 12, BED_FAR - 12], [-350, -250], [BED_END - 66, BED_END]),
-        slats: boxAt([BED_X + 40, BED_FAR - 40], [-346, -320], [WALL_Z + 46, BED_END]),
-        legFootNear: boxAt([BED_X + 12, BED_X + 90], [FLOOR_Y, -250], [BED_END - 78, BED_END]),
-        legFootFar: boxAt([BED_FAR - 90, BED_FAR - 12], [FLOOR_Y, -250], [BED_END - 78, BED_END]),
-        mattress: pillowGeometry(1900, 210, BED_END - (WALL_Z + 46), 0.06).translate(
-          1600,
-          -225,
-          (WALL_Z + 46 + BED_END) / 2
-        ),
-        duvet: pillowGeometry(1900, 150, 1180, 0.14).translate(1600, -48, 620),
-        // Turned down at the head of the bed, and the same soft cloth as the
-        // pillow rather than a slab: it is the one piece of bedding the eye can
-        // compare directly against the pillow beside it.
-        sheet: pillowGeometry(1900, 96, 300, 0.3).translate(1600, -14, 130),
-
-        // the scroll: paper, two rods, the end caps on the lower one, and the
-        // cord it hangs by
         // the ceiling, and the pendant hanging off the middle of it
         ceiling: boxAt([-3200, SIDE_X + 120], [CEILING_Y, CEILING_Y + 120], [WALL_Z, 3000]),
         rod: boxAt(
@@ -718,41 +708,32 @@ export function ShowcaseRoom({ standY, ceilingOn }: { standY: number; ceilingOn:
         />
       </mesh>
 
-      <mesh geometry={g.top} material={room.oak} castShadow receiveShadow />
       <Lacquer />
-      <mesh geometry={g.lip} material={room.oak} castShadow receiveShadow />
-      <mesh geometry={g.carcass} material={room.oak} castShadow receiveShadow />
-      <mesh geometry={g.drawer} material={room.oak} castShadow receiveShadow />
-      <mesh geometry={g.drawerLip} material={room.oak} castShadow receiveShadow />
-      <mesh geometry={g.plinth} material={room.oak} castShadow receiveShadow />
-      <mesh geometry={g.knobStem} material={room.ebony} castShadow />
-      <mesh geometry={g.knob} castShadow>
-        <meshStandardMaterial color="#2f2418" roughness={0.32} metalness={0.55} />
-      </mesh>
 
-      <mesh geometry={g.headboard} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.headRail} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.postNear} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.postFar} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.capNear} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.capFar} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.railNear} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.railFar} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.railFoot} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.slats} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.legFootNear} material={room.walnut} castShadow receiveShadow />
-      <mesh geometry={g.legFootFar} material={room.walnut} castShadow receiveShadow />
-
-      <mesh geometry={g.mattress} material={room.ticking} castShadow receiveShadow />
-      <mesh geometry={g.duvet} material={room.duvet} castShadow receiveShadow />
-      <mesh geometry={g.sheet} material={room.sheet} castShadow receiveShadow />
-
-      {/* Upright against the headboard, the way a made bed has it — propped on
-          its long edge rather than lying flat, which is what the reference photo
-          shows and what a pillow does when the bed is not slept in. */}
-      <group position={[1090, 76, -116]} rotation={[-0.15, -0.09, 0.02]}>
-        <mesh geometry={g.pillow} material={room.pillow} castShadow receiveShadow />
-      </group>
+      {/* The two pieces of furniture that are not boxes.
+       *
+       * Downloaded geometry, dressed in this room's own materials — see
+       * `ShowcaseProps`. Neither brings a texture with it: the bed's fabric maps
+       * were a hundred megabytes and the cloth shader that covers everything else
+       * soft in here costs nothing and needs no UVs.
+       *
+       * Suspended rather than awaited, so the room draws while they arrive. */}
+      <Suspense fallback={null}>
+        <Prop fit={{ ...NIGHTSTAND, dress: {}, fallback: room.oak }} />
+        <Prop
+          fit={{
+            ...BED,
+            dress: {
+              Bed_frame: room.walnut,
+              Legs: room.walnut,
+              Pillows: room.pillow,
+              Blanket: room.duvet,
+              Sheets: room.sheet,
+            },
+            fallback: room.walnut,
+          }}
+        />
+      </Suspense>
 
       <HangingScroll paper={room.paper} rods={room.ebony} wrap={room.screen} />
     </group>

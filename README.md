@@ -27,6 +27,25 @@ Then open the printed URL (default <http://localhost:5173>).
 | `npm run lint` | Oxlint over the repo |
 | `npm run preview` | Serve the built `dist/` |
 
+### The showcase's furniture
+
+`public/models/props/*.glb` is the nightstand and the bed. Both arrived as OBJ
+exports — 60 MB and 390,000 triangles for the bed, with a hundred megabytes of 4K
+fabric maps beside it — and were converted with tools run through `npx`, not
+added to the project:
+
+```bash
+npx obj2gltf -i bed.obj -o bed-raw.glb
+npx @gltf-transform/cli weld bed-raw.glb bed-w.glb
+npx @gltf-transform/cli simplify bed-w.glb bed-s.glb --ratio 0.08 --error 0.02
+npx @gltf-transform/cli prune bed-s.glb bed-p.glb && npx @gltf-transform/cli dedup bed-p.glb bed.glb
+```
+
+The texture maps are stripped from the `.mtl` before conversion and the render
+scene's backdrop plane is dropped, so what lands in the repo is 1.2 MB of pure
+geometry. The materials come from the room — the same procedural wood and cloth
+everything else wears, which needs no UVs and adds nothing to the download.
+
 ### The checks
 
 `src/lib/__*check.ts` are standalone harnesses for the six things that are worth
