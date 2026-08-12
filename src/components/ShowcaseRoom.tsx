@@ -395,7 +395,18 @@ function pillowGeometry(
  * defensible but this is a wall: what is scarce is how far the picture can
  * spread sideways before it runs into the lamp, not how far it can go up.
  */
-function HangingScroll({ paper, rods, wrap }: { paper: PaperMaterial; rods: THREE.Material; wrap: THREE.Material }) {
+function HangingScroll({
+  paper,
+  rods,
+  wrap,
+  bare,
+}: {
+  paper: PaperMaterial;
+  rods: THREE.Material;
+  wrap: THREE.Material;
+  /** Just the painting, with none of the scroll round it. See `bareScroll`. */
+  bare: boolean;
+}) {
   const [aspect, setAspect] = useState(SCROLL_FALLBACK_ASPECT);
 
   // Measured off a plain `Image` rather than off the texture, because a
@@ -459,6 +470,12 @@ function HangingScroll({ paper, rods, wrap }: { paper: PaperMaterial; rods: THRE
     },
     [geometry]
   );
+
+  // The painting is the scroll; everything else is what it is mounted on. So
+  // the bare hanging is an early return rather than nine conditionals — the
+  // geometry is still built, because it is one memo for the whole hanging and
+  // splitting it would be more code than the nine boxes cost.
+  if (bare) return <mesh geometry={geometry.art} material={paper} castShadow receiveShadow />;
 
   return (
     <>
@@ -788,7 +805,12 @@ export function ShowcaseRoom({
         <Prop fit={fits.bed} />
       </Suspense>
 
-      <HangingScroll paper={room.paper} rods={room.ebony} wrap={room.screen} />
+      <HangingScroll
+        paper={room.paper}
+        rods={room.ebony}
+        wrap={room.screen}
+        bare={look.bareScroll}
+      />
     </group>
   );
 }

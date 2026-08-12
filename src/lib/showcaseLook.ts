@@ -76,6 +76,17 @@ export interface ShowcaseLook {
    * this room is already boxes and cylinders.
    */
   facet: number;
+  /**
+   * Hang the picture as a bare panel: no rollers, no end caps, no cord, no
+   * hook.
+   *
+   * One style asks for this and it is the one whose whole claim is *the lamp,
+   * and as little else*. A kakejiku's furniture is nine separate pieces around
+   * a rectangle, and every one of them is a small dark object competing for the
+   * eye in a picture that is trying not to have any. The painting stays,
+   * because a blank wall behind the lamp is not minimal, it is empty.
+   */
+  bareScroll: boolean;
 }
 
 /** The realistic showcase: a photograph, so no paint at all. */
@@ -91,6 +102,7 @@ const REALISTIC: ShowcaseLook = {
   bulb: 1,
   detail: 1,
   facet: 0,
+  bareScroll: false,
 };
 
 /**
@@ -136,6 +148,7 @@ const ANIME: ShowcaseLook = {
   bulb: 1,
   detail: 0.25,
   facet: 0,
+  bareScroll: false,
 };
 
 /**
@@ -179,6 +192,7 @@ const CARTOON: ShowcaseLook = {
   bulb: 1,
   detail: 0.1,
   facet: 0,
+  bareScroll: false,
 };
 
 /**
@@ -235,6 +249,7 @@ const GHIBLI: ShowcaseLook = {
   bulb: 1,
   detail: 0.5,
   facet: 0,
+  bareScroll: false,
 };
 
 /**
@@ -296,6 +311,7 @@ const WATERCOLOR: ShowcaseLook = {
   bulb: 1,
   detail: 0.35,
   facet: 0,
+  bareScroll: false,
 };
 
 /**
@@ -350,6 +366,53 @@ const INK_WASH: ShowcaseLook = {
   bulb: 1,
   detail: 0.3,
   facet: 0,
+  bareScroll: false,
+};
+
+/**
+ * Minimalist: the lamp, and as little else.
+ *
+ * The only style whose defining move is a *removal*, and the removals are in
+ * three places. The scroll loses its furniture and hangs as a bare panel. The
+ * line goes entirely — there is nothing to outline in a picture with no clutter
+ * in it, and an outline is itself a mark. And the colour comes down rather than
+ * up: everything else here pushes saturation to tell objects apart, and this
+ * one lets them be the same warm off-white, because *not* distinguishing things
+ * is the whole aesthetic.
+ *
+ * What is left is one gradient and one warm rectangle, and the picture only
+ * survives that if it is genuinely well lit — so this is the brightest room of
+ * the eight and the only one with no vignette and no bloom. A halo would be a
+ * second thing happening.
+ *
+ * Ten bands, nearly soft, is the one mark it does make. It is not visible as
+ * banding; it is visible as a wall that has resolved to a colour instead of
+ * drifting, which is the difference between a bare room and an empty render.
+ */
+const MINIMALIST: ShowcaseLook = {
+  background: "#efe9df",
+  paint: {
+    ...NO_PAINT,
+    exposure: 2.3,
+    bands: 10,
+    bandSoft: 0.8,
+    ink: 0,
+    saturation: 0.88,
+    tint: "#fff9f0",
+    paperColor: "#fffaf2",
+    lift: 0.07,
+    contrast: 0.96,
+  },
+  bloom: null,
+  vignette: null,
+  ambient: 2.5,
+  ambientColor: { sky: "#d8d3c8", ground: "#9c948a" },
+  fill: 0.48,
+  fillColor: "#fff2e2",
+  bulb: 1,
+  detail: 0.45,
+  facet: 0,
+  bareScroll: true,
 };
 
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
@@ -359,10 +422,10 @@ export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   ghibli: GHIBLI,
   watercolor: WATERCOLOR,
   inkWash: INK_WASH,
+  minimalist: MINIMALIST,
   // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
   // menu offering them. Pointed at the photograph rather than left out so that
   // this stays a total record and nothing has to check for a hole in it.
-  minimalist: REALISTIC,
   lowPoly: REALISTIC,
 };
 

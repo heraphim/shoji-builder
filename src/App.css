@@ -2228,6 +2228,40 @@ select.view-mode option:disabled {
   --sc-thumb-shadow: none;
 }
 
+/* Minimalist.
+
+   The one style where the chrome's job is to not be there. No fill at all —
+   the controls are text and a hairline on the scene itself — and the panel
+   only appears under the pointer, because a control you are about to press is
+   the one moment it has to be a control. Everything is the same warm grey as
+   the room, which is the point: nothing on this page is allowed to be the
+   second thing you notice. */
+.showcase[data-style="minimalist"] {
+  --sc-page: #efe9df;
+  --sc-panel: transparent;
+  --sc-panel-lit: rgba(255, 250, 242, 0.75);
+  --sc-border: rgba(74, 68, 58, 0.22);
+  --sc-border-lit: rgba(74, 68, 58, 0.5);
+  --sc-text: #4a443a;
+  --sc-text-dim: #8d857a;
+  --sc-accent: #8d857a;
+  --sc-radius: 6px;
+  --sc-pill: 4px;
+  --sc-blur: none;
+  --sc-shadow: none;
+  --sc-inset: none;
+  --sc-track: rgba(74, 68, 58, 0.2);
+  --sc-track-shadow: none;
+  --sc-thumb: #4a443a;
+  --sc-thumb-shadow: none;
+}
+
+/* the exception to "no fill": a menu has to sit on top of the room, and a list
+   of eight names read through a nightstand is not minimal, it is unreadable */
+.showcase[data-style="minimalist"] .showcase-menu {
+  background: #fffaf2;
+}
+
 .showcase {
   position: absolute;
   inset: 0;
