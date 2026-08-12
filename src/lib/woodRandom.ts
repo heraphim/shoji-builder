@@ -36,6 +36,8 @@ import {
  * - **The finish.** A board can be left raw or lacquered whatever it is.
  * - **Where the piece sits in the log** — `pith` and `seed`. This is the sawyer,
  *   not the tree, and it changes the figure more than any other single number.
+ *   Flat only in the sense of not being a species' business: the pith is still
+ *   drawn with an opinion about how a board gets cut, which is {@link sawnPith}.
  * - **The grain scale.** The band is narrow on purpose: it is the one parameter
  *   that ties the pattern to millimetres, and outside 120–230 mm per unit the
  *   rings stop being a ring pitch a tree could grow at this latitude and start
@@ -94,11 +96,79 @@ const RANGES: Record<string, Range> = {
   fineWarpScale: { spread: 0.35, min: 3.5, max: 38 },
 
   // Figure and pores.
-  splotchScale: { spread: 0.4, min: 0.12, max: 2.4 },
-  splotchIntensity: { spread: 0.4, min: 0.25, max: 3.6 },
+  //
+  // The blotch floor is a *part size* judgement rather than a timber one. The
+  // noise coordinate moves by about `1.19 · splotchScale` per texture unit, so
+  // below 0.45 a 40 mm piece at a typical grain scale sits inside a tenth of one
+  // lobe: the whole part comes out as a single tinted slab with a slow ramp
+  // across it, which is a stain and not a figure. The generator cannot know
+  // which part its wood will land on, so it has to assume the small one — the
+  // same texture is asked to cover a 5 mm kumiko strip and a table top.
+  splotchScale: { spread: 0.4, min: 0.45, max: 2.4 },
+  // And the ceiling is an arithmetic one — see {@link blotchCeiling}. 1.8 is
+  // above where that bound bites on all but the palest timber, so this is the
+  // bias and the bound is the guarantee.
+  splotchIntensity: { spread: 0.4, min: 0.25, max: 1.8 },
   cellScale: { spread: 0.25, min: 520, max: 1700 },
-  cellSize: { spread: 0.4, min: 0.02, max: 0.38 },
+  // Pore size is the other half of "too dense": the pore field is remapped from
+  // [cellSize, cellSize + 0.21], so a high cellSize is not bigger pores but
+  // *more of the field* pushed to fully dark. Past about a quarter the speckle
+  // stops reading as open grain and starts reading as dirt.
+  cellSize: { spread: 0.4, min: 0.02, max: 0.26 },
 };
+
+/**
+ * How often a board has pores worth drawing at all.
+ *
+ * It was `between(0.05, 0.45)`, which is to say *always*: not one roll in a
+ * hundred thousand came back without speckle, and a library where every board
+ * is ring-porous is as wrong as one where none is. Half the world's furniture
+ * timber is diffuse-porous and shows nothing at this scale.
+ *
+ * A flat coin rather than a low tail, because the two cases are different
+ * *kinds* of timber and not two amounts of one. It also buys the only real
+ * saving in the shader — a board that draws no pores skips the 27-tap voronoi.
+ */
+const PORE_CHANCE = 0.45;
+
+/** How strong they are when there are any. */
+const PORE_STRENGTH = [0.05, 0.3] as const;
+
+/**
+ * How much of the blotch range may be crushed to flat black, as a fraction.
+ *
+ * `woodColor` finishes on a soft light blend that **extrapolates** — three of
+ * the ten presets pass `splotchIntensity` well past 1 — and then a
+ * `clamp(…, 0, 1)`. Past a certain strength that clamp bites, and a clamp is a
+ * crease in the colour field: black on one side and a gradient on the other,
+ * with a visible boundary between. That is what the dark blotches on a
+ * generated board were. Not a lighting artefact and not the pores.
+ *
+ * The blend is `base · [1 − t + t·base + 2·t·blend·(1−base)]`, so everything
+ * below `blend* = (t − 1 − t·base) / (2t(1−base))` is black, and holding
+ * `blend* ≤ B` means `t ≤ 1 / ((1−base)(1−2B))`.
+ *
+ * B is 0.15 rather than 0 for a measured reason. The blotch field is
+ * `noise · 0.5 + 0.5`, which is tightly bell shaped — 0.28% of a surface falls
+ * below 0.15, against 12.6% below 0.35. So 0.15 leaves the occasional dark
+ * fleck, which timber has, while 0.35 is the eighth-of-the-board patch it had.
+ * Demanding no clamp at all would need `t ≤ 1/(1−base)`, and the colours reach
+ * the shader **linear** — `THREE.Color.set` converts, and this app leaves
+ * three's colour management on — where a brown timber's base is 0.02 to 0.15.
+ * That puts the ceiling at 1.06 for the median board, which is not a bias
+ * against dark blotches, it is deleting the blotch layer.
+ */
+const BLOTCH_BLACK_BAND = 0.15;
+
+/**
+ * How far off dead flat-sawn a board may be cut, in degrees, at the very worst.
+ *
+ * See {@link sawnPith}. The angle is what decides the grain direction on the
+ * face of a thin piece: far from the pith the rings are near-parallel lines, and
+ * which way those lines run across a 5 mm strip is `atan(pith.y / pith.x)` and
+ * essentially nothing else.
+ */
+const SKEW_DEGREES = 32;
 
 /**
  * How far the two grain colours may wander, in HSL.
@@ -117,10 +187,12 @@ const SATURATION_SHIFT = 0.09;
  *
  * Drawn directly rather than left to fall out of the species and the finish,
  * and that is the single most important line in this file. A finish in this app
- * is a flat multiply on the colour — `clearcoatDarken`, 1 for raw down to 0.2
+ * is a flat multiply on the colour — `clearcoatDarken`, 1 for raw down to 0.4
  * for gloss — so a gloss on one of the three dark species multiplies a colour
- * that was already near black by a fifth and returns tar. Half the rolls came
- * back as a silhouette of a nightstand.
+ * that was already near black by two fifths and returns tar. Half the rolls came
+ * back as a silhouette of a nightstand. (It was a *fifth* when this was written,
+ * before the finish ladder was shifted down a rung; the aiming below is what
+ * makes the exact figure stop mattering, which is the argument for it.)
  *
  * Aiming at the finished result instead makes every combination legible: a gloss
  * walnut is a *dark polished walnut* rather than a black one, because the timber
@@ -146,6 +218,69 @@ function wander(value: number, { spread, min, max }: Range): number {
 const between = (min: number, max: number) => min + Math.random() * (max - min);
 
 const pick = <T,>(from: readonly T[]): T => from[Math.floor(Math.random() * from.length)];
+
+/**
+ * Where the piece sat in the log, drawn as a **direction and a distance** rather
+ * than as two independent coordinates.
+ *
+ * The box it replaced — `[between(0.3, 1.15), between(-0.45, 0.45)]` — put the
+ * median board 17° off the flat-sawn axis and 41% of them past 20°. On a wide
+ * face that only tilts the cathedral figure a little; on a 5 mm strip it is the
+ * grain running corner to corner, which is a piece no joiner would keep and no
+ * sawyer would cut, because it is the one orientation that has no strength along
+ * its length.
+ *
+ * Nothing about the box was wrong except its shape: it is uniform over a
+ * *rectangle*, and a rectangle has most of its area away from the axis. Drawing
+ * the angle directly is what lets it be biased at all.
+ */
+function sawnPith(): [number, number] {
+  const distance = between(0.35, 1.2);
+  // Cubed, and that cube is the whole of the bias: |u| is flat on [0, 1] and
+  // |u|³ is not, so the median comes out at 4° and the p95 at 27°. Skewed
+  // rather than capped because the occasional bastard-sawn board is real — a
+  // stack of timber has one — and a hard cap would say it never happens.
+  const u = Math.random() * 2 - 1;
+  const angle = (Math.sign(u) * Math.abs(u) ** 3 * SKEW_DEGREES * Math.PI) / 180;
+  return [distance * Math.cos(angle), distance * Math.sin(angle)];
+}
+
+/** An sRGB byte, as the linear value `THREE.Color.set` hands the shader. */
+const toLinear = (c: number) => (c < 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+
+function linearChannels(hex: string): number[] {
+  const n = Number.parseInt(hex.replace("#", ""), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => toLinear(v / 255));
+}
+
+/**
+ * The strongest blotch this particular timber can take. See
+ * {@link BLOTCH_BLACK_BAND} for the arithmetic.
+ *
+ * Against the *mid-ring* colour, which is the board's general tone, rather than
+ * against the late wood — the late-wood line is a thin near-black stroke and
+ * nobody notices it reaching black. What is noticed is a patch of the field
+ * doing it.
+ *
+ * The mix is redone here in linear rather than borrowed from `averageWoodColor`,
+ * which does the same mix in sRGB bytes for the benefit of swatches and
+ * outlines. Mixing before and after the transfer curve are not the same
+ * operation, and this one has to match what the shader does or the bound it
+ * yields is a bound on the wrong number.
+ *
+ * The darkest channel decides it. A ceiling set on the average would let the
+ * blue of a red-brown timber clamp on its own, and a patch where only blue has
+ * gone to zero is not a dark blotch — it is a saturated red one.
+ */
+function blotchCeiling(params: WoodParams): number {
+  const dark = linearChannels(params.darkGrainColor);
+  const light = linearChannels(params.lightGrainColor);
+  const t = 1 - params.grainContrast / 2;
+  const base = Math.min(
+    ...dark.map((d, i) => (d + (light[i] - d) * t) * params.clearcoatDarken)
+  );
+  return 1 / Math.max((1 - base) * (1 - 2 * BLOTCH_BLACK_BAND), 1e-3);
+}
 
 // ---------------------------------------------------------------------------
 // Colour
@@ -257,12 +392,12 @@ export function randomWood(): WoodCandidate {
   const preset = woodPreset(species, finish);
   const colors = wanderColors(base.darkGrainColor, base.lightGrainColor, preset.clearcoatDarken);
 
-  const params = sanitizeWoodParams({
+  const drawn: WoodParams = {
     ...preset,
 
     // where the sawyer put it
     grainScale: between(120, 230),
-    pith: [between(0.3, 1.15), between(-0.45, 0.45)],
+    pith: sawnPith(),
     seed: randomSeed(),
 
     centerSize: wander(base.centerSize, RANGES.centerSize),
@@ -286,10 +421,19 @@ export function randomWood(): WoodCandidate {
     // ten species, so there is no species opinion to walk away from. How marked
     // the figure is and how open the pores are is the timber, not the table.
     grainContrast: between(0.32, 0.72),
-    poreIntensity: between(0.05, 0.45),
+    // A coin first, an amount second. See {@link PORE_CHANCE}.
+    poreIntensity: Math.random() < PORE_CHANCE ? between(...PORE_STRENGTH) : 0,
 
     darkGrainColor: colors.dark,
     lightGrainColor: colors.light,
+  };
+
+  // Last, because it is the only number here that depends on another one: how
+  // hard the blotch may be pushed is decided by the colours it will be pushed
+  // against, and those are not known until they have been drawn.
+  const params = sanitizeWoodParams({
+    ...drawn,
+    splotchIntensity: Math.min(drawn.splotchIntensity, blotchCeiling(drawn)),
   });
 
   return { species, finish, params };

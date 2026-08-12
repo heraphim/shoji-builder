@@ -600,11 +600,12 @@ const GLOSS_VARIANCE = 0.58;
  * Every light in the app is a delta light — `directionalLight` and
  * `pointLight`, see `SceneLights` and `ShowcaseScene` — which means it has no
  * size at all. A highlight is the reflected *image* of the source, so a source
- * of no size reflects as a point, spread only by the material's own lobe. On a
- * gloss finish that lobe is 0.37° across: the varnish was mirroring something
- * sharper than the sun, at a peak radiance six hundred times the bare timber's,
- * and it landed as a hard white blob rather than as the long soft streak a
- * board under a window or a bulb actually shows.
+ * of no size reflects as a point, spread only by the material's own lobe. At a
+ * `clearcoatRoughness` of 0.1 — what `gloss` carried when this was written, and
+ * still what the slider reaches — that lobe is 0.37° across: the varnish was
+ * mirroring something sharper than the sun, at a peak radiance six hundred times
+ * the bare timber's, and it landed as a hard white blob rather than as the long
+ * soft streak a board under a window or a bulb actually shows.
  *
  * The stipple in it was the same fact seen from the other side. A lobe that
  * narrow is decided by a normal wobble of six thousandths of a radian, which is
