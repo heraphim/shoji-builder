@@ -216,5 +216,47 @@ console.log("\n[5] a component the library no longer has");
   check("the rest of the lamp still lays out", scene.placements.size === instances.length);
 }
 
+console.log("\n[6] a component that has gained a variable since the lamp was saved");
+{
+  // The leg, re-cut against a variable that did not exist when the lamp was
+  // written — which is what editing a component in the meantime does. No lamp
+  // file can carry it, so the file is not wrong; it simply cannot know.
+  const leg = defOf("leg.component.json");
+  const grown: LampComponentDef = {
+    ...leg,
+    blocks: leg.blocks.map((block, i) =>
+      i === 0
+        ? { ...block, size: [`(${block.size[0]}) * #legScale`, block.size[1], block.size[2]] as [string, string, string] }
+        : block
+    ),
+    variables: { ...leg.variables, legScale: "3" },
+  };
+  const grownDefs = new Map(defs);
+  grownDefs.set("leg.component.json", grown);
+
+  const loaded = toInstances(parseLampFile(file), grownDefs);
+  check("the variable the file lacks is handed back", loaded.variables.legScale === "3");
+  check(
+    "...and only that one — anything the file defines is the file's to decide",
+    Object.keys(loaded.variables).join(",") === "legScale",
+    Object.keys(loaded.variables).join(",")
+  );
+
+  const xOf = (raw: Record<string, string>) => {
+    const box = computeScene(loaded.instances, raw).shapes.get("leg-1")!.boxes[0];
+    return box.max.x - box.min.x;
+  };
+  const was = computeScene(built, RAW).shapes.get("leg-1")!.boxes[0];
+
+  // the bug this guards: unresolvable formulas send every block of the
+  // component to the 1 mm fallback, silently
+  check("without it the leg collapses to the 1 mm fallback", xOf(RAW) === 1, `${xOf(RAW)} mm`);
+  check(
+    "with it the leg is cut at the new variable",
+    Math.abs(xOf({ ...loaded.variables, ...RAW }) - (was.max.x - was.min.x) * 3) < 1e-9,
+    `${xOf({ ...loaded.variables, ...RAW })} vs ${(was.max.x - was.min.x) * 3}`
+  );
+}
+
 console.log(`\n${failures === 0 ? "ALL PASS" : failures + " FAILURE(S)"}\n`);
 process.exit(failures === 0 ? 0 : 1);

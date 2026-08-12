@@ -227,11 +227,25 @@ function toConnection(saved: SavedConnection | null): LampConnection | null {
  *
  * Freeing is one pass, not transitive: a part joined to a *freed* part still has
  * its target, and that target still has a place.
+ *
+ * ### The variables the file cannot know about
+ *
+ * `variables` is what the components need and the *file* does not define: a
+ * component may have gained a variable since the lamp was saved, and no lamp file
+ * can carry one that did not exist when it was written. Left out, the component's
+ * formulas name something unresolvable and `buildShape` falls back — the whole
+ * part comes back as 1 mm cubes, with nothing anywhere to say why.
+ *
+ * It is handed back rather than merged here because who wins is the caller's
+ * decision and the two callers differ: the design's own value wins on the bench,
+ * the lamp's saved value wins in a preview. Both agree the *file* wins over the
+ * component, which is why anything the file names is excluded. Where two
+ * components disagree about a name the file does not have, the first def wins.
  */
 export function toInstances(
   lamp: LampFile,
   defs: Map<string, LampComponentDef>
-): { instances: LampInstance[]; missing: string[] } {
+): { instances: LampInstance[]; missing: string[]; variables: Record<string, string> } {
   const missing = [...new Set(lamp.instances.map((i) => i.component))].filter((n) => !defs.has(n));
   const kept = new Set(lamp.instances.filter((i) => defs.has(i.component)).map((i) => i.id));
 
@@ -254,5 +268,13 @@ export function toInstances(
     ];
   });
 
-  return { instances, missing };
+  const variables: Record<string, string> = {};
+  for (const def of defs.values()) {
+    for (const [name, formula] of Object.entries(def.variables)) {
+      if (name in lamp.variables || name in variables) continue;
+      variables[name] = formula;
+    }
+  }
+
+  return { instances, missing, variables };
 }

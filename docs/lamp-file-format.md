@@ -104,6 +104,12 @@ by name, its instances are dropped, and anything joined to a dropped instance is
 there resolves to no placement at all, which would stack the orphans at the
 origin. Freed, they stand where the file left them: wrong-looking, but findable.
 
+The other cost is the one that is easy to miss: a component may have gained a
+**variable** since the lamp was saved, and no file can carry one that did not
+exist when it was written. So `toInstances` hands back, beside the instances,
+every variable the defs name that the file itself does not define — see
+[loading](#loading--toinstanceslamp-defs).
+
 ### What is deliberately not written
 
 **Any geometry.** There is none to write; the lamp side holds none. Every solid
@@ -148,6 +154,23 @@ would leave it at values it was never drawn at. A variable the file does not
 mention keeps what it has, so a lamp saved before the design gained a variable
 does not blank it.
 
+### The variables the file cannot know about
+
+`toInstances` returns a third thing: `variables`, the names the components need
+that the file does not define. Anything the file names is excluded, so the file
+always wins; where two components disagree about a name it lacks, the first def
+wins.
+
+Leaving these out is not a cosmetic loss. An unresolvable formula makes
+`buildShape` fall back, and the fallback is a **1 mm cube per block** — so a
+component improved since the save comes back as a speck, with nothing anywhere
+saying why. Both callers merge them in and differ only in who wins:
+
+- `useLampStore.loadLamp` fills only the names the design has no value for, the
+  same rule `insertComponent` follows — the design always wins.
+- The Assets tab draws its card at the lamp's own saved variables over these, so
+  a thumbnail still answers a question about the file.
+
 ## The library
 
 Lamps live in `public/models/lamps`, exactly as components live in
@@ -186,6 +209,8 @@ Given the components it names are present:
    collapsed one.
 6. **The name and description come back** — the name off the file name, the
    description out of the file.
+7. **A component edited since the save still loads at full size**, including one
+   that now names a variable the file has never heard of.
 
 ## Version history
 

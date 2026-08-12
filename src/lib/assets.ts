@@ -93,7 +93,12 @@ export interface LampAsset extends AssetCommon {
   library: "lamps";
   /** Its parts, against the components the library holds now. */
   instances: LampInstance[];
-  /** The variables it was saved at — what the preview is drawn at. */
+  /**
+   * The variables it was saved at — what the preview is drawn at — over
+   * anything its components need that the file itself does not define. See
+   * {@link toInstances}: a card drawn without those fill-ins shows the parts of
+   * every component edited since the save as 1 mm cubes.
+   */
   variables: Record<string, string>;
   /** Components it names that the library no longer has. */
   missing: string[];
@@ -243,14 +248,15 @@ async function readLamp(
       if (def) defs.set(component, def);
     })
   );
-  const { instances, missing } = toInstances(lamp, defs);
+  const { instances, missing, variables } = toInstances(lamp, defs);
   return {
     kind: "lamp",
     library: "lamps",
     file,
     name: assetName(file),
     instances,
-    variables: lamp.variables,
+    // the file last, so its own value wins wherever it has one
+    variables: { ...variables, ...lamp.variables },
     missing,
   };
 }

@@ -382,7 +382,18 @@ async function applyLampFile(
   }
 
   useVariablesStore.getState().loadDesign(lamp.variables, lamp.paired, lamp.stashed);
-  const { instances, missing } = toInstances(lamp, defs);
+  const { instances, missing, variables } = toInstances(lamp, defs);
+
+  // A component that has been edited since the lamp was saved may name a
+  // variable the file has never heard of, and the file is not wrong for that —
+  // it could not have written one that did not exist. Merged in exactly as
+  // `insertComponent` merges them, and for the same reason: the design always
+  // wins, so this only ever fills a hole. Without it the improved component
+  // comes back as 1 mm cubes and says nothing.
+  for (const [name, formula] of Object.entries(variables)) {
+    const design = useVariablesStore.getState();
+    if (!(name in design.raw)) design.setVariable(name, formula);
+  }
 
   set({
     instances,
