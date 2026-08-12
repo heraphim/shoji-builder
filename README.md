@@ -48,7 +48,7 @@ everything else wears, which needs no UVs and adds nothing to the download.
 
 ### The checks
 
-`src/lib/__*check.ts` are standalone harnesses for the six things that are worth
+`src/lib/__*check.ts` are standalone harnesses for the seven things that are worth
 asserting numerically rather than eyeballing: that a joint stays on the feature it
 was picked on (`__anchorcheck`), that a saved lamp responds to a slider exactly as
 a rebuilt one does (`__lampfilecheck`), that a union of boxes gives the outline
@@ -56,9 +56,11 @@ the CSG would (`__outlinecheck`), that the Assets tab's badges and previews
 agree with the library they describe (`__assetscheck`), that the settings kept
 in `localStorage` survive the round trip — including the malformed blobs, which is
 the half nobody sees fail until the browser has been closed (`__settingscheck`) —
-and that the showcase's paper shell is five faces, all wound to face outwards, at
-one scale (`__papercheck`): none of which can be seen from the code, and all of
-which are unmistakable the moment they are wrong on screen.
+that the generator's roll journal buffers, survives a reload and lands as one
+commit rather than one per click (`__rollscheck`), and that the showcase's paper
+shell is five faces, all wound to face outwards, at one scale (`__papercheck`):
+none of which can be seen from the code, and all of which are unmistakable the
+moment they are wrong on screen.
 
 There is no test runner. Each is bundled to ESM and run under Node, from the
 project root — `__assetscheck` answers `fetch` off `public/`, so it exercises the
@@ -97,9 +99,9 @@ component instead of the old one at the old size. See
 | [docs/algorithms/rectangle-partition.md](docs/algorithms/rectangle-partition.md) | Minimum rectilinear rectangle partition |
 | [docs/algorithms/projection-and-dimensions.md](docs/algorithms/projection-and-dimensions.md) | Hidden-line removal, dimension chain layout, framing |
 | [docs/algorithms/wood-texture.md](docs/algorithms/wood-texture.md) | Solid (3-D) wood texturing: noise, rings, warp, pores |
-| [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v5, save and load |
-| [docs/lamp-file-format.md](docs/lamp-file-format.md) | `*.lamp.json` schema v1 — which components are on the lamp, and how |
-| [docs/texture-file-format.md](docs/texture-file-format.md) | `*.texture.json` schema v1 — the wood as parameters, never an image |
+| [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v6, save and load |
+| [docs/lamp-file-format.md](docs/lamp-file-format.md) | `*.lamp.json` schema v2 — which components are on the lamp, and how |
+| [docs/texture-file-format.md](docs/texture-file-format.md) | `*.texture.json` schema v2 — the wood as parameters, never an image |
 | [docs/ui-guide.md](docs/ui-guide.md) | What each control does and the intended workflow |
 | [docs/glossary.md](docs/glossary.md) | Block, span, station, run, group, anchor, … |
 | [initial-plan.md](initial-plan.md) | The original iteration-1 plan (historical) |

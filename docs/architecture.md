@@ -37,14 +37,28 @@ thing it shares is the texture library it writes into.
 hold — and owns no store: it reads the libraries, and loading anything from it
 calls the same loader that tab's own file menu calls.
 
-Everything under `src/lib` is pure and side-effect free apart from `library.ts`,
-which is nothing but I/O — it is where `fetch`, `localStorage` and the download
-anchor are allowed to live — `rollJournal.ts`, which holds a buffer, a timer and
-two window listeners on purpose, because they have to outlive the page that
-fills them — and `componentFile.ts`, which reads the two stores.
-`lampFile.ts` reads no store: its format functions take what they need as
-arguments, so the lamp store can own the fetching without an import cycle. The
-stores hold state; the libraries hold the arithmetic.
+The arithmetic under `src/lib` is pure. What is not, and why:
+
+- **`library.ts`** is nothing but I/O — it is the one place `fetch`,
+  `localStorage` and the download anchor are allowed to live, and it is the only
+  module that performs any of them.
+- **`rollJournal.ts`** holds a buffer, a timer and two window listeners on
+  purpose, because they have to outlive the page that fills them.
+- **The four modules that reach the library through it** — `componentFile.ts`,
+  `lampFile.ts`, `textureFile.ts` and `assets.ts` — each pair a pure format half
+  (build / parse / derive) with a thin `list…` / `load…` half that calls
+  `library.ts`. The pure half is what the checks and the previews exercise; the
+  I/O half is convenience, and it never introduces a second definition of the
+  format.
+- **`componentFile.ts` also reads the two stores**, which is what lets
+  `buildComponentFile()` take no arguments. `lampFile.ts` deliberately does not:
+  its format functions take what they need as arguments, so the lamp store can
+  own the fetching without an import cycle.
+- **`woodMaterial.ts`, `surfaces.ts`, `ricePaper.ts` and `woodEnvironment.ts`**
+  build three.js objects, which is allocation rather than a side effect, but it
+  does mean they cannot be imported outside a renderer.
+
+The stores hold state; the libraries hold the arithmetic.
 
 ## Module map
 
@@ -55,6 +69,7 @@ stores hold state; the libraries hold the arithmetic.
 | `formula.ts` | The variable expression language: tokenize → parse → evaluate, plus dependency-ordered resolution of a whole variable dictionary. |
 | `blocks.ts` | Everything about a part *being a box*: is this geometry a box, build a box, convert a point ⇄ a fractional anchor on a box. |
 | `measure.ts` | Spans (an axis + two coordinates), the span solver that derives unmeasured values, stations (where the solid has faces), runs (where the solid has material), and a raycast helper. |
+| `edgeStatus.ts` | How well each edge of the model is pinned down — **known** (a span the designer set), **implied** (the solver chains to it), **unknown** (nothing reaches it) — and the three colours that say so on the drawing itself. Identity is by span, as everywhere else, so the four arrises stating one extent all colour the same. |
 | `rectangles.ts` | Minimum partition of a rectilinear polygon (with holes) into axis-aligned rectangles. |
 | `assembly.ts` | CSG union of joined parts, face-topology extraction, outline recovery, solid retessellation, hidden-line splitting, parallel-edge lookup. |
 | `picking.ts` | Raycast-hit helpers (nearest vertex, world normal, world triangle), STL island splitting, bounding volumes, orthographic camera basis. |
@@ -73,6 +88,7 @@ stores hold state; the libraries hold the arithmetic.
 | `testBeams.ts` | The four 200 mm sticks a texture is judged on — 5, 10, 20 and 40 mm section, parallel, cut from one log, with their positions baked in so each samples a different place in it. Shared by the Textures tab and the generator. |
 | `wood.ts` | What a wood texture *is*, as data: the parameter set, the ten species presets and four finishes taken verbatim from three.js's `WoodNodeMaterial`, and the seed. No three.js, no shader — just numbers, because the numbers are what gets saved. |
 | `woodMaterial.ts` | Those numbers as something the renderer can draw — including the grain's *relief* and the gloss difference between earlywood and latewood, both derived from the same ring field the colour comes from: the solid-texture GLSL, injected into a `MeshPhysicalMaterial` through `onBeforeCompile`, plus the object → texture-space matrix. The one file that would be replaced wholesale by `WoodNodeMaterial` if the app ever moved to `WebGPURenderer`. |
+| `woodEnvironment.ts` | The surround a finished board reflects, because every light in this app is a delta light and a delta light can only be the highlight. Elevation and nothing else — dark below, dim above, a soft band between — assigned to `WoodMaterial.envMap` alone rather than to `scene.environment`, which would add a second bounce underneath all eight showcase styles' hand-derived ambients. |
 | `textureFile.ts` | Serialise a texture to `*.texture.json` and read it back, field by field against the defaults. Owns that format. |
 | `assets.ts` | All three libraries read as things to *look at*: one catalogue entry per file, cut down to what a card shows (how many sizes nothing measures, what it is dressed in, which components a lamp is missing), plus the geometry each preview draws. Loads nothing onto a bench — that stays with the three loaders above. |
 
@@ -98,8 +114,11 @@ stores hold state; the libraries hold the arithmetic.
 | `FileStatusBar` | The strip above the views: what the last file action did, and what is on the bench. |
 | `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn the saves on at all, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
 | `CollapsiblePanel` | One sidebar panel, on every tab. Folds from its header; the state is remembered by `usePanelStore`. |
+| `DocumentPanel` | The top panel of all three sidebars: what the thing on the bench is called and what it is for. The name **is** the file name — "Save (overwrite)" writes `<name><extension>` — so the note under the field spells out what `sanitizeName` will actually write. |
+| `LookOptions` | The Options panel, the same component in all three sidebars driving the one `useLookStore`: the three light intensities and the two cues that stand in for arrises. Near the top of each sidebar, because a panel you reach for when the view has gone unreadable should not be behind the whole design. |
 | `ViewportGrid` | The view grid, shared by all three tabs: one to four cells over a single `<Canvas>`, the per-cell header (draw modes, minimise, drag-to-swap slots), the minimised strip, and each cell's measured pixel size. |
 | `ShowcasePage` | The page the app opens on, and the only one that is not a bench: the lamp in a room, with the lamp picker, the two light switches, the style menu, Editor, zen and the Width/Height sliders over it. Holds only the style and the switches; the lamp it shows is the lamp on the bench. Its own `<Canvas>` rather than a cell in `ViewportGrid` — an `EffectComposer` takes over the render loop, which is exactly what the scissored `<View>`s cannot survive. |
+| `ShowcaseLoading` | The showcase's loading screen: the lamp assembling one part at a time as the work completes. SVG rather than 3D on purpose — the longest wait is the renderer itself, and an indicator that needs the renderer cannot appear until the thing it is waiting for has arrived. |
 | `ShowcaseScene` | The one scene every style is drawn from: the bulb inside the shade and the paper shell around it, the pendant, what comes through the window, the room, the bloom, and a camera framed on the lamp once rather than on every slider frame. Four switchable sources, and the notes on each say what its numbers mean — candela at millimetre scale runs to the millions, and the shadow bias has to be read together with the blur radius. What each style does to it is a block of numbers in `lib/showcaseLook.ts`, not a branch here. |
 | `ShowcaseProps` | Downloaded furniture: loads a `.glb` from `public/models/props/`, swaps its materials for the room's own, and fits it by size-and-anchor rather than by a written-down scale factor — so replacing the file re-fits it. The fit is baked into the **vertices**, not the node, because every material in this room is a solid texture in millimetres and a node scale does not reach one. The models bring geometry only; their texture sets are stripped in conversion, because the cloth and wood shaders here need no UVs and cost no bytes. |
 | `ShowcaseRoom` | The bedroom, out of boxes and cylinders: walls, ceiling, pendant, a window in the side wall with a shoji screen slid across it, and the painting hanging behind the lamp. The nightstand and the bed are the two things in here that are not boxes — see `ShowcaseProps`. |
@@ -113,6 +132,7 @@ stores hold state; the libraries hold the arithmetic.
 | `TextureGeneratorPage` | The Texture Generator tab: a random wood on the showcase nightstand with the test sticks on it, and two buttons. Both verdicts go to `rollJournal.ts` and roll again — neither waits for a write. One studio scene, mounted once, so the camera survives every roll. |
 | `TextureSidebar` | Every generator control, grouped the way a timber is described rather than the way the shader is written: which tree, where in the log, the rings, how they wander, the figure, the finish. |
 | `PartSurface` | The two hooks that decide how a solid is painted, shared by all three tabs: `useWoodMaterial` (build once, write uniforms in place, so a slider drag does not recompile the program) and `usePartTexture` (resolve a texture *name* to parameters, overriding its grain axis with the part's). |
+| `SceneLights` | The one lighting rig every lit cell renders instead of lights of its own — ambient, key and fill from the Options panel, at fixed positions — plus the contact shadow and the layer (`SHADE_LAYER`) a mesh has to be on to cast into it. |
 | `PerspectiveView` | 3D cell: camera framing, lights, grid, `<UploadedMesh>`, OrbitControls. |
 | `OrthographicView` | One projection cell: blueprint grid, hidden-line projection, dimension chains, pickable edges, axis triad. |
 | `UploadedMesh` | The merged solids themselves plus every hover/selection overlay, and the edge-picking hooks shared by all four views. |
@@ -334,6 +354,22 @@ has a directory index, so the plugin serves `index.json` for all three in dev an
 emits the same listings as build assets. It is the no-token path only: a browser
 with a token lists the branch through the contents API instead and never asks for
 `index.json` at all (`lib/library.ts`).
+
+### `public/models/generated-components` is not one of them
+
+A fourth folder sits beside the three: 243 machine-written components with a
+committed `index.json` and a README of its own. **Nothing in the app can reach
+it.** `Library` in `lib/library.ts` is the closed union
+`"components" | "lamps" | "textures"`, every path is built as
+`public/models/<lib>`, and `LIBRARIES` in `vite.config.ts` names the same three —
+so the folder is neither listed by the plugin, nor listable through the contents
+API, nor offered by any picker. It is still copied into `dist/` on every build,
+which is where most of the deployed site's weight now is.
+
+It is a staging area, not a library, and it should end one of two ways: the files
+move into `public/models/components` where the app can see them, or the folder
+moves out of `public/` so the build stops shipping it. Either way this note
+should go with it.
 
 The dev listing is `readdirSync` **per request**, so the server never needs
 restarting for a new design — but the page fetched it once, on mount, which made
