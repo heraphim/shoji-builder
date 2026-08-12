@@ -37,23 +37,78 @@ import { BEAMS, BEAM_LENGTH_MM, SECTIONS } from "../lib/testBeams";
 
 /** Where the size labels hang: clear of every beam in all four views. */
 const LABEL_X = -125;
-const LABEL_Y = 34;
+const LABEL_Y = Math.max(...SECTIONS) + 8;
 const LABEL_HEIGHT = 11;
 
 /**
  * What the views frame on. Fixed, because the bench is.
  *
- * Includes the labels, which sit outside the beams — framing on the beams alone
- * pushed every label off the left edge of its cell.
+ * The four sticks and their labels, and deliberately **not** the slab they
+ * stand on: framing on that would draw the 5 mm strip four pixels wide. The
+ * slab running off all four edges of every cell is not an oversight, it is what
+ * makes it read as a slab rather than as a fifth test piece.
  */
 const BENCH_BOX = new THREE.Box3(
-  new THREE.Vector3(LABEL_X - 12, -Math.max(...SECTIONS) / 2, BEAMS[0].centerZ - SECTIONS[0]),
+  new THREE.Vector3(LABEL_X - 12, 0, BEAMS[0].centerZ - SECTIONS[0]),
   new THREE.Vector3(
     BEAM_LENGTH_MM / 2,
     LABEL_Y + LABEL_HEIGHT,
     BEAMS[BEAMS.length - 1].centerZ + SECTIONS[SECTIONS.length - 1]
   )
 );
+
+// ---------------------------------------------------------------------------
+// The slab the bench stands on
+// ---------------------------------------------------------------------------
+
+/**
+ * How big the slab is, in mm: along the grain, then across it.
+ *
+ * Eight times the length of a test stick and two hundred times the width of the
+ * smallest one, which is the whole point of it — the four sticks answer whether
+ * a ring pitch survives being cut small, and nothing on this bench used to
+ * answer the other half, which is what the same timber does across a panel
+ * nobody could cut out of one 200 mm stick. That question is why the Texture
+ * Generator shows a nightstand; this is the same question with none of the
+ * nightstand's geometry in the way of the answer.
+ *
+ * Not larger, and this is the limit rather than a preference: the log is only
+ * a couple of texture units across before its rings stop curving, so a panel of
+ * four or five units already shows everything the texture has. Past that it is
+ * repeating parallel stripes, and at some width it swallows the pith and comes
+ * back with a bullseye in the middle of the floor.
+ */
+const SLAB_MM: [number, number] = [1600, 1000];
+
+/**
+ * How far the slab's near edge is held off the heart of the log, in mm.
+ *
+ * The texture is read in **object** space, so where a mesh samples the log is
+ * decided by its vertex coordinates and not by where it is put — see
+ * `lib/testBeams.ts`, which is the same fact stated from the other end. A quad
+ * built the obvious way spans ±500 mm about its own origin, which at any usable
+ * grain scale means it straddles the pith: a bullseye dead in the middle of the
+ * slab, rings tightening into it, and a piece of timber that never grew.
+ *
+ * So the geometry is pushed entirely onto one side of the pith and the mesh is
+ * then slid back the same distance in the world. The slab lands centred under
+ * the sticks and samples a flat-sawn board a metre wide, which is what it is
+ * meant to be a picture of.
+ */
+const SLAB_CLEAR_MM = 40;
+
+const SLAB = (() => {
+  const [length, width] = SLAB_MM;
+  // In its own XY with Z at zero, which is `PlaneGeometry`'s own layout and is
+  // also the one that samples the log correctly: X is the part axis the beams
+  // run down, so the slab's length lies along the grain like theirs.
+  const geometry = new THREE.PlaneGeometry(length, width);
+  geometry.translate(0, width / 2 + SLAB_CLEAR_MM, 0);
+  return geometry;
+})();
+
+/** Object +Y ends up at world −Z under the lay-flat rotation; undo it here. */
+const SLAB_AT: [number, number, number] = [0, 0, SLAB_MM[1] / 2 + SLAB_CLEAR_MM];
 
 // ---------------------------------------------------------------------------
 // The scene
@@ -65,8 +120,25 @@ function TextureBench({ material }: { material: MaterialMode }) {
 
   if (material === "none") return null;
 
+  // The slab is one quad, so it is the one thing on this bench with a back to
+  // see: everything else is a closed box whose back faces never reach a pixel.
+  // Set here rather than in the material because it is this bench's business —
+  // `useWoodMaterial` hands every caller its own instance.
+  if (wood) wood.side = THREE.DoubleSide;
+
   return (
     <group>
+      {/* Lit and textured, but no `castsShade`: it is the floor the pool of
+          shade lands on, and a floor that shadows itself is a grey floor. */}
+      {wood && (
+        <mesh
+          geometry={SLAB}
+          material={wood}
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={SLAB_AT}
+          raycast={() => null}
+        />
+      )}
       {BEAMS.map((beam) =>
         wood ? (
           <mesh
@@ -74,10 +146,20 @@ function TextureBench({ material }: { material: MaterialMode }) {
             ref={castsShade}
             geometry={beam.geometry}
             material={wood}
+            // Stood on the slab rather than straddling it. `position` and not a
+            // translated geometry, so each stick goes on showing the slice of
+            // log it was cut from — the same distinction the slab above turns on.
+            position={[0, beam.section / 2, 0]}
             raycast={() => null}
           />
         ) : (
-          <mesh key={beam.section} ref={castsShade} geometry={beam.geometry} raycast={() => null}>
+          <mesh
+            key={beam.section}
+            ref={castsShade}
+            geometry={beam.geometry}
+            position={[0, beam.section / 2, 0]}
+            raycast={() => null}
+          >
             <meshStandardMaterial color={BLUEPRINT.solid} flatShading />
           </mesh>
         )

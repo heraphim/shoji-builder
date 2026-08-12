@@ -164,7 +164,7 @@ function App() {
           ) : tab === "textures" ? (
             <TexturesPage />
           ) : tab === "textureGenerator" ? (
-            <TextureGeneratorPage />
+            <TextureGeneratorPage onEdit={() => setTab("textures")} />
           ) : (
             <AssetsPage onOpen={setTab} />
           ))}

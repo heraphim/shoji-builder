@@ -244,6 +244,28 @@ export const FINISH_LABELS: Record<WoodFinish, string> = {
 /**
  * What a finish does. `roughness` is this port's addition — the original leaves
  * the base material's default, which reads as plastic under a clearcoat.
+ *
+ * ## The ladder was shifted down a rung
+ *
+ * `gloss` now carries what `semigloss` used to, and `semigloss` sits half as
+ * glossy again — which puts it midway between its old self and `matte` on all
+ * three numbers, not just on the one that names it. That is deliberate: a
+ * finish is not a gloss setting with three unrelated numbers beside it. Fewer
+ * coats means a film that follows the grain more (`clearcoatRoughness` is the
+ * proxy `woodMaterial.ts` reads for how much was built up), a base that shows
+ * more of its own texture (`roughness`), and less darkening of the timber under
+ * it (`clearcoatDarken`) — so they move together or the result is a sheen that
+ * belongs to no real finish.
+ *
+ * What is left is an even ladder: `clearcoatRoughness` steps 1.0 / 0.7 / 0.4 and
+ * `clearcoatDarken` 0.6 / 0.5 / 0.4. The top of it is now a hand-rubbed varnish
+ * rather than a sprayed piano finish, which is the range this project's timber
+ * actually gets.
+ *
+ * Saved textures are untouched by this. A `*.texture.json` stores the four
+ * numbers, not the name — `finish` is recorded beside them as provenance only
+ * (see `textureFile.ts`) — so a library file goes on looking exactly as it did
+ * and only a freshly *applied* finish picks up the new values.
  */
 export const WOOD_FINISHES: Record<
   WoodFinish,
@@ -251,8 +273,8 @@ export const WOOD_FINISHES: Record<
 > = {
   raw: { roughness: 0.92, clearcoat: 0, clearcoatRoughness: 0, clearcoatDarken: 1 },
   matte: { roughness: 0.8, clearcoat: 1, clearcoatRoughness: 1, clearcoatDarken: 0.6 },
-  semigloss: { roughness: 0.66, clearcoat: 1, clearcoatRoughness: 0.4, clearcoatDarken: 0.4 },
-  gloss: { roughness: 0.5, clearcoat: 1, clearcoatRoughness: 0.1, clearcoatDarken: 0.2 },
+  semigloss: { roughness: 0.73, clearcoat: 1, clearcoatRoughness: 0.7, clearcoatDarken: 0.5 },
+  gloss: { roughness: 0.66, clearcoat: 1, clearcoatRoughness: 0.4, clearcoatDarken: 0.4 },
 };
 
 /**

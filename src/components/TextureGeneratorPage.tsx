@@ -188,9 +188,14 @@ function GeneratorScene({ candidate }: { candidate: WoodCandidate }) {
   );
 }
 
-export function TextureGeneratorPage() {
+/**
+ * @param onEdit Walk through to the Textures tab. A callback rather than the tab
+ *   id itself, because this page has no other reason to know that tabs exist.
+ */
+export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
   const library = useTextureStore((state) => state.library);
   const loadLibrary = useTextureStore((state) => state.loadLibrary);
+  const openTexture = useTextureStore((state) => state.openTexture);
 
   // The first candidate is rolled once, in a lazy initialiser: rolling it in the
   // render body would hand back a different wood every time React drew the page.
@@ -221,8 +226,16 @@ export function TextureGeneratorPage() {
   // click would otherwise roll a new candidate out from under the first save.
   const busy = useRef(false);
 
-  const accept = async () => {
-    if (busy.current) return;
+  /**
+   * Write the candidate, and hand back the file that was written.
+   *
+   * Both buttons that keep a wood go through here, and both keep it *the same
+   * way* — the difference between them is only what happens next. Null means
+   * the write failed and the error is already on screen, so neither caller has
+   * to decide what a half-finished accept means.
+   */
+  const save = async (): Promise<ReturnType<typeof buildTextureFile> | null> => {
+    if (busy.current) return null;
     busy.current = true;
     setSaving(true);
     setError(null);
@@ -230,13 +243,39 @@ export function TextureGeneratorPage() {
       const file = buildTextureFile(name, candidate.species, candidate.finish, candidate.params);
       setNote(await saveLibraryFile("textures", `${name}.texture.json`, file));
       void loadLibrary();
-      roll();
+      return file;
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
+      return null;
     } finally {
       busy.current = false;
       setSaving(false);
     }
+  };
+
+  const accept = async () => {
+    if (await save()) roll();
+  };
+
+  /**
+   * Keep this one and go and work on it.
+   *
+   * Saves first and *then* opens, rather than putting the parameters straight on
+   * the bench, because the two do different things to what follows. A bench
+   * holding an unsaved wood has no document name, so the first Save over there
+   * would ask for one — and the one it should have is the one this page has
+   * already worked out and is showing next to the button. Written first, the
+   * texture arrives in the editor as a file that exists, and Save means save.
+   *
+   * No fresh roll on the way out. Accept's roll is there because you are staying
+   * to judge the next one; here you are leaving, and rolling on the way would
+   * mean coming back to a wood you never saw.
+   */
+  const edit = async () => {
+    const file = await save();
+    if (!file) return;
+    openTexture(file, name);
+    onEdit();
   };
 
   const reject = () => {
@@ -292,6 +331,19 @@ export function TextureGeneratorPage() {
             disabled={saving}
           >
             Reject
+          </button>
+          {/* Between the two, and quiet like Reject, because it is not the
+              answer to the question this page keeps asking. It is the way out of
+              the loop: this one is nearly right, and the last of it wants
+              thirty sliders rather than another roll. */}
+          <button
+            type="button"
+            className="generator-button"
+            title={`Save ${name} and open it on the Textures bench`}
+            onClick={() => void edit()}
+            disabled={saving}
+          >
+            Edit
           </button>
           <button
             type="button"
