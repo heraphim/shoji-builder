@@ -139,6 +139,22 @@ const float WOOD_TAU = 6.283185307179586;
  */
 float gWoodField = 1.0;
 
+/**
+ * The other surface term: how worn this patch of the board is, at the scale of a
+ * hand rather than of a ring.
+ *
+ * A finish is not one number across a whole top. It is thicker where the brush
+ * loaded and thinner where it dragged, it is polished where things are put down
+ * and dull where they are not, and none of that has anything to do with the
+ * grain underneath it. Without a term at this scale every board in the room came
+ * back with the identical even sheen, which is the look of a material setting
+ * rather than of a finish.
+ */
+float gWoodPatina = 0.5;
+
+/** How much texture space one screen pixel covers, at this fragment. */
+float gWoodTexel = 0.0;
+
 // --- noise -----------------------------------------------------------------
 
 // [0,1] hash, straight from the original's WGSL helper — the pore layer's
@@ -298,6 +314,7 @@ vec3 woodSoftLight(float t, vec3 base, vec3 blend) {
 
 vec3 woodColor(vec3 objectPosition) {
   vec3 p = (uWoodMatrix * vec4(objectPosition, 1.0)).xyz;
+  gWoodTexel = max(fwidth(p.x), max(fwidth(p.y), fwidth(p.z)));
 
   float center = uWoodCenterSize * min(length(p.xy), 1.0);
   vec3 mainWarp = woodSpaceWarp(
@@ -312,6 +329,8 @@ vec3 woodColor(vec3 objectPosition) {
 
   vec3 color = mix(uWoodDark, uWoodLight, rings);
   gWoodField = rings;
+  // two turns of noise a hand's width apart, which is the size a wear pattern is
+  gWoodPatina = clamp(woodNoise(p * 2.3) * 0.6 + woodNoise(p * 7.1) * 0.25 + 0.5, 0.0, 1.0);
 
   // a uniform branch, so it costs one test per draw rather than per pixel —
   // and skipping it takes 27 hash evaluations out of the fragment
@@ -381,10 +400,16 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
   vec3 r2 = cross(normal, dpdx);
   float det = dot(dpdx, r1);
 
-  // one screen pixel, in surface units: past a fraction of a millimetre the
-  // grain is finer than the pixel and there is nothing left to shade
-  float pixel = max(length(dpdx), length(dpdy));
-  float fade = 1.0 - smoothstep(1.5, 6.0, pixel);
+  // Faded against the **ring pitch** rather than against a fixed number of
+  // millimetres.
+  //
+  // This was a constant, and a constant cannot be right: the whole point of the
+  // grain scale is that a board can be coarse or fine, and a fade tuned for a
+  // 20 mm ring leaves a 2 mm one being shaded from a field that changes twice
+  // per pixel. Measuring the pixel in texture space and comparing it to the
+  // pitch makes the relief switch itself off exactly when there is no longer a
+  // ring to see, whatever scale the timber was cut at.
+  float fade = 1.0 - smoothstep(uWoodRingThickness * 0.35, uWoodRingThickness * 1.4, gWoodTexel);
 
   vec3 gradient = sign(det) * (dhdx * r1 + dhdy * r2) * uWoodRelief * fade;
 
@@ -421,8 +446,14 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
  */
 const RELIEF = 0.62;
 
-/** How far the roughness swings between latewood and earlywood, as a fraction. */
-const GLOSS_VARIANCE = 0.42;
+/**
+ * How far the roughness swings between latewood and earlywood, as a fraction.
+ *
+ * Also drives the broader wear variation at 70% of this, so raising it makes a
+ * board less even in both senses at once — which is the honest coupling: the
+ * thing that stops a finish being uniform is not two independent effects.
+ */
+const GLOSS_VARIANCE = 0.58;
 
 type WoodUniforms = Record<string, THREE.IUniform>;
 
@@ -556,7 +587,9 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
         "#include <roughnessmap_fragment>",
         `#include <roughnessmap_fragment>
   roughnessFactor = clamp(
-    roughnessFactor * mix(1.0 - uWoodGlossVariance, 1.0 + uWoodGlossVariance, gWoodField),
+    roughnessFactor
+      * mix(1.0 - uWoodGlossVariance, 1.0 + uWoodGlossVariance, gWoodField)
+      * mix(1.0 - uWoodGlossVariance * 0.7, 1.0 + uWoodGlossVariance * 0.7, gWoodPatina),
     0.02, 1.0);`
       )
       // After the map chunk, not before: this perturbs whatever normal the rest

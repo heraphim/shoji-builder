@@ -59,6 +59,16 @@ const DIMENSIONS = [
 const STEP = 5;
 
 /**
+ * Where the lamp is turned up to when the page opens.
+ *
+ * A fifth. A shoji lantern is a bedside light and the room it is in should still
+ * be a dark one — at anything like full the lamp stops being a lamp in a room and
+ * becomes the room's lighting. The range runs past 1 all the same: the top of a
+ * slider ought to be brighter than anybody would leave it.
+ */
+const DEFAULT_GLOW = 0.2;
+
+/**
  * Below this the layout is a phone's: the bar tightens and the scene drops its
  * multisampling and halves its shadow map.
  *
@@ -368,6 +378,7 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
   // Lamp on, street lamp on: the picture the whole style was built for, so it is
   // the one you land on rather than one you have to press two buttons to reach.
   const [outside, setOutside] = useState<OutsideLight>("street");
+  const [glow, setGlow] = useState(DEFAULT_GLOW);
   const [zen, setZen] = useState(false);
   const [painted, setPainted] = useState(false);
   const [drawn, setDrawn] = useState(false);
@@ -463,7 +474,15 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
         // eight bits per channel cannot hold — hence the higher precision on the
         // way in. The exposure and the curve are here rather than on a light
         // because they are what a camera does, not what a room does.
-        dpr={compact ? [1, 1.6] : [1, 2]}
+        // Supersampled, with a floor above 1.
+        //
+        // The wood has no resolution to raise — it is a function evaluated per
+        // fragment, not an image — so the only thing that decides how much grain
+        // survives is how many fragments there are. On an ordinary 1x monitor
+        // this was drawing one sample per screen pixel and the ring
+        // anti-aliasing, which blurs any ring finer than a sample, had nothing to
+        // work with. A floor of 1.5 renders 2.25x the pixels and resolves it.
+        dpr={compact ? [1, 1.75] : [1.5, 2]}
         shadows="soft"
         gl={{
           antialias: false,
@@ -477,6 +496,7 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
           lampOn={lampOn}
           ceilingOn={ceilingOn}
           outside={outside}
+          glow={glow}
           onDrawn={() => setDrawn(true)}
         />
       </Canvas>
@@ -595,6 +615,24 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
                 value={values[dimension.variable]}
               />
             ))}
+
+            {/* Glow sits with the two measurements rather than beside the light
+                switch, because it is the same kind of control: a thing you drag
+                while looking at the lamp. The switch answers whether, this
+                answers how much, and only one of those is a slider. */}
+            <span className="showcase-dimension-label">Glow</span>
+            <input
+              className="showcase-slider"
+              type="range"
+              min={0}
+              max={1.4}
+              step={0.02}
+              value={glow}
+              disabled={!lampOn}
+              title={lampOn ? "How far the lamp is turned up" : "The lamp is switched off"}
+              onChange={(event) => setGlow(Number(event.target.value))}
+            />
+            <span className="showcase-dimension-value">{Math.round(glow * 100)}%</span>
           </div>
         </div>
       )}

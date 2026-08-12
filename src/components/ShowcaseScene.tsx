@@ -65,8 +65,15 @@ const BULB_HEIGHT = 0.42;
 const BULB_REACH = 0.62;
 
 /**
- * Candela. See the note above about millimetres — at 250 mm this lights a table
- * top, and at 700 mm it is a quarter as bright on the wall behind.
+ * How much of its brightness the shade keeps when the lamp is turned all the way
+ * down. See {@link RicePaper} for why it is not zero.
+ */
+const PAPER_FLOOR = 0.42;
+
+/**
+ * Candela at full. See the note above about millimetres — at 250 mm this lights
+ * a table top, and at 700 mm it is a quarter as bright on the wall behind. The
+ * Glow slider scales it, and ships at well under 1.
  */
 /**
  * Raised when the shade got a floor. Closing the bottom took away every ray that
@@ -169,7 +176,7 @@ function frameDistance(half: THREE.Vector3, aspect: number): number {
  * that garbage collection will not reclaim, and a slider drag makes one per
  * frame.
  */
-function RicePaper({ box, lit }: { box: THREE.Box3; lit: boolean }) {
+function RicePaper({ box, lit, glow }: { box: THREE.Box3; lit: boolean; glow: number }) {
   const geometry = useMemo(() => paperShellGeometry(box), [box]);
   const floor = useMemo(() => shellFloorGeometry(box), [box]);
   const material = useMemo(() => new RicePaperMaterial(), []);
@@ -182,7 +189,13 @@ function RicePaper({ box, lit }: { box: THREE.Box3; lit: boolean }) {
   // lighting the room to fall on. Written straight onto the material rather than
   // through a new one: `emissiveIntensity` is a uniform, and swapping materials
   // to flick a switch would recompile the program.
-  material.emissiveIntensity = lit ? 1 : 0;
+  //
+  // The shade dims *less* than the room does. Turning a lamp down takes the
+  // spill off the walls long before the shade itself stops looking lit — you are
+  // looking straight at the source, and it is the one thing in the picture whose
+  // brightness barely moves. Dimming both by the same factor reads as the lamp
+  // going out rather than as the room going dark.
+  material.emissiveIntensity = lit ? PAPER_FLOOR + (1 - PAPER_FLOOR) * glow : 0;
 
   const height = box.max.y - box.min.y;
   material.setBulb(
@@ -237,27 +250,51 @@ function StaticShadows({ token }: { token: string }) {
 }
 
 /**
- * Keeps the camera inside the room.
+ * How far a ray from `origin` in `direction` gets before it leaves the box.
  *
- * Angle limits cannot do this. Whether a given polar angle puts the camera
- * through the ceiling depends on how far out it has dollied, and whether an
- * azimuth puts it through the wall depends on the same — so a set of limits
- * tight enough to be safe at arm's length is a straitjacket at every other
- * distance, which is exactly what it turned into: no going over the bed, no
- * getting near the wall, no dropping below the lamp.
- *
- * A position clamp has none of that. The angles are free, and the camera simply
- * cannot be somewhere it should not be. It works *with* OrbitControls rather
- * than against them because `update()` reads the object's current position and
- * re-derives its spherical from it — so a clamp applied after the update is
- * where the next one starts from, and nothing snaps back.
- *
- * The floor of the box is the nightstand's top rather than the room's floor.
- * Below that the camera is inside the furniture, which is a worse view than any
- * it was stopped from having.
+ * The slab method, minus the parts that only matter when the origin might be
+ * outside: it never is here — the origin is the orbit target, which is the lamp.
  */
-function KeepInRoom({ standY }: { standY: number }) {
+function exitDistance(
+  origin: THREE.Vector3,
+  direction: THREE.Vector3,
+  bounds: THREE.Box3
+): number {
+  let nearest = Infinity;
+  for (const axis of ["x", "y", "z"] as const) {
+    const d = direction[axis];
+    if (Math.abs(d) < 1e-6) continue;
+    const wall = d > 0 ? bounds.max[axis] : bounds.min[axis];
+    nearest = Math.min(nearest, (wall - origin[axis]) / d);
+  }
+  return nearest;
+}
+
+/**
+ * Keeps the camera inside the room, by telling the controls how far out they may
+ * go rather than by moving the camera afterwards.
+ *
+ * The first version clamped `camera.position` every frame, and it worked and it
+ * felt terrible: with damping on, the controls still hold momentum towards a
+ * place the clamp keeps taking the camera back from, so the two argue once per
+ * frame and the result is a stutter right where the user is pushing hardest.
+ * Anything that moves the camera behind the controls' back has that problem.
+ *
+ * So nothing moves the camera. Each frame this works out how far the orbit could
+ * go along its *current* direction before leaving the room, and hands that to
+ * `maxDistance` — which OrbitControls already clamps the radius against, inside
+ * its own update, with its own damping. Dollying out simply stops, smoothly, and
+ * swinging towards a wall draws the camera gently in rather than shunting it.
+ *
+ * Eased rather than set, because the safe distance changes fast when the
+ * direction sweeps past a corner, and a `maxDistance` that jumps is a radius
+ * that jumps.
+ */
+function KeepInRoom({ standY, ceiling }: { standY: number; ceiling: number }) {
   const camera = useThree((state) => state.camera);
+  const controls = useThree((state) => state.controls) as
+    | { target: THREE.Vector3; maxDistance: number }
+    | null;
 
   const bounds = useMemo(
     () =>
@@ -268,8 +305,18 @@ function KeepInRoom({ standY }: { standY: number }) {
     [standY]
   );
 
+  const direction = useMemo(() => new THREE.Vector3(), []);
+
   useFrame(() => {
-    camera.position.clamp(bounds.min, bounds.max);
+    if (!controls) return;
+    direction.subVectors(camera.position, controls.target);
+    const distance = direction.length();
+    if (distance < 1e-3) return;
+    direction.divideScalar(distance);
+
+    const room = exitDistance(controls.target, direction, bounds);
+    const wanted = Math.min(ceiling, Math.max(1, room));
+    controls.maxDistance += (wanted - controls.maxDistance) * 0.12;
   });
 
   return null;
@@ -308,12 +355,15 @@ export function RealisticShowcase({
   lampOn,
   ceilingOn,
   outside,
+  glow,
   onDrawn,
 }: {
   compact: boolean;
   lampOn: boolean;
   ceilingOn: boolean;
   outside: OutsideLight;
+  /** How far the lamp is turned up: 0 is barely alight, 1 is the full bulb. */
+  glow: number;
   onDrawn: () => void;
 }) {
   const scene = useLampScene();
@@ -383,6 +433,9 @@ export function RealisticShowcase({
   // and the instance list, and `scene` is rebuilt whenever either does.
   const token = useMemo(
     () => [scene.placements.size, box.max.toArray().join(","), lampOn, ceilingOn, outside].join("|"),
+    // glow is deliberately absent: it changes how bright the shadows are, not
+    // where they fall, and re-rendering six cube faces on every frame of a
+    // slider drag would buy nothing
     [scene, box, lampOn, ceilingOn, outside]
   );
 
@@ -425,7 +478,7 @@ export function RealisticShowcase({
         <pointLight
           position={bulb.toArray()}
           color="#ffcb92"
-          intensity={BULB_CANDELA * PAPER_SPILL}
+          intensity={BULB_CANDELA * PAPER_SPILL * glow}
           decay={2}
           // It casts, which reads as a contradiction with the note above and is
           // not one. What it must not do is throw a *sharp* shadow, and that is
@@ -447,7 +500,7 @@ export function RealisticShowcase({
         <pointLight
           position={bulb.toArray()}
           color={BULB_COLOR}
-          intensity={BULB_CANDELA}
+          intensity={BULB_CANDELA * glow}
           decay={2}
           castShadow
           shadow-mapSize={compact ? [512, 512] : [1024, 1024]}
@@ -514,12 +567,12 @@ export function RealisticShowcase({
       )}
 
       <ShowcaseRoom standY={standY} ceilingOn={ceilingOn} />
-      <RicePaper box={box} lit={lampOn} />
+      <RicePaper box={box} lit={lampOn} glow={glow} />
       <ShowcaseLamp scene={scene} />
 
       <StaticShadows token={token} />
       <FirstFrame onDrawn={onDrawn} />
-      <KeepInRoom standY={standY} />
+      <KeepInRoom standY={standY} ceiling={reach * 4} />
 
       <OrbitControls
         makeDefault
@@ -539,7 +592,13 @@ export function RealisticShowcase({
         minPolarAngle={Math.PI * 0.08}
         maxPolarAngle={Math.PI * 0.62}
         minDistance={reach * 0.35}
+        // The starting value only; {@link KeepInRoom} writes it every frame.
         maxDistance={reach * 4}
+        // Slower than the default 1, because the wheel was crossing the whole
+        // range in three notches and arriving at the limits at speed — which is
+        // what made stopping at one feel like hitting something.
+        zoomSpeed={0.55}
+        rotateSpeed={0.75}
         mouseButtons={{
           LEFT: THREE.MOUSE.ROTATE,
           MIDDLE: THREE.MOUSE.DOLLY,

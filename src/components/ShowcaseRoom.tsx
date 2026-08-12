@@ -5,6 +5,7 @@ import { woodPreset } from "../lib/wood";
 import { ClothMaterial, PaperMaterial, PlasterMaterial } from "../lib/surfaces";
 import { ricePaperTexture } from "../lib/ricePaper";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { MeshReflectorMaterial } from "@react-three/drei";
 import { siteUrl } from "../lib/library";
 
 /**
@@ -194,6 +195,67 @@ function rodAlongX(
 }
 
 /**
+ * The film of lacquer on the nightstand's top, and the lamp standing in it.
+ *
+ * A separate sheet a fraction of a millimetre above the timber rather than a
+ * property of it, because that is what it is: the wood is one surface and the
+ * varnish over it is another, and the second one is a mirror. Doing it this way
+ * costs nothing from the wood shader — the top is drawn exactly as every other
+ * board in the room is — and the reflection is added over it, which is also how
+ * the light actually arrives.
+ *
+ * It is a **real reflection**: drei renders the scene a second time from the
+ * camera mirrored through this plane. That is what makes the lamp's shape sit in
+ * the table and follow you as you orbit, which is the whole point — a painted-on
+ * smudge is fixed to the wood and gives itself away the moment anything moves.
+ *
+ * Blurred hard and blended additively over a black base, so what lands on the
+ * wood is a soft bright ghost and nothing else. A polished top is not a mirror
+ * and a table with a sharp lamp in it looks like ice.
+ */
+function Lacquer() {
+  return (
+    <mesh position={[0, TABLE_Y + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[552, 456]} />
+      <MeshReflectorMaterial
+        // One extra pass. 512 across a 550 mm top is about a millimetre a texel,
+        // which is far more than enough to hold the shape of a lamp — the
+        // resolution was never what was missing.
+        resolution={512}
+        // The blur was, and by a mile: 420 texels of it on a 512-texel buffer is
+        // not a soft reflection, it is an average. Everything the lamp is made
+        // of — four bright panels divided by dark bars — smeared into one glow,
+        // which is exactly what a bright blob and no lamp looks like. Small
+        // enough now to keep the divisions, large enough that the top is still
+        // polished wood rather than a mirror.
+        blur={[60, 20]}
+        mixBlur={0.3}
+        mixStrength={1.3}
+        depthScale={0}
+        minDepthThreshold={0.85}
+        maxDepthThreshold={1}
+        roughness={1}
+        metalness={0}
+        color="#000000"
+        transparent
+        opacity={0.6}
+        // Additive, so the reflection can only ever brighten the timber — which
+        // is what a clear film over a dark surface does. It also means the lamp's
+        // frame reads as the *gaps* between the reflected panels rather than as
+        // dark bars of its own, and that only works if the panels have edges,
+        // which is the other half of why the blur came down.
+        blending={THREE.AdditiveBlending}
+        // it is a film, not a slab: it must not take part in the depth buffer or
+        // it would shadow and z-fight the board a half-millimetre under it
+        depthWrite={false}
+        polygonOffset
+        polygonOffsetFactor={-2}
+      />
+    </mesh>
+  );
+}
+
+/**
  * One leaf of a sliding shoji screen, as its timber and its paper.
  *
  * Two stiles, two rails, a lattice between them and a sheet behind the lattice —
@@ -288,7 +350,7 @@ function pillowGeometry(
  * defensible but this is a wall: what is scarce is how far the picture can
  * spread sideways before it runs into the lamp, not how far it can go up.
  */
-function HangingScroll({ paper, rods }: { paper: PaperMaterial; rods: THREE.Material }) {
+function HangingScroll({ paper, rods, wrap }: { paper: PaperMaterial; rods: THREE.Material; wrap: THREE.Material }) {
   const [aspect, setAspect] = useState(SCROLL_FALLBACK_ASPECT);
 
   // Measured off a plain `Image` rather than off the texture, because a
@@ -305,16 +367,39 @@ function HangingScroll({ paper, rods }: { paper: PaperMaterial; rods: THREE.Mate
     const height = SCROLL_W / Math.max(aspect, 0.01);
     const half = SCROLL_W / 2;
     const top = SCROLL_BOTTOM + height;
+
+    // Everything stands clear of the wall.
+    //
+    // The rods used to be centred on the wall's own plane, so their back halves
+    // were inside the plaster — which is invisible head-on and is a rod sliced
+    // in half the moment you orbit. The face of the paper is 4 mm out and the
+    // rods sit in front of that, each one's radius clear of it.
+    const face = WALL_Z + 4;
+    const rodZ = face + 12;
+    const rollerZ = face + 16;
+
     return {
-      art: boxAt([SCROLL_X - half, SCROLL_X + half], [SCROLL_BOTTOM, top], [WALL_Z, WALL_Z + 3]),
-      rodTop: rodAlongX([SCROLL_X - half - 4, SCROLL_X + half + 4], 9, top + 6, WALL_Z + 9),
-      rodBottom: rodAlongX([SCROLL_X - half - 6, SCROLL_X + half + 6], 13, SCROLL_BOTTOM - 9, WALL_Z + 13),
-      // The jiku: the turned caps on the ends of the lower rod. They are the
-      // detail that says scroll — a plain dowel reads as a curtain pole.
-      jikuLeft: rodAlongX([SCROLL_X - half - 24, SCROLL_X - half - 6], 19, SCROLL_BOTTOM - 9, WALL_Z + 13, 20),
-      jikuRight: rodAlongX([SCROLL_X + half + 6, SCROLL_X + half + 24], 19, SCROLL_BOTTOM - 9, WALL_Z + 13, 20),
-      cord: boxAt([SCROLL_X - 2, SCROLL_X + 2], [top + 6, top + 150], [WALL_Z + 7, WALL_Z + 11]),
-      hook: boxAt([SCROLL_X - 8, SCROLL_X + 8], [top + 150, top + 160], [WALL_Z, WALL_Z + 14]),
+      art: boxAt([SCROLL_X - half, SCROLL_X + half], [SCROLL_BOTTOM, top], [face, face + 3]),
+
+      // The rollers are papered, not bare. On a real scroll the backing sheet is
+      // pasted round them and only the turned ends show timber, which is why the
+      // wood here stops at the jiku: a bare dowel across the top reads as a
+      // curtain pole, and the paper stopping dead at a stick reads as a poster
+      // taped to one.
+      rodTop: rodAlongX([SCROLL_X - half - 4, SCROLL_X + half + 4], 10, top + 7, rodZ, 24),
+      rodBottom: rodAlongX([SCROLL_X - half - 6, SCROLL_X + half + 6], 14, SCROLL_BOTTOM - 10, rollerZ, 24),
+
+      // and the short overlaps where the sheet turns the corner onto them
+      lapTop: boxAt([SCROLL_X - half, SCROLL_X + half], [top - 3, top + 7], [face, rodZ]),
+      lapBottom: boxAt([SCROLL_X - half, SCROLL_X + half], [SCROLL_BOTTOM - 10, SCROLL_BOTTOM + 3], [face, rollerZ]),
+
+      // The jiku: the turned caps on the ends of the lower roller, and the only
+      // wood on the whole hanging.
+      jikuLeft: rodAlongX([SCROLL_X - half - 26, SCROLL_X - half - 6], 20, SCROLL_BOTTOM - 10, rollerZ, 24),
+      jikuRight: rodAlongX([SCROLL_X + half + 6, SCROLL_X + half + 26], 20, SCROLL_BOTTOM - 10, rollerZ, 24),
+
+      cord: boxAt([SCROLL_X - 2, SCROLL_X + 2], [top + 7, top + 150], [rodZ - 2, rodZ + 2]),
+      hook: boxAt([SCROLL_X - 8, SCROLL_X + 8], [top + 150, top + 160], [face - 4, face + 14]),
     };
   }, [aspect]);
 
@@ -328,8 +413,10 @@ function HangingScroll({ paper, rods }: { paper: PaperMaterial; rods: THREE.Mate
   return (
     <>
       <mesh geometry={geometry.art} material={paper} castShadow receiveShadow />
-      <mesh geometry={geometry.rodTop} material={rods} castShadow />
-      <mesh geometry={geometry.rodBottom} material={rods} castShadow />
+      <mesh geometry={geometry.rodTop} material={wrap} castShadow receiveShadow />
+      <mesh geometry={geometry.rodBottom} material={wrap} castShadow receiveShadow />
+      <mesh geometry={geometry.lapTop} material={wrap} castShadow receiveShadow />
+      <mesh geometry={geometry.lapBottom} material={wrap} castShadow receiveShadow />
       <mesh geometry={geometry.jikuLeft} material={rods} castShadow />
       <mesh geometry={geometry.jikuRight} material={rods} castShadow />
       <mesh geometry={geometry.cord} castShadow>
@@ -381,9 +468,45 @@ function useRoom() {
     // aliased, and simply too many dark specks to read as a finished top. Real
     // oak has them; real oak also has them filled and polished over.
     const pores = { poreIntensity: 0.12 };
-    const oak = new WoodMaterial({ ...woodPreset("red_oak", "semigloss"), ...pores, grainScale: 700 });
-    const walnut = new WoodMaterial({ ...woodPreset("walnut", "matte"), ...pores, grainScale: 1700 });
-    const ebony = new WoodMaterial({ ...woodPreset("walnut", "gloss"), ...pores, grainScale: 90 });
+
+    /** How far the boards were cut from the heart of the tree, in mm. */
+    const PITH_MM = 1600;
+
+    /**
+     * A board, cut a fixed distance from the heart of the tree.
+     *
+     * The pith is stored in *texture units*, so it moves whenever the grain
+     * scale does — halve the scale to get finer rings and the pith comes twice
+     * as close, the rings tighten into ovals, and the board turns back into a
+     * slice of trunk. That coupling is the trap this helper exists to close:
+     * here the distance is given in millimetres and converted, so the two can be
+     * chosen independently, which is what they are in a timber yard.
+     */
+    const board = (species: Parameters<typeof woodPreset>[0], finish: Parameters<typeof woodPreset>[1], grainScale: number, roughness: number) => ({
+      ...woodPreset(species, finish),
+      ...pores,
+      grainScale,
+      roughness,
+      pith: [PITH_MM / grainScale, (PITH_MM * 0.24) / grainScale] as [number, number],
+      // Drawn out along the length of the board.
+      //
+      // `largeGrainStretch` scales the log's own axis before the warp noise is
+      // sampled, so a *smaller* number means the wander varies more slowly down
+      // the board and the figure comes out as long streaks with the occasional
+      // cathedral loop — which is what a flat-sawn plank looks like. The presets
+      // ship 0.25, tuned for an object about a texture unit across; on a top half
+      // a metre long that reads as blotches rather than as grain.
+      largeGrainStretch: 0.07,
+    });
+
+    // Grain scale is millimetres per texture unit and the rings run 34 to the
+    // unit, so the pitch is scale/34: 90 gives a ring every 2.6 mm, which is a
+    // slow-grown hardwood and about what a photograph of a walnut top shows.
+    // It started at 700 — a ring every 21 mm — and looked like a board enlarged
+    // eight times, which is exactly what it was.
+    const oak = new WoodMaterial(board("red_oak", "semigloss", 90, 0.74));
+    const walnut = new WoodMaterial(board("walnut", "matte", 120, 0.86));
+    const ebony = new WoodMaterial(board("walnut", "gloss", 45, 0.6));
 
     return {
       oak,
@@ -589,6 +712,7 @@ export function ShowcaseRoom({ standY, ceilingOn }: { standY: number; ceilingOn:
       </mesh>
 
       <mesh geometry={g.top} material={room.oak} castShadow receiveShadow />
+      <Lacquer />
       <mesh geometry={g.lip} material={room.oak} castShadow receiveShadow />
       <mesh geometry={g.carcass} material={room.oak} castShadow receiveShadow />
       <mesh geometry={g.drawer} material={room.oak} castShadow receiveShadow />
@@ -623,7 +747,7 @@ export function ShowcaseRoom({ standY, ceilingOn }: { standY: number; ceilingOn:
         <mesh geometry={g.pillow} material={room.pillow} castShadow receiveShadow />
       </group>
 
-      <HangingScroll paper={room.paper} rods={room.ebony} />
+      <HangingScroll paper={room.paper} rods={room.ebony} wrap={room.screen} />
     </group>
   );
 }
