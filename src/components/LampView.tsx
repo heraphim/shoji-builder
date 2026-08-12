@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Grid, OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
-import { useThree, type ThreeEvent } from "@react-three/fiber";
+import { type ThreeEvent } from "@react-three/fiber";
 import { useLampStore, type ConnectDraft, type LampPickSource } from "../store/useLampStore";
 import { useVariablesStore } from "../store/useVariablesStore";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
@@ -96,17 +96,6 @@ const LAMP = {
   symmetryOpen: "#4ade80",
 } as const;
 
-/**
- * The timber a part with no texture of its own is shown in, in the showcase.
- *
- * Only there. On the benches a component that names no texture is drawn in flat
- * colour, and that is right: it is the honest report that nobody has said what
- * the part is made of. The showcase is not reporting on the design, it is
- * showing the lamp, and a lamp in flat plastic brown shows nothing — so the one
- * view whose whole job is to look like a lamp puts it in wood.
- */
-const SHOWCASE_TEXTURE = "basic-pine.texture.json";
-
 /** Grid pitch in mm — a lamp is hundreds of mm, so 10 mm cells read as scale. */
 const GRID_CELL_MM = 10;
 
@@ -118,7 +107,7 @@ const FOV = 45;
 const FIT_MARGIN = 1.35;
 
 /** Everything placed, re-derived from the instances and the current variables. */
-function useLampScene(): LampScene {
+export function useLampScene(): LampScene {
   const instances = useLampStore((state) => state.instances);
   const raw = useVariablesStore((state) => state.raw);
   return useMemo(() => computeScene(instances, raw), [instances, raw]);
@@ -478,9 +467,7 @@ function Instance({
   const woodParams = usePartTexture(
     // a highlighted part must read as highlighted, and the surest way to lose
     // that is to paint it in a wood at the same moment
-    modes.material === "texture" && !lit
-      ? (appearance?.texture ?? (plain ? SHOWCASE_TEXTURE : null))
-      : null,
+    modes.material === "texture" && !lit ? (appearance?.texture ?? null) : null,
     appearance?.grainAxis
   );
   const wood = useWoodMaterial(woodParams);
@@ -520,11 +507,14 @@ function Instance({
     >
       {/* `castsShade` is the whole of what puts a part into the contact shadow;
           everything else in the scene is overlay and stays out of it. */}
+      {/* `castShadow` costs nothing on the benches — none of those canvases has
+          a shadow map — and is the whole of what puts the kumiko's shadow on the
+          wall in the showcase, where the light is inside the shade. */}
       {modes.material !== "none" &&
         (wood ? (
-          <mesh ref={castsShade} geometry={solid.geometry} material={wood} />
+          <mesh ref={castsShade} geometry={solid.geometry} material={wood} castShadow receiveShadow />
         ) : (
-          <mesh ref={castsShade} geometry={solid.geometry}>
+          <mesh ref={castsShade} geometry={solid.geometry} castShadow receiveShadow>
             {/* the polygon offset pushes the surface back a hair so the arris
                 overlay drawn on it does not z-fight */}
             <meshStandardMaterial
@@ -894,69 +884,21 @@ const SHOWCASE_MODES: ViewportModes = {
 };
 
 /**
- * The lamp on its own: textured, unlined, standing on nothing.
+ * The lamp itself, for a showcase to put in a room: textured, unlined, and
+ * carrying no camera, no light and no floor of its own.
  *
- * The same scene as the Lamp Design tab's 3D cell and deliberately not the same
- * view of it. There is no grid, no reference box, no triad and no picking —
- * `usePickHandlers` returns nothing with no connect draft in flight, so the
- * parts are not even raycast — which leaves the orbit as the only thing the
- * pointer does here.
+ * That division is what lets a second style be a second file. The lamp is the
+ * one thing every showcase has in common — the same parts, cut from the same
+ * variables, dressed the same way — and everything that makes a *realistic*
+ * picture of it rather than a watercolour is a property of the room around it.
+ * So this hands back the timber and nothing else; see `ShowcaseScene.tsx`.
  *
- * The pool of shade is unconditional, where the benches leave it to the Options
- * panel. It is what puts the lamp on a floor rather than in front of a colour,
- * and there is no panel in this view to turn it back on with.
- *
- * Framing follows the lamp, not the variables: inserting or opening something
- * refits, while dragging Width refits nothing, so the model grows in the frame
- * the way it would grow on a bench. Same ref trick as {@link LampScene3D}, for
- * the same reason — a resize must not throw the user's orbit away either.
+ * There is no picking here — `usePickHandlers` returns nothing with no connect
+ * draft in flight, so the parts are not even raycast — which leaves the orbit as
+ * the only thing the pointer does.
  */
-export function LampShowcase3D() {
-  const instances = useLampStore((state) => state.instances);
-  const scene = useLampScene();
-  const size = useThree((state) => state.size);
-
-  const overall = useMemo(() => overallBox(scene), [scene]);
-
-  const sizeRef = useRef(size);
-  sizeRef.current = size;
-  const overallRef = useRef(overall);
-  overallRef.current = overall;
-
-  const instanceIds = instances.map((i) => i.id).join(",");
-  const { position, target } = useMemo(() => {
-    const box = overallRef.current;
-    const centre = box.getCenter(new THREE.Vector3());
-    const half = box.getSize(new THREE.Vector3()).multiplyScalar(0.5);
-    const { width, height } = sizeRef.current;
-    const distance = fitDistance(half, width / Math.max(height, 1));
-    return {
-      position: [
-        centre.x + VIEW_DIR.x * distance,
-        centre.y + VIEW_DIR.y * distance,
-        centre.z + VIEW_DIR.z * distance,
-      ] as [number, number, number],
-      target: centre,
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instanceIds]);
-
-  return (
-    <>
-      <PerspectiveCamera makeDefault position={position} fov={FOV} near={1} far={20000} />
-      <SceneLights />
-      <ContactShade box={overall} floorY={overall.min.y} />
-      <LampSceneContents scene={scene} modes={SHOWCASE_MODES} plain />
-      <OrbitControls
-        makeDefault
-        target={target}
-        enablePan={false}
-        enableZoom
-        enableRotate
-        mouseButtons={{ LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE }}
-      />
-    </>
-  );
+export function ShowcaseLamp({ scene }: { scene: LampScene }) {
+  return <LampSceneContents scene={scene} modes={SHOWCASE_MODES} plain />;
 }
 
 // breathing room around the lamp once it fills the cell

@@ -2,28 +2,47 @@
 
 ## The showcase
 
-The page the app opens on, and the only one that is not a bench: the lamp alone,
-in wood, on a warm shelf — no reference box, no grid, no lines, nothing to pick.
-Drag to turn it, wheel to come closer.
+The page the app opens on, and the only one that is not a bench: the lamp lit, on
+a nightstand, in a dark bedroom — no reference box, no grid, no lines, nothing to
+pick. Drag to turn it, wheel to come closer.
 
-Three controls, and they are the whole of it:
+The inside of the frame is papered. The shell is the lamp's own main box skinned
+on five sides, so it is re-cut with everything else when a slider moves, and it
+glows brightest where the bulb is behind it. The kumiko reads as dark bars across
+it because that is where the timber actually is.
+
+Six controls, and they are the whole of it:
 
 - **The lamp's name, top left.** Press it for the library listing and pick
   another. It opens exactly as the Lamp Design file menu would — the showcase
   keeps no design of its own, it shows the one that is loaded — so the lamp you
   are looking at is the lamp on the bench. On a first load with an empty bench it
   puts up the first lamp the library offers.
+- **Two bulbs, in the middle.** The plain one is the lamp; the one on a flex is
+  the pendant over the room. Either can be on or off, so one design can be looked
+  at glowing in the dark or standing on a nightstand in an ordinary lit room,
+  which are two different questions about a lamp.
+- **The style, beside them.** How the whole picture is drawn — the scene and the
+  controls in front of it both. Only **Realistic** is built; the rest are on the
+  menu, disabled, because the list is the plan.
 - **Editor, top right.** Through to the workbench, with that lamp on it. The tab
   strip there begins with **← Showcase**, which is the way back.
+- **Zen, in the corner.** Hides every control but itself. Press it again, or
+  Escape, to bring them back.
 - **Width and Height, along the bottom.** `innerWidth` and `innerHeight` under
   the names somebody who is not building the lamp would use. Width carries the
   depth with it while the pair is collapsed, which is the default, so the
   footprint stays square. A measurement written as a formula shows where the
-  formula lands and will not be dragged — clear it in the editor first.
+  formula lands and will not be dragged — clear it in the editor first. Neither
+  moves the camera: the point of dragging one is to watch the lamp change size,
+  and a camera that backed off to compensate would show nothing changing.
 
-A part that names no texture is shown in pine here, where the benches would draw
-it in flat colour. The benches are reporting on the design and that report is
-honest; this page is showing the lamp.
+A part is shown in the texture its component names, and in flat colour when it
+names none — the same rule the benches follow.
+
+The page is built to be held. The bar wraps onto two rows on a phone, the sliders
+sit clear of the home indicator, and below 720 px the renderer drops its
+multisampling and halves its shadow map.
 
 ## Tabs
 

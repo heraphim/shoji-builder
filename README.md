@@ -29,14 +29,17 @@ Then open the printed URL (default <http://localhost:5173>).
 
 ### The checks
 
-`src/lib/__*check.ts` are standalone harnesses for the five things that are worth
+`src/lib/__*check.ts` are standalone harnesses for the six things that are worth
 asserting numerically rather than eyeballing: that a joint stays on the feature it
 was picked on (`__anchorcheck`), that a saved lamp responds to a slider exactly as
 a rebuilt one does (`__lampfilecheck`), that a union of boxes gives the outline
 the CSG would (`__outlinecheck`), that the Assets tab's badges and previews
-agree with the library they describe (`__assetscheck`), and that the settings kept
+agree with the library they describe (`__assetscheck`), that the settings kept
 in `localStorage` survive the round trip — including the malformed blobs, which is
-the half nobody sees fail until the browser has been closed (`__settingscheck`).
+the half nobody sees fail until the browser has been closed (`__settingscheck`) —
+and that the showcase's paper shell is five faces, all wound to face outwards, at
+one scale (`__papercheck`): none of which can be seen from the code, and all of
+which are unmistakable the moment they are wrong on screen.
 
 There is no test runner. Each is bundled to ESM and run under Node, from the
 project root — `__assetscheck` answers `fetch` off `public/`, so it exercises the
