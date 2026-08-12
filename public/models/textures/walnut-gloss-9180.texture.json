@@ -1,0 +1,42 @@
+{
+  "id": "walnut-gloss-9180",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "walnut",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 225.374847,
+    "pith": [
+      0.336432,
+      0.103625
+    ],
+    "seed": 9180,
+    "centerSize": 0.906883,
+    "largeWarpScale": 0.471354,
+    "largeGrainStretch": 0.24782,
+    "smallWarpStrength": 0.014947,
+    "smallWarpScale": 11.414172,
+    "fineWarpStrength": 0.028572,
+    "fineWarpScale": 9.061329,
+    "ringThickness": 0.032833,
+    "ringBias": 0.111464,
+    "ringSizeVariance": 0.031783,
+    "ringVarianceScale": 5.504286,
+    "barkThickness": 1.234016,
+    "splotchScale": 1.441297,
+    "splotchIntensity": 0.687255,
+    "cellScale": 655.618775,
+    "cellSize": 0.285358,
+    "darkGrainColor": "#b37643",
+    "lightGrainColor": "#d5b49b",
+    "grainContrast": 0.403875,
+    "poreIntensity": 0.385612,
+    "roughness": 0.5,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.1,
+    "clearcoatDarken": 0.2
+  }
+}
