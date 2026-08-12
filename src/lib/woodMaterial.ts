@@ -94,7 +94,7 @@ export function woodMatrix(params: WoodParams): THREE.Matrix4 {
 // The shader
 // ---------------------------------------------------------------------------
 
-const WOOD_COMMON = /* glsl */ `
+export const WOOD_COMMON = /* glsl */ `
 uniform mat4  uWoodMatrix;
 uniform vec3  uWoodDark;
 uniform vec3  uWoodLight;

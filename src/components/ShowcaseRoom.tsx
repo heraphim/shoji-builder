@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { WoodMaterial } from "../lib/woodMaterial";
+import { WOOD_COMMON, WoodMaterial } from "../lib/woodMaterial";
 import { woodPreset } from "../lib/wood";
 import { ClothMaterial, PaperMaterial, PlasterMaterial } from "../lib/surfaces";
 import { ricePaperTexture } from "../lib/ricePaper";
@@ -362,10 +362,105 @@ const DREI_MIX =
 const UNLIT_MIX = `totalEmissiveRadiance += newMerge.rgb * mixStrength * diffuse;
    diffuseColor.rgb = vec3(0.0);`;
 
+/** The two samples the reflection is read with, and the same two bent by the grain. */
+const DREI_BASE = "vec4 base = texture2DProj(tDiffuse, new_vUv);";
+const DREI_BLUR = "vec4 blur = texture2DProj(tDiffuseBlur, new_vUv);";
+
+const DENTED_BASE = `vec3 dentCoord = new_vUv.xyz / new_vUv.w;
+      vec2 dentUv = dentCoord.xy + dentCoord.z * woodFilmDent(vBoardPosition);
+      vec4 base = texture2D(tDiffuse, dentUv);`;
+const DENTED_BLUR = "vec4 blur = texture2D(tDiffuseBlur, dentUv);";
+
+/**
+ * How deep the grain lies under the varnish, as how far it bends the reflection.
+ *
+ * Not a depth in millimetres, because the thing that is actually seen is not the
+ * dip — it is what the dip does to what is reflected in it, and that depends on
+ * how far away the reflected thing is as much as on how deep the dip goes. This
+ * is the whole coefficient: the reflection is shifted by the grain's slope times
+ * this, in the reflection buffer's own coordinates.
+ *
+ * Found on a slider, and it is a good deal further than the physical answer
+ * would be — a ring's worth of slope moves the reflection several per cent of
+ * the buffer across. That is the right call for a lamp seen at this distance:
+ * the real telegraphing of grain through a finish is a few microns and would be
+ * invisible at a metre, and what is wanted is not the depth but the *reading* of
+ * it — a top that is unmistakably timber under varnish rather than glass.
+ */
+const FILM_DENT = 0.36;
+
+/**
+ * How much of the blurred copy of the reflection is used against the sharp one.
+ *
+ * The mixture is what gives an edge to the bright panels while leaving the room
+ * around them soft — either alone is a lamp with no shape or a lamp drawn twice.
+ * The radius of that blur is {@link Lacquer}'s `blur` prop and cannot be moved
+ * without rebuilding a framebuffer; this can, because it is a uniform.
+ *
+ * Weighted towards the soft copy, which is the other half of the bargain the
+ * dent above strikes: a grain that bends the reflection that far needs a
+ * reflection soft enough to bend without breaking up, and the two were found
+ * together.
+ */
+const FILM_MIX_BLUR = 0.6;
+
+/**
+ * The grain, telegraphing through the film.
+ *
+ * A finished board is not a flat mirror and the reason is in the timber rather
+ * than in the finish: earlywood is the soft, open half of the ring, it takes up
+ * more finish and shrinks further as it dries, and the film over it settles.
+ * What you see is a mirror with a shallow valley running along every light ring
+ * — which is why the reflection in a real table *wanders* along the grain
+ * instead of sitting still in it, and why a dead-flat reflection reads as glass
+ * laid on wood rather than as a wood surface.
+ *
+ * So the sheet is bent by the same field the timber under it is drawn from —
+ * literally the same: `woodColor` is evaluated here at the same object position
+ * with the nightstand material's own uniforms, so the valleys are on *its*
+ * light rings and not on a second grain that happens to look similar.
+ *
+ * The slope costs nothing to find. `gWoodField` is already computed, the GPU
+ * shades in 2×2 quads, and `dFdx`/`dFdy` of a value in hand give its screen
+ * gradient for free; the two-by-two solve turns that into a gradient across the
+ * board. It is the construction `woodPerturbNormal` uses (see `woodMaterial.ts`)
+ * without the change of basis, because a horizontal sheet needs the slope in x
+ * and z and nothing else.
+ *
+ * The sign is what makes it a dent rather than a ridge: `gWoodField` is 1 on the
+ * light rings, and the offset goes *up* the gradient, which is what a hollow
+ * does to a reflection.
+ */
+const FILM_DENT_GLSL = /* glsl */ `
+varying vec3 vBoardPosition;
+uniform float uFilmDent;
+
+vec2 woodFilmDent(vec3 boardPosition) {
+  // for gWoodField, which is what this is for; the colour is the timber's business
+  woodColor(boardPosition);
+
+  vec3 dpdx = dFdx(boardPosition);
+  vec3 dpdy = dFdy(boardPosition);
+  float dhdx = dFdx(gWoodField);
+  float dhdy = dFdy(gWoodField);
+
+  // A quad that covers no area of the board — the same degenerate case
+  // \`woodPerturbNormal\` guards, and the same reason: the solve below divides by
+  // this, and a NaN here would travel through the bloom and take the frame.
+  float det = dpdx.x * dpdy.z - dpdx.z * dpdy.x;
+  if (abs(det) < 1e-12) return vec2(0.0);
+
+  return vec2(
+    (dhdx * dpdy.z - dpdx.z * dhdy) / det,
+    (dpdx.x * dhdy - dhdx * dpdy.x) / det
+  ) * uFilmDent;
+}
+`;
+
 /** How far the film floats over the timber, in millimetres. */
 const FILM_LIFT = 0.5;
 
-function Lacquer() {
+function Lacquer({ timber }: { timber: WoodMaterial }) {
   const material = useRef<ReflectorMaterial | null>(null);
 
   // The sheet is cut to the flat part of the top rather than to the model's
@@ -375,13 +470,45 @@ function Lacquer() {
   // table. Swap the model and the film comes out the new shape.
   const top = useFlatTop(NIGHTSTAND);
 
+  // Held rather than made fresh, because the shader is handed this object and
+  // reads `.value` off it every frame. A new one per render would be a new
+  // uniform the compiled program is not looking at.
+  const dent = useMemo(() => ({ value: FILM_DENT }), []);
+
+  /**
+   * The film's own vertices, in the board's coordinates.
+   *
+   * The wood is a solid texture read in the *nightstand's* object space, and
+   * this is a separate mesh with a space of its own — a plane lying on its face,
+   * a quarter turn away and offset by wherever the prop's fit put it. Without
+   * this the grain in the film would be the same pattern taken from somewhere
+   * else on the log, which lines up with nothing.
+   */
+  const boardMatrix = useMemo(() => {
+    if (!top) return null;
+    return new THREE.Matrix4()
+      .makeTranslation(
+        top.center[0] - top.origin[0],
+        top.y + FILM_LIFT - top.origin[1],
+        top.center[1] - top.origin[2]
+      )
+      .multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+  }, [top]);
+
   // Checked against the material rather than run once, because drei rebuilds the
   // material from scratch whenever one of its defines changes — and a fresh one
   // arrives unpatched, which is a reflection that has silently gone back to
   // being lit.
+  //
+  // Re-applied when the timber changes as well, because the patch below borrows
+  // that material's uniforms: a style change builds a new `WoodMaterial`, and a
+  // film still holding the old one's uniforms would be dented by a grain nothing
+  // in the room is drawn with any more.
   useLayoutEffect(() => {
     const film = material.current;
-    if (!film || Object.prototype.hasOwnProperty.call(film, "onBeforeCompile")) return;
+    if (!film || !boardMatrix) return;
+    if (film.userData.dentedBy === timber) return;
+    film.userData.dentedBy = timber;
 
     const drei = Object.getPrototypeOf(film).onBeforeCompile as (
       this: ReflectorMaterial,
@@ -393,11 +520,34 @@ function Lacquer() {
       shader: THREE.WebGLProgramParametersWithUniforms
     ) {
       drei.call(this, shader);
-      if (!shader.fragmentShader.includes(DREI_MIX)) {
-        console.warn("Lacquer: drei's mix line has moved; the reflection will be lit.");
+      for (const anchor of [DREI_MIX, DREI_BASE, DREI_BLUR]) {
+        if (shader.fragmentShader.includes(anchor)) continue;
+        console.warn("Lacquer: drei's shader has moved on; the film is unpatched.", anchor);
         return;
       }
-      shader.fragmentShader = shader.fragmentShader.replace(DREI_MIX, UNLIT_MIX);
+
+      // The timber's own uniform objects, not copies: the film has to be dented
+      // by the grain that is actually drawn under it, and a copy would be a
+      // second set of numbers to keep in step.
+      Object.assign(shader.uniforms, timber.woodUniforms);
+      shader.uniforms.uBoardMatrix = { value: boardMatrix };
+      shader.uniforms.uFilmDent = dent;
+
+      shader.vertexShader = shader.vertexShader
+        .replace(
+          "void main() {",
+          "uniform mat4 uBoardMatrix;\nvarying vec3 vBoardPosition;\nvoid main() {"
+        )
+        .replace(
+          "#include <begin_vertex>",
+          "#include <begin_vertex>\n  vBoardPosition = (uBoardMatrix * vec4(position, 1.0)).xyz;"
+        );
+
+      shader.fragmentShader = shader.fragmentShader
+        .replace("void main() {", `${WOOD_COMMON}\n${FILM_DENT_GLSL}\nvoid main() {`)
+        .replace(DREI_BASE, DENTED_BASE)
+        .replace(DREI_BLUR, DENTED_BLUR)
+        .replace(DREI_MIX, UNLIT_MIX);
     };
     film.needsUpdate = true;
   });
@@ -432,7 +582,7 @@ function Lacquer() {
         // mixture is what gives an edge to the bright panels while leaving the
         // room around them soft — either alone is a lamp with no shape or a lamp
         // drawn twice.
-        mixBlur={0.34}
+        mixBlur={FILM_MIX_BLUR}
         mixStrength={2.45}
         // A touch of contrast about mid grey, which pushes the dim reflected
         // wall down and leaves the lamp where it is.
@@ -991,7 +1141,7 @@ export function ShowcaseRoom({
        * second thing holding up the room. */}
       {look.detail > 0 && (
         <Suspense fallback={null}>
-          <Lacquer />
+          <Lacquer timber={pine ?? room.oak} />
         </Suspense>
       )}
 

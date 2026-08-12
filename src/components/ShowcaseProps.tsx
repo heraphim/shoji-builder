@@ -210,6 +210,15 @@ export interface FlatTop {
   size: [number, number];
   /** The height of the plane itself. */
   y: number;
+  /**
+   * Where the prop's own coordinates start, in the room.
+   *
+   * Carried out with the rest because anything wanting to evaluate the prop's
+   * *material* at a point on this surface needs it: every solid texture in this
+   * app is a function of object position (see `wood.ts`), and the offset is what
+   * turns a place in the room into a place on the board. See {@link Lacquer}.
+   */
+  origin: [number, number, number];
 }
 
 /**
@@ -304,6 +313,7 @@ export function flatTopOf(scene: THREE.Object3D, fit: PropPlacement): FlatTop | 
     center: [(minX + maxX) / 2, (minZ + maxZ) / 2],
     size: [maxX - minX, maxZ - minZ],
     y: top,
+    origin: [offset.x, offset.y, offset.z],
   };
 }
 
