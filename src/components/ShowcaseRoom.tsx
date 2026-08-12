@@ -393,10 +393,15 @@ function HangingScroll({ paper, rods, wrap }: { paper: PaperMaterial; rods: THRE
       lapTop: boxAt([SCROLL_X - half, SCROLL_X + half], [top - 3, top + 7], [face, rodZ]),
       lapBottom: boxAt([SCROLL_X - half, SCROLL_X + half], [SCROLL_BOTTOM - 10, SCROLL_BOTTOM + 3], [face, rollerZ]),
 
-      // The jiku: the turned caps on the ends of the lower roller, and the only
-      // wood on the whole hanging.
+      // The jiku: the turned caps on the ends of the rollers, and the only wood
+      // on the whole hanging. Smaller at the top than at the bottom, because the
+      // rod they cap is smaller — the weighted roller a scroll hangs straight
+      // from is the thicker of the two, and matching them would make the top
+      // look like the bottom upside down.
       jikuLeft: rodAlongX([SCROLL_X - half - 26, SCROLL_X - half - 6], 20, SCROLL_BOTTOM - 10, rollerZ, 24),
       jikuRight: rodAlongX([SCROLL_X + half + 6, SCROLL_X + half + 26], 20, SCROLL_BOTTOM - 10, rollerZ, 24),
+      jikuTopLeft: rodAlongX([SCROLL_X - half - 22, SCROLL_X - half - 4], 15, top + 7, rodZ, 24),
+      jikuTopRight: rodAlongX([SCROLL_X + half + 4, SCROLL_X + half + 22], 15, top + 7, rodZ, 24),
 
       cord: boxAt([SCROLL_X - 2, SCROLL_X + 2], [top + 7, top + 150], [rodZ - 2, rodZ + 2]),
       hook: boxAt([SCROLL_X - 8, SCROLL_X + 8], [top + 150, top + 160], [face - 4, face + 14]),
@@ -419,6 +424,8 @@ function HangingScroll({ paper, rods, wrap }: { paper: PaperMaterial; rods: THRE
       <mesh geometry={geometry.lapBottom} material={wrap} castShadow receiveShadow />
       <mesh geometry={geometry.jikuLeft} material={rods} castShadow />
       <mesh geometry={geometry.jikuRight} material={rods} castShadow />
+      <mesh geometry={geometry.jikuTopLeft} material={rods} castShadow />
+      <mesh geometry={geometry.jikuTopRight} material={rods} castShadow />
       <mesh geometry={geometry.cord} castShadow>
         <meshStandardMaterial color="#4a3b2a" roughness={0.9} metalness={0} />
       </mesh>
