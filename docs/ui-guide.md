@@ -90,14 +90,32 @@ Every panel on the right folds away from its header, on every tab. Which are
 folded is kept in `localStorage`, so a panel you shut because it was in the way
 is still shut tomorrow.
 
+### Name & description
+
+The first panel on all three editing tabs, because all three ask the same two
+questions of whatever is on the bench.
+
+**The name is the file name.** Not a label beside one: **Save (overwrite)**
+writes `<name>.component.json` / `.lamp.json` / `.texture.json`, so typing a new
+name here and overwriting is how a design is renamed — the old file stays in the
+library until it is deleted from the Assets tab. The note under the field spells
+the file name out, because what may go in one is narrower than what may be typed:
+`frame/2` is saved as `frame2`, and it says so before the save rather than in the
+status bar afterwards. With the field empty there is nothing to overwrite, so the
+first save asks for a name.
+
+**The description** is prose, saved into the file and read by nothing. A library
+of `frameVertical`, `frameVertical2` cannot say which one takes the shoji panel,
+and a name long enough to say it is not a name any more.
+
 # Lamp Design
 
 ```
-┌───────────────┬───────────────┬──────────────────┐
-│      3D       │      Top      │ ▾ Variables (mm) │
-├───────────────┼───────────────┤ ▾ Components     │
-│     Side      │     Front     │                  │
-└───────────────┴───────────────┴──────────────────┘
+┌───────────────┬───────────────┬───────────────────────┐
+│      3D       │      Top      │ ▾ Name & description  │
+├───────────────┼───────────────┤ ▾ Variables (mm)      │
+│     Side      │     Front     │ ▾ Components          │
+└───────────────┴───────────────┴───────────────────────┘
 ```
 
 The same view grid as the Component Editor — see [The views](#the-views) for
@@ -606,11 +624,11 @@ what is on the bench, not a file action.
 # Textures
 
 ```
-┌───────────────┬───────────────┬──────────────────┐
-│      3D       │      Top      │ ▾ Timber         │
-├───────────────┼───────────────┤ ▾ In the log     │
-│     Side      │     Front     │ ▾ Rings          │
-└───────────────┴───────────────┴──────────────────┘
+┌───────────────┬───────────────┬───────────────────────┐
+│      3D       │      Top      │ ▾ Name & description  │
+├───────────────┼───────────────┤ ▾ Timber              │
+│     Side      │     Front     │ ▾ In the log, Rings…  │
+└───────────────┴───────────────┴───────────────────────┘
 ```
 
 The same four views as the other two tabs, over a fixed bench: **four 200 mm

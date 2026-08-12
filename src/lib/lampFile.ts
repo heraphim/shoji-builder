@@ -43,9 +43,15 @@ import { listLibrary, readLibraryFile } from "./library";
  * `stashed` are written too. `pairs` is not — which variables *may* pair is
  * structure from `data/variables.json`, not a decision the design made.
  *
+ * ### `description`
+ *
+ * Format 2, and the only field in the file no code reads: what this lamp is, in
+ * the designer's own words. Written only when there is one — see the same note
+ * in lib/componentFile.ts.
+ *
  * Full schema and round-trip guarantees: docs/lamp-file-format.md
  */
-export const LAMP_FORMAT = 1;
+export const LAMP_FORMAT = 2;
 
 /** An anchor as written: fractions, and the block they are fractions of. */
 interface SavedAnchor {
@@ -67,6 +73,8 @@ interface SavedConnection {
 
 export interface LampFile {
   id: string;
+  /** What it is, in prose. Absent in files written before format 2. */
+  description?: string;
   type: "lamp";
   format: number;
   units: "mm";
@@ -116,10 +124,13 @@ function saveConnection(c: LampConnection): SavedConnection {
 export function buildLampFile(
   id: string,
   instances: LampInstance[],
-  variables: { raw: Record<string, string>; paired: Record<string, boolean>; stashed: Record<string, string> }
+  variables: { raw: Record<string, string>; paired: Record<string, boolean>; stashed: Record<string, string> },
+  description = ""
 ): LampFile {
   return {
     id,
+    // omitted rather than written empty — see componentFile.ts
+    ...(description.trim() ? { description: description.trim() } : {}),
     type: "lamp",
     format: LAMP_FORMAT,
     units: "mm",
@@ -169,6 +180,7 @@ export function parseLampFile(data: unknown): LampFile {
   }
   return {
     id: file.id ?? "lamp",
+    ...(typeof file.description === "string" ? { description: file.description } : {}),
     type: "lamp",
     format: file.format ?? LAMP_FORMAT,
     units: "mm",

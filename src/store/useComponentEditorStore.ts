@@ -169,6 +169,14 @@ interface ComponentEditorState {
    */
   documentName: string | null;
 
+  /**
+   * What the component is for, in prose. Empty until somebody writes one.
+   *
+   * Saved with it and nothing else reads it — see the note on `description` in
+   * lib/componentFile.ts for why a library needs one anyway.
+   */
+  description: string;
+
   /** What the component is made of and how it is painted. See {@link Appearance}. */
   appearance: Appearance;
 
@@ -233,6 +241,7 @@ interface ComponentEditorState {
   panView: (view: ViewId, dx: number, dy: number) => void;
 
   setDocumentName: (name: string | null) => void;
+  setDescription: (description: string) => void;
   setAppearance: (appearance: Partial<Appearance>) => void;
 
   cancelPick: () => void;
@@ -725,6 +734,7 @@ function blockSizeEdge(mesh: SubMesh, axis: AxisIndex): Edge {
 export const useComponentEditorStore = create<ComponentEditorState>((set, get) => ({
   meshes: [],
   documentName: null,
+  description: "",
   appearance: DEFAULT_APPEARANCE,
 
   pickMode: "none",
@@ -1263,6 +1273,8 @@ export const useComponentEditorStore = create<ComponentEditorState>((set, get) =
 
   setDocumentName: (name) => set({ documentName: name }),
 
+  setDescription: (description) => set({ description }),
+
   cancelPick: () =>
     set({
       pickMode: "none",
@@ -1282,6 +1294,7 @@ export const useComponentEditorStore = create<ComponentEditorState>((set, get) =
     set({
       meshes: [],
       documentName: null,
+      description: "",
       // Clear too: the bench is being emptied, and a fresh component inheriting
       // the last one's timber is the kind of thing nobody notices until they
       // have saved six components in a wood they did not choose.

@@ -253,6 +253,10 @@ function LampFileMenu({ close }: { close: () => void }) {
 
   const empty = instances.length === 0;
   const names = lampLibrary.map((file) => file.replace(/(\.lamp)?\.json$/, ""));
+  // What the lamp is *called as a file*, which is the question "overwrite"
+  // asks. The name can be typed in the sidebar's Name panel, so it is not
+  // necessarily something that may go in a file name.
+  const named = sanitizeName(lampName ?? "");
 
   // Read when the menu opens, not when the list is asked for.
   //
@@ -344,14 +348,14 @@ function LampFileMenu({ close }: { close: () => void }) {
         title={
           empty
             ? "Nothing to save yet"
-            : lampName
-              ? `Save over “${lampName}”`
+            : named
+              ? `Save over “${named}”`
               : "This lamp has no name yet — you will be asked for one"
         }
-        trailing={lampName ?? undefined}
+        trailing={named ?? undefined}
         // no name yet means nothing to overwrite, so the first save of a new
         // lamp is a copy whether it says so or not
-        onClick={() => (lampName ? save() : setPrompting(true))}
+        onClick={() => (named ? save() : setPrompting(true))}
       />
       <MenuItem
         label="Save (copy)…"
@@ -383,6 +387,9 @@ function ComponentFileMenu({ close }: { close: () => void }) {
 
   const empty = meshes.length === 0;
   const names = library.map((file) => file.replace(/(\.component)?\.json$/, ""));
+  // As in the lamp menu: what it is called *as a file*, which is what
+  // "overwrite" needs and what the Name panel does not guarantee.
+  const named = sanitizeName(documentName ?? "");
 
   // On opening the menu, not on opening the list — see the same effect in
   // LampFileMenu for why: "Save (copy)" checks this listing for a name clash,
@@ -546,12 +553,12 @@ function ComponentFileMenu({ close }: { close: () => void }) {
         title={
           empty
             ? "Nothing on the bench"
-            : documentName
-              ? `Save over “${documentName}”`
+            : named
+              ? `Save over “${named}”`
               : "This component has no name yet — you will be asked for one"
         }
-        trailing={documentName ?? undefined}
-        onClick={() => (documentName ? save() : setPrompting(true))}
+        trailing={named ?? undefined}
+        onClick={() => (named ? save() : setPrompting(true))}
       />
       <MenuItem
         label="Save (copy)…"
@@ -590,6 +597,7 @@ function TextureFileMenu({ close }: { close: () => void }) {
   const [prompting, setPrompting] = useState(false);
 
   const names = library.map(textureDisplayName);
+  const named = sanitizeName(documentName ?? "");
 
   // As in the other two menus: "Save (copy)" checks this listing for a clash,
   // and a check with nothing to check against is worse than no check.
@@ -622,7 +630,9 @@ function TextureFileMenu({ close }: { close: () => void }) {
 
   const save = async (name?: string) => {
     close();
-    const id = name ?? documentName ?? "texture";
+    // sanitised here as the other two menus sanitise theirs: the name can come
+    // from the sidebar's Name panel, which takes anything that can be typed
+    const id = sanitizeName(name ?? documentName ?? "") ?? "texture";
     try {
       const note = await saveLibraryFile("textures", `${id}.texture.json`, toFile(id));
       useTextureStore.getState().setDocumentName(id);
@@ -680,12 +690,12 @@ function TextureFileMenu({ close }: { close: () => void }) {
       <MenuItem
         label="Save (overwrite)"
         title={
-          documentName
-            ? `Save over “${documentName}”`
+          named
+            ? `Save over “${named}”`
             : "This texture has no name yet — you will be asked for one"
         }
-        trailing={documentName ?? undefined}
-        onClick={() => (documentName ? save() : setPrompting(true))}
+        trailing={named ?? undefined}
+        onClick={() => (named ? save() : setPrompting(true))}
       />
       <MenuItem
         label="Save (copy)…"

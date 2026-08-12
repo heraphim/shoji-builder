@@ -18,6 +18,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "5223", "--strictPort"],
       "port": 5223
+    },
+    {
+      "name": "shoji-dev-alt3",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5235", "--strictPort"],
+      "port": 5235
     }
   ]
 }

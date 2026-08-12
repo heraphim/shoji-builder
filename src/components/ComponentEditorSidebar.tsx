@@ -15,6 +15,7 @@ import {
 import { GRAIN_AXIS_LABELS, type GrainAxis } from "../lib/wood";
 import { resolveVariables } from "../lib/formula";
 import { CollapsiblePanel } from "./CollapsiblePanel";
+import { DocumentPanel } from "./DocumentPanel";
 import { useMergedGroups } from "./UploadedMesh";
 import {
   axisStations,
@@ -468,6 +469,10 @@ export function ComponentEditorSidebar() {
   const pickMode = useComponentEditorStore((state) => state.pickMode);
   const connections = useComponentEditorStore((state) => state.connections);
   const measurements = useComponentEditorStore((state) => state.measurements);
+  const documentName = useComponentEditorStore((state) => state.documentName);
+  const description = useComponentEditorStore((state) => state.description);
+  const setDocumentName = useComponentEditorStore((state) => state.setDocumentName);
+  const setDescription = useComponentEditorStore((state) => state.setDescription);
   const cancelPick = useComponentEditorStore((state) => state.cancelPick);
   const reset = useComponentEditorStore((state) => state.reset);
   useResolvedVariables(); // keep sidebar re-rendering on variable edits
@@ -485,6 +490,19 @@ export function ComponentEditorSidebar() {
           </button>
         </div>
       )}
+
+      {/* First, and above the working panels: it is what the file is called and
+          what it is, which is the one thing about the bench that is not visible
+          in the views. */}
+      <DocumentPanel
+        id="editor.document"
+        what="component"
+        extension=".component.json"
+        name={documentName}
+        description={description}
+        onName={setDocumentName}
+        onDescription={setDescription}
+      />
 
       <CollapsiblePanel
         id="editor.connections"

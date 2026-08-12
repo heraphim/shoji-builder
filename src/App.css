@@ -1349,6 +1349,72 @@ select.view-mode option:disabled {
   line-height: 1;
 }
 
+/* ---- Name & description ---- */
+
+/* Stacked rather than label-on-the-left like the texture rows: a description is
+   three lines of prose, and a field that wide next to an 88px label leaves the
+   text in a column half the sidebar's width. */
+.document-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.document-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.document-label {
+  font-size: 11px;
+  color: var(--bp-text-dim);
+}
+
+.document-name,
+.document-description {
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.document-name:focus,
+.document-description:focus {
+  outline: none;
+  border-color: var(--bp-accent);
+}
+
+.document-description {
+  font-size: 12px;
+  line-height: 1.45;
+  /* down only: the sidebar is a fixed column, and a textarea that can be dragged
+     wider than it pushes the panels about */
+  resize: vertical;
+  min-height: 54px;
+}
+
+/* Sits directly under the name field and belongs to it, so it is closer to it
+   than the fields are to each other. */
+.document-note {
+  margin: -4px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--bp-text-dim);
+}
+
+.document-note code {
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--bp-text);
+}
+
 .sidebar-actions {
   display: flex;
   gap: 8px;

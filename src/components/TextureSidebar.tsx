@@ -1,4 +1,5 @@
 import { CollapsiblePanel } from "./CollapsiblePanel";
+import { DocumentPanel } from "./DocumentPanel";
 import { useTextureStore } from "../store/useTextureStore";
 import {
   FINISH_LABELS,
@@ -135,6 +136,10 @@ export function TextureSidebar() {
   const applyFinish = useTextureStore((state) => state.applyFinish);
   const newSeed = useTextureStore((state) => state.newSeed);
   const reset = useTextureStore((state) => state.reset);
+  const documentName = useTextureStore((state) => state.documentName);
+  const description = useTextureStore((state) => state.description);
+  const setDocumentName = useTextureStore((state) => state.setDocumentName);
+  const setDescription = useTextureStore((state) => state.setDescription);
 
   const set =
     <K extends keyof WoodParams>(key: K) =>
@@ -143,6 +148,16 @@ export function TextureSidebar() {
 
   return (
     <div className="texture-sidebar">
+      <DocumentPanel
+        id="textures.document"
+        what="texture"
+        extension=".texture.json"
+        name={documentName}
+        description={description}
+        onName={setDocumentName}
+        onDescription={setDescription}
+      />
+
       <CollapsiblePanel id="textures.species" title="Timber">
         <div className="texture-panel">
           <Row label="Species" hint="Loads that species' numbers. Where the piece sits in the log is left alone.">

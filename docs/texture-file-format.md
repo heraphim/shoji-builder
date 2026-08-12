@@ -1,4 +1,4 @@
-# Texture file format (`*.texture.json`), version 1
+# Texture file format (`*.texture.json`), version 2
 
 `src/lib/textureFile.ts`
 
@@ -22,8 +22,12 @@ Two consequences worth stating plainly:
 ```jsonc
 {
   "id": "white-oak",        // the file name it was saved under
+  // What this timber is and where it is for, from the Name & description panel
+  // at the top of the sidebar. Nothing reads it — thirty numbers cannot say
+  // "quartersawn, for the posts". Omitted when blank. Format 2.
+  "description": "Quartersawn white oak — the posts and the top rails.",
   "type": "texture",        // the load guard checks this
-  "format": 1,              // TEXTURE_FORMAT
+  "format": 2,              // TEXTURE_FORMAT
   "units": "mm",
   "model": "wood",          // which generator. One so far; the guard rejects others.
 
@@ -147,9 +151,11 @@ times before the fetch lands starts one fetch, not five.
 | Which preset the numbers came from | yes — `species` / `finish`, as a note; never re-applied |
 | Exact float values | to 6 decimals, deliberately |
 | The name it was saved under | yes — `id`, and the file name |
+| The description | yes — `description`, from format 2 |
 
 ## Version history
 
 | `format` | Notes |
 | --- | --- |
-| 1 | Current. One generator, `"wood"`. |
+| 2 | Current. Adds `description`. Prose about the timber; nothing reads it. |
+| 1 | One generator, `"wood"`. Still loads; the description comes back blank. |

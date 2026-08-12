@@ -109,6 +109,9 @@ interface LampState {
    */
   lampName: string | null;
 
+  /** What the lamp is, in prose. Saved with it; nothing else reads it. */
+  description: string;
+
   instances: LampInstance[];
   /**
    * Components the user has taken out of sight, by id.
@@ -152,6 +155,9 @@ interface LampState {
   pickPoint: (source: LampPickSource, pick: BoxPick) => void;
   disconnect: (id: string) => void;
   rollConnection: (id: string, degrees: number) => void;
+
+  setLampName: (name: string | null) => void;
+  setDescription: (description: string) => void;
 
   setHoveredPick: (pick: BoxPick | null) => void;
   setHighlighted: (id: string | null) => void;
@@ -381,6 +387,7 @@ async function applyLampFile(
   set({
     instances,
     lampName: sanitizeName(name) ?? lamp.id,
+    description: lamp.description ?? "",
     // a lamp comes back whole: what was out of sight was a way of working on
     // the last one, and its ids do not mean anything against this one
     hiddenIds: [],
@@ -400,6 +407,7 @@ export const useLampStore = create<LampState>((set, get) => ({
   error: null,
 
   lampName: null,
+  description: "",
   instances: [],
   hiddenIds: [],
   draft: null,
@@ -443,7 +451,7 @@ export const useLampStore = create<LampState>((set, get) => ({
     const note = await saveLibraryFile(
       "lamps",
       `${id}.lamp.json`,
-      buildLampFile(id, state.instances, variables)
+      buildLampFile(id, state.instances, variables, state.description)
     );
     // saving under a name is what names the lamp, so the next save knows what
     // "overwrite" means
@@ -770,6 +778,12 @@ export const useLampStore = create<LampState>((set, get) => ({
           : instance
       ),
     })),
+
+  // The Name panel writes straight through: the name a lamp is under is what
+  // "Save (overwrite)" writes, so renaming here and overwriting is how a lamp is
+  // renamed — the old file stays until it is deleted from the Assets tab.
+  setLampName: (name) => set({ lampName: name }),
+  setDescription: (description) => set({ description }),
 
   // Snapping quantises the cursor to 27 points per box, so most pointer moves
   // land on the point already marked. Bailing out on those keeps a hover from

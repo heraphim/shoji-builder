@@ -46,6 +46,8 @@ interface TextureStore {
   finish: WoodFinish;
   /** What the bench texture is called — the name a save writes under. */
   documentName: string | null;
+  /** What the timber is, in prose. Saved with it; nothing else reads it. */
+  description: string;
 
   // ---- the library --------------------------------------------------------
   library: string[];
@@ -60,6 +62,7 @@ interface TextureStore {
   reset: () => void;
 
   setDocumentName: (name: string | null) => void;
+  setDescription: (description: string) => void;
   /** Put a parsed file on the bench. Used by open and by upload alike. */
   openTexture: (file: TextureFile, name: string | null) => void;
   toFile: (name: string) => TextureFile;
@@ -78,6 +81,7 @@ export const useTextureStore = create<TextureStore>((set, get) => ({
   species: "white_oak",
   finish: "raw",
   documentName: null,
+  description: "",
 
   library: [],
   libraryError: null,
@@ -110,16 +114,29 @@ export const useTextureStore = create<TextureStore>((set, get) => ({
   newSeed: () => set((state) => ({ params: { ...state.params, seed: randomSeed() } })),
 
   reset: () =>
-    set({ params: DEFAULT_WOOD_PARAMS, species: "white_oak", finish: "raw", documentName: null }),
+    set({
+      params: DEFAULT_WOOD_PARAMS,
+      species: "white_oak",
+      finish: "raw",
+      documentName: null,
+      description: "",
+    }),
 
   setDocumentName: (documentName) => set({ documentName }),
+  setDescription: (description) => set({ description }),
 
   openTexture: (file, name) =>
-    set({ params: file.params, species: file.species, finish: file.finish, documentName: name }),
+    set({
+      params: file.params,
+      species: file.species,
+      finish: file.finish,
+      documentName: name,
+      description: file.description ?? "",
+    }),
 
   toFile: (name) => {
     const state = get();
-    return buildTextureFile(name, state.species, state.finish, state.params);
+    return buildTextureFile(name, state.species, state.finish, state.params, state.description);
   },
 
   loadLibrary: async () => {

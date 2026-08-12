@@ -53,10 +53,18 @@ import { spanKey, spanOfEdge } from "./measure";
 // through it. It names a texture rather than carrying one, so that editing a
 // texture changes every component made of it — see docs/component-file-format.md.
 // Optional, and absent means the defaults, so a format 4 file still loads.
-export const COMPONENT_FORMAT = 5;
+//
+// `description` (format 6) is the other thing in the file that no code reads:
+// what this component is for, in the designer's own words. A library of a few
+// dozen files named `frameHorizontal` and `frameVertical` cannot say which of
+// them is the one that takes the shoji panel, and a name long enough to say it
+// is not a name any more. Written only when there is something to write.
+export const COMPONENT_FORMAT = 6;
 
 export interface ComponentFile {
   id: string;
+  /** What it is for, in prose. Absent in files written before format 6. */
+  description?: string;
   type: "component";
   format: number;
   units: "mm";
@@ -210,6 +218,9 @@ export function buildComponentFile(): ComponentFile | null {
 
   return {
     id: editor.meshes[0].name.replace(/\.[^/.]+$/, "").replace(/ \(\d+\)$/, ""),
+    // omitted rather than written empty: a file that carries `"description": ""`
+    // shows up as changed in a diff for having said nothing
+    ...(editor.description.trim() ? { description: editor.description.trim() } : {}),
     type: "component",
     format: COMPONENT_FORMAT,
     units: "mm",
@@ -288,13 +299,19 @@ export function sanitizeName(name: string): string | null {
  * The current component as the file it would be saved as, or null on an empty
  * bench. Where that file then goes is {@link saveLibraryFile}'s business.
  *
- * @param name what to write it under. Defaults to the id the component derives
- *        from its own parts, which is what an unnamed bench is called.
+ * @param name what to write it under. Defaults to **the name the bench is
+ *        already under** — the file it was opened from, or whatever the Name
+ *        panel says — and only falls back to the id derived from the parts when
+ *        there is no such name. That fallback used to be the first thing tried,
+ *        which meant an overwrite of `frameHorizontal` wrote `frame.component.json`:
+ *        the id comes off the STL the solids were cut from, and two components
+ *        sawn out of the same file share it.
  */
 export function componentFileFor(name?: string): ComponentFile | null {
   const built = buildComponentFile();
   if (!built) return null;
-  return { ...built, id: (name && sanitizeName(name)) || built.id };
+  const onBench = useComponentEditorStore.getState().documentName;
+  return { ...built, id: sanitizeName(name ?? onBench ?? "") ?? built.id };
 }
 
 /**
@@ -407,6 +424,10 @@ export function loadComponentFile(data: unknown): LoadReport {
 
   useComponentEditorStore.getState().loadBlocks(blocks, connections, extraMeasurements);
   useComponentEditorStore.getState().setAppearance(readAppearance(file.appearance));
+  // absent in a format 5 file, and blank is the honest answer for one
+  useComponentEditorStore
+    .getState()
+    .setDescription(typeof file.description === "string" ? file.description : "");
 
   return {
     blocks: blocks.length,

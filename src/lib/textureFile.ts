@@ -26,11 +26,17 @@ import { listLibrary, readLibraryFile } from "./library";
  * Round trip: save writes what the Textures tab currently shows; open restores
  * every control to the position it was in, seed included. Same seed, same
  * parameters, same board.
+ *
+ * `description` (format 2) is the one field no code reads: which timber this is
+ * meant to be and where it is for. Thirty numbers cannot say "the quartersawn
+ * oak for the posts", and the name has to stay short enough to be a name.
  */
-export const TEXTURE_FORMAT = 1;
+export const TEXTURE_FORMAT = 2;
 
 export interface TextureFile {
   id: string;
+  /** What it is, in prose. Absent in files written before format 2. */
+  description?: string;
   type: "texture";
   format: number;
   units: "mm";
@@ -49,10 +55,13 @@ export function buildTextureFile(
   id: string,
   species: WoodSpecies,
   finish: WoodFinish,
-  params: WoodParams
+  params: WoodParams,
+  description = ""
 ): TextureFile {
   return {
     id,
+    // omitted rather than written empty — see componentFile.ts
+    ...(description.trim() ? { description: description.trim() } : {}),
     type: "texture",
     format: TEXTURE_FORMAT,
     units: "mm",
@@ -164,6 +173,7 @@ export function parseTextureFile(data: unknown): TextureFile {
 
   return {
     id: typeof file.id === "string" ? file.id : "texture",
+    ...(typeof file.description === "string" ? { description: file.description } : {}),
     type: "texture",
     format: num(file.format, TEXTURE_FORMAT),
     units: "mm",

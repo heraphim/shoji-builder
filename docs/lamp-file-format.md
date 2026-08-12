@@ -1,4 +1,4 @@
-# Lamp file format (`*.lamp.json`), version 1
+# Lamp file format (`*.lamp.json`), version 2
 
 `src/lib/lampFile.ts`
 
@@ -27,8 +27,11 @@ earns its keep.
 ```jsonc
 {
   "id": "example",                  // the file name, minus .lamp.json
+  // What it is, in prose — from the Name & description panel at the top of the
+  // sidebar. Nothing reads it. Omitted when blank. Format 2.
+  "description": "Four-post andon, shoji panels on all four sides.",
   "type": "lamp",                   // the load guard checks this
-  "format": 1,                      // LAMP_FORMAT
+  "format": 2,                      // LAMP_FORMAT
   "units": "mm",
 
   // The design's WHOLE raw dictionary — every variable, as an unevaluated
@@ -181,9 +184,12 @@ Given the components it names are present:
    keep.
 5. **The ⚭ pairs come back as they were**, including the parked value behind a
    collapsed one.
+6. **The name and description come back** — the name off the file name, the
+   description out of the file.
 
 ## Version history
 
 | Version | Change |
 | --- | --- |
-| 1 | First format. |
+| 2 | Current. Adds `description`. Prose about the lamp; nothing reads it. |
+| 1 | First format. Still loads; the description comes back blank. |

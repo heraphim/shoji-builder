@@ -1,4 +1,4 @@
-# Component file format (`*.component.json`), version 5
+# Component file format (`*.component.json`), version 6
 
 `src/lib/componentFile.ts`
 
@@ -17,9 +17,13 @@ component instead of the old one at the old size.
 
 ```jsonc
 {
-  "id": "frame",                    // derived from the first mesh's file name
+  "id": "frame",                    // the name it is saved under — see below
+  // What it is for, in the designer's own words. Nothing reads it; it is here
+  // because a name short enough to be a name cannot say which of
+  // frameVertical / frameVertical2 takes the shoji panel. Omitted when blank.
+  "description": "The horizontal frame member — takes the shoji panel.",
   "type": "component",              // the load guard checks this
-  "format": 5,                      // COMPONENT_FORMAT
+  "format": 6,                      // COMPONENT_FORMAT
   "units": "mm",
 
   // The variables the formulas are written against, so the file resolves on
@@ -86,6 +90,15 @@ component instead of the old one at the old size.
   }
 }
 ```
+
+### `id` is the file name
+
+Whatever `id` says, the file is written as `<id>.component.json`, and `id` is
+taken from **the name the bench is under**: the file it was opened from, or the
+Name panel at the top of the sidebar. Only a bench that has never been named
+falls back to a name derived from the first solid's STL file — which is a poor
+name for a file, because two components sawn out of the same STL share it. Save
+(copy) overrides both with the name typed into the prompt.
 
 ### Anchors
 
@@ -241,12 +254,14 @@ The library is where components are *kept*; it is not the only way in.
 | Model rotation | no — a loaded component starts at identity |
 | Which parts were which STL file | by name only |
 | Colour, texture and grain axis | yes — `appearance`, from format 5 |
+| Name and description | yes — the file name and `description`, from format 6 |
 
 ## Version history
 
 | `format` | Notes |
 | --- | --- |
-| 5 | Current. Adds `appearance` — colour, texture and grain axis. Purely descriptive: nothing in it can change a size. |
+| 6 | Current. Adds `description`. Prose about the component; nothing reads it. |
+| 5 | Adds `appearance` — colour, texture and grain axis. Purely descriptive: nothing in it can change a size. Still loads; the description comes back blank. |
 | 4 | Adds `blocks[].sizeSource`, so a load can tell a size the designer set from one the solver worked out. Still loads; `appearance` falls back to the defaults. |
 | 3 | Sizes as per-axis formula strings; anchors as box fractions; variables embedded; `preview` baked and ignored on load. Still loads — every non-literal size is guessed to be set. |
 

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { VariablesList } from "./VariablesList";
 import { CollapsiblePanel } from "./CollapsiblePanel";
+import { DocumentPanel } from "./DocumentPanel";
 import { mainBoxOf } from "../lib/lamp";
 import { planSymmetryFill, type SymmetryPlan } from "../lib/symmetry";
 import { useLampStore } from "../store/useLampStore";
@@ -303,9 +304,23 @@ function ComponentsPanel() {
 
 export function LampSidebar() {
   const instances = useLampStore((state) => state.instances);
+  const lampName = useLampStore((state) => state.lampName);
+  const description = useLampStore((state) => state.description);
+  const setLampName = useLampStore((state) => state.setLampName);
+  const setDescription = useLampStore((state) => state.setDescription);
 
   return (
     <div className="lamp-sidebar">
+      <DocumentPanel
+        id="lamp.document"
+        what="lamp"
+        extension=".lamp.json"
+        name={lampName}
+        description={description}
+        onName={setLampName}
+        onDescription={setDescription}
+      />
+
       <CollapsiblePanel id="lamp.variables" title="Variables (mm)">
         <VariablesList sliders />
       </CollapsiblePanel>
