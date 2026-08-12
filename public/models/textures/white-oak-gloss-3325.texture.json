@@ -1,0 +1,42 @@
+{
+  "id": "white-oak-gloss-3325",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "white_oak",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 133.138746,
+    "pith": [
+      1.115998,
+      -0.279261
+    ],
+    "seed": 3325,
+    "centerSize": 1.428416,
+    "largeWarpScale": 0.170901,
+    "largeGrainStretch": 0.211784,
+    "smallWarpStrength": 0.027836,
+    "smallWarpScale": 3.05163,
+    "fineWarpStrength": 0.007985,
+    "fineWarpScale": 17.854215,
+    "ringThickness": 0.037398,
+    "ringBias": 0.702007,
+    "ringSizeVariance": 0.164186,
+    "ringVarianceScale": 1.349704,
+    "barkThickness": 0.75834,
+    "splotchScale": 0.122337,
+    "splotchIntensity": 0.756465,
+    "cellScale": 845.935713,
+    "cellSize": 0.369208,
+    "darkGrainColor": "#d9ab78",
+    "lightGrainColor": "#d9bd96",
+    "grainContrast": 0.326519,
+    "poreIntensity": 0.150699,
+    "roughness": 0.5,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.1,
+    "clearcoatDarken": 0.2
+  }
+}
