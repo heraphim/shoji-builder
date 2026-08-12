@@ -1,0 +1,42 @@
+{
+  "id": "mahogany-matte-913",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "mahogany",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 218.074957,
+    "pith": [
+      0.99798,
+      -0.236306
+    ],
+    "seed": 913,
+    "centerSize": 1.136843,
+    "largeWarpScale": 0.252529,
+    "largeGrainStretch": 0.236622,
+    "smallWarpStrength": 0.035053,
+    "smallWarpScale": 3.069677,
+    "fineWarpStrength": 0.012849,
+    "fineWarpScale": 16.401719,
+    "ringThickness": 0.026886,
+    "ringBias": 0.01192,
+    "ringSizeVariance": 0.20953,
+    "ringVarianceScale": 1.436524,
+    "barkThickness": 0.078496,
+    "splotchScale": 0.876416,
+    "splotchIntensity": 1.106347,
+    "cellScale": 1322.318859,
+    "cellSize": 0.248789,
+    "darkGrainColor": "#c9553b",
+    "lightGrainColor": "#cb8d74",
+    "grainContrast": 0.605748,
+    "poreIntensity": 0.205965,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}
