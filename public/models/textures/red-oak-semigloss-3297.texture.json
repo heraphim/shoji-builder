@@ -1,0 +1,42 @@
+{
+  "id": "red-oak-semigloss-3297",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "red_oak",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 146.668241,
+    "pith": [
+      0.90388,
+      -0.00745
+    ],
+    "seed": 3297,
+    "centerSize": 1.41501,
+    "largeWarpScale": 0.180835,
+    "largeGrainStretch": 0.177315,
+    "smallWarpStrength": 0.045123,
+    "smallWarpScale": 2.502216,
+    "fineWarpStrength": 0.013941,
+    "fineWarpScale": 15.989693,
+    "ringThickness": 0.032751,
+    "ringBias": 0.956219,
+    "ringSizeVariance": 0.024351,
+    "ringVarianceScale": 4.820187,
+    "barkThickness": 1.185907,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.71533,
+    "cellScale": 899.128547,
+    "cellSize": 0.26,
+    "darkGrainColor": "#cc926f",
+    "lightGrainColor": "#e2b38d",
+    "grainContrast": 0.378981,
+    "poreIntensity": 0.163224,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

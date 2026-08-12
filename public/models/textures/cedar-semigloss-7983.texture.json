@@ -1,0 +1,42 @@
+{
+  "id": "cedar-semigloss-7983",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cedar",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 203.031867,
+    "pith": [
+      0.718269,
+      -0.000129
+    ],
+    "seed": 7983,
+    "centerSize": 0.927453,
+    "largeWarpScale": 0.404381,
+    "largeGrainStretch": 0.117934,
+    "smallWarpStrength": 0.041882,
+    "smallWarpScale": 1.62004,
+    "fineWarpStrength": 0.004067,
+    "fineWarpScale": 4.120803,
+    "ringThickness": 0.053121,
+    "ringBias": 0.01,
+    "ringSizeVariance": 0.036338,
+    "ringVarianceScale": 5.914721,
+    "barkThickness": 0.079633,
+    "splotchScale": 0.760598,
+    "splotchIntensity": 0.729504,
+    "cellScale": 600.720182,
+    "cellSize": 0.216917,
+    "darkGrainColor": "#c3958d",
+    "lightGrainColor": "#ccaba3",
+    "grainContrast": 0.336361,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}
