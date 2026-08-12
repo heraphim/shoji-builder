@@ -1,5 +1,30 @@
 # UI guide
 
+## The showcase
+
+The page the app opens on, and the only one that is not a bench: the lamp alone,
+in wood, on a warm shelf — no reference box, no grid, no lines, nothing to pick.
+Drag to turn it, wheel to come closer.
+
+Three controls, and they are the whole of it:
+
+- **The lamp's name, top left.** Press it for the library listing and pick
+  another. It opens exactly as the Lamp Design file menu would — the showcase
+  keeps no design of its own, it shows the one that is loaded — so the lamp you
+  are looking at is the lamp on the bench. On a first load with an empty bench it
+  puts up the first lamp the library offers.
+- **Editor, top right.** Through to the workbench, with that lamp on it. The tab
+  strip there begins with **← Showcase**, which is the way back.
+- **Width and Height, along the bottom.** `innerWidth` and `innerHeight` under
+  the names somebody who is not building the lamp would use. Width carries the
+  depth with it while the pair is collapsed, which is the default, so the
+  footprint stays square. A measurement written as a formula shows where the
+  formula lands and will not be dragged — clear it in the editor first.
+
+A part that names no texture is shown in pine here, where the benches would draw
+it in flat colour. The benches are reporting on the design and that report is
+honest; this page is showing the lamp.
+
 ## Tabs
 
 Four folder tabs at the top left. The first three each have a **▾** that opens

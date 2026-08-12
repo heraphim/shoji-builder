@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Grid, OrbitControls, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
-import { type ThreeEvent } from "@react-three/fiber";
+import { useThree, type ThreeEvent } from "@react-three/fiber";
 import { useLampStore, type ConnectDraft, type LampPickSource } from "../store/useLampStore";
 import { useVariablesStore } from "../store/useVariablesStore";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
@@ -95,6 +95,17 @@ const LAMP = {
   /** One it does not: what pressing the button would add. */
   symmetryOpen: "#4ade80",
 } as const;
+
+/**
+ * The timber a part with no texture of its own is shown in, in the showcase.
+ *
+ * Only there. On the benches a component that names no texture is drawn in flat
+ * colour, and that is right: it is the honest report that nobody has said what
+ * the part is made of. The showcase is not reporting on the design, it is
+ * showing the lamp, and a lamp in flat plastic brown shows nothing — so the one
+ * view whose whole job is to look like a lamp puts it in wood.
+ */
+const SHOWCASE_TEXTURE = "basic-pine.texture.json";
 
 /** Grid pitch in mm — a lamp is hundreds of mm, so 10 mm cells read as scale. */
 const GRID_CELL_MM = 10;
@@ -431,6 +442,7 @@ function Instance({
   placement,
   modes,
   inSymmetry = false,
+  plain = false,
 }: {
   instance: LampInstance;
   shape: InstanceShape;
@@ -438,10 +450,15 @@ function Instance({
   modes: ViewportModes;
   /** Standing in one of the places the previewed symmetry reaches. */
   inSymmetry?: boolean;
+  /** No drawing chrome — see {@link LampSceneContents}. */
+  plain?: boolean;
 }) {
   const highlightedId = useLampStore((state) => state.highlightedId);
   const draft = useLampStore((state) => state.draft);
-  const faintOutline = useLookStore((state) => state.faintOutline);
+  // the faint arris is a bench setting, and the showcase is not a bench: it is
+  // there to separate two touching parts while you work, and it is the one line
+  // left in a view that has been asked for none
+  const faintOutline = useLookStore((state) => state.faintOutline) && !plain;
   const solid = useSolid(shape);
 
   const boxes = useMemo(() => pickBoxes(shape), [shape]);
@@ -461,7 +478,9 @@ function Instance({
   const woodParams = usePartTexture(
     // a highlighted part must read as highlighted, and the surest way to lose
     // that is to paint it in a wood at the same moment
-    modes.material === "texture" && !lit ? (appearance?.texture ?? null) : null,
+    modes.material === "texture" && !lit
+      ? (appearance?.texture ?? (plain ? SHOWCASE_TEXTURE : null))
+      : null,
     appearance?.grainAxis
   );
   const wood = useWoodMaterial(woodParams);
@@ -669,8 +688,23 @@ function fitDistance(half: THREE.Vector3, aspect: number): number {
  * Shared by all four views, so a joint picked in the Top projection is the same
  * act as one picked in 3D and the isolation rule that clears the way for it
  * holds everywhere at once.
+ *
+ * `plain` is the showcase's view of the same scene: **the lamp and nothing that
+ * says it is a drawing**. That is one setting rather than two because the
+ * reference box and the faint arris are the same kind of thing — neither is
+ * material, both are there to help you place a part, and a view that exists to
+ * be looked at wants neither. The parts themselves are unchanged; only the
+ * chrome around them goes.
  */
-function LampSceneContents({ scene, modes }: { scene: LampScene; modes: ViewportModes }) {
+function LampSceneContents({
+  scene,
+  modes,
+  plain = false,
+}: {
+  scene: LampScene;
+  modes: ViewportModes;
+  plain?: boolean;
+}) {
   const instances = useLampStore((state) => state.instances);
   const symmetryPreview = useLampStore((state) => state.symmetryPreview);
   const hiddenIds = useLampStore((state) => state.hiddenIds);
@@ -694,7 +728,7 @@ function LampSceneContents({ scene, modes }: { scene: LampScene; modes: Viewport
           still to pick are on it, and in a lamp they are usually behind
           something. Not rendering is what clears the way for both the eye and
           the raycast at once. */}
-      {(!isolated || isolated.kind === "mainBox") && (
+      {!plain && (!isolated || isolated.kind === "mainBox") && (
         <MainBox box={scene.mainBox} modes={modes} />
       )}
 
@@ -715,6 +749,7 @@ function LampSceneContents({ scene, modes }: { scene: LampScene; modes: Viewport
             placement={placement}
             modes={modes}
             inSymmetry={inSymmetry.has(instance.id)}
+            plain={plain}
           />
         );
       })}
@@ -838,6 +873,87 @@ export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
           MIDDLE: THREE.MOUSE.PAN,
           RIGHT: THREE.MOUSE.PAN,
         }}
+      />
+    </>
+  );
+}
+
+/**
+ * How the showcase draws: the timber, and no lines at all.
+ *
+ * Fixed rather than taken from a viewport store. The four cells on the benches
+ * are settings because you are working and have to be able to ask the drawing a
+ * different question; the showcase asks one question — what does this lamp look
+ * like — and a dropdown that could answer it with a wireframe is a way of
+ * getting it wrong.
+ */
+const SHOWCASE_MODES: ViewportModes = {
+  material: "texture",
+  geometry: "none",
+  showAxes: false,
+};
+
+/**
+ * The lamp on its own: textured, unlined, standing on nothing.
+ *
+ * The same scene as the Lamp Design tab's 3D cell and deliberately not the same
+ * view of it. There is no grid, no reference box, no triad and no picking —
+ * `usePickHandlers` returns nothing with no connect draft in flight, so the
+ * parts are not even raycast — which leaves the orbit as the only thing the
+ * pointer does here.
+ *
+ * The pool of shade is unconditional, where the benches leave it to the Options
+ * panel. It is what puts the lamp on a floor rather than in front of a colour,
+ * and there is no panel in this view to turn it back on with.
+ *
+ * Framing follows the lamp, not the variables: inserting or opening something
+ * refits, while dragging Width refits nothing, so the model grows in the frame
+ * the way it would grow on a bench. Same ref trick as {@link LampScene3D}, for
+ * the same reason — a resize must not throw the user's orbit away either.
+ */
+export function LampShowcase3D() {
+  const instances = useLampStore((state) => state.instances);
+  const scene = useLampScene();
+  const size = useThree((state) => state.size);
+
+  const overall = useMemo(() => overallBox(scene), [scene]);
+
+  const sizeRef = useRef(size);
+  sizeRef.current = size;
+  const overallRef = useRef(overall);
+  overallRef.current = overall;
+
+  const instanceIds = instances.map((i) => i.id).join(",");
+  const { position, target } = useMemo(() => {
+    const box = overallRef.current;
+    const centre = box.getCenter(new THREE.Vector3());
+    const half = box.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+    const { width, height } = sizeRef.current;
+    const distance = fitDistance(half, width / Math.max(height, 1));
+    return {
+      position: [
+        centre.x + VIEW_DIR.x * distance,
+        centre.y + VIEW_DIR.y * distance,
+        centre.z + VIEW_DIR.z * distance,
+      ] as [number, number, number],
+      target: centre,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instanceIds]);
+
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={position} fov={FOV} near={1} far={20000} />
+      <SceneLights />
+      <ContactShade box={overall} floorY={overall.min.y} />
+      <LampSceneContents scene={scene} modes={SHOWCASE_MODES} plain />
+      <OrbitControls
+        makeDefault
+        target={target}
+        enablePan={false}
+        enableZoom
+        enableRotate
+        mouseButtons={{ LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE }}
       />
     </>
   );

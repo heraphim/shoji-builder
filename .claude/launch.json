@@ -24,6 +24,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "5235", "--strictPort"],
       "port": 5235
+    },
+    {
+      "name": "shoji-dev-alt4",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5247", "--strictPort"],
+      "port": 5247
     }
   ]
 }

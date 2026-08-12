@@ -35,6 +35,15 @@
    the page's colour — so the line breaks where the active tab is and that tab
    reads as the front leaf of the folder rather than as a lit button. */
 .app-tabs {
+  /* The strip is a stacking context of its own, above everything the page under
+     it raises. Without it the file menu was confined to the *active tab's*
+     context — `.app-tab.active` is positioned with a z-index, so the menu's
+     z-index counts only inside it — and that context sits at 2, level with the
+     minimised-views strip below and earlier in the document than it. The menu
+     therefore hung behind the row of view chips, with a band of it covered. */
+  position: relative;
+  z-index: 4;
+
   display: flex;
   align-items: flex-end;
   gap: 3px;
@@ -2030,4 +2039,297 @@ select.view-mode option:disabled {
   border-color: var(--bp-unknown);
   background: rgba(248, 113, 113, 0.12);
   color: var(--bp-unknown);
+}
+
+/* ===========================================================================
+   The showcase
+
+   A different room from the rest of the app, on purpose. Everything behind the
+   Editor button is a blueprint — dark blue, thin lines, controls that get out
+   of the way — because it is a drawing you work on. This page is the finished
+   piece on a shelf, so it is warm, light and made of turned wood: the controls
+   are the only things on it besides the lamp, and they should look like they
+   belong to the same workshop rather than like a toolbar that wandered in.
+
+   The gloss is the whole trick, and it is two gradients: a warm one down the
+   body of the control for the timber, and a white one across its top half only,
+   for the lacquer over it. Neither reads as anything on its own.
+   =========================================================================== */
+
+.showcase {
+  --wood-lit: #eec185;
+  --wood: #cb9452;
+  --wood-dark: #a06a31;
+  --wood-deep: #6f4419;
+  --wood-ink: #40270f;
+
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* the shelf the lamp stands on: warm, and lightest behind the model so the
+     silhouette has something to sit against */
+  background: radial-gradient(120% 95% at 50% 12%, #fdf4e6 0%, #f0dfc6 45%, #d7bf9d 100%);
+}
+
+.showcase-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+}
+
+/* over the scene, under the chrome: a click anywhere closes the lamp list
+   instead of grabbing the orbit */
+.showcase-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Where the three sit, each pinned to its own corner of the page.
+   Scoped through the parent — specificity 0,2,0 — because two of them are also
+   `.showcase-button`, and that rule sets `position: relative` for the gloss
+   overlay to hang off. At equal specificity the later rule wins, so a bare
+   `.showcase-editor` had its `position: absolute` overridden by a block further
+   down the file: the button fell back into the flow and `top`/`right` became
+   relative offsets, which walked it to the top *left*, on top of the lamp's
+   name. Saying `.showcase >` here settles it whatever order the file is in. */
+.showcase > .showcase-name {
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  left: 22px;
+  max-width: min(340px, calc(100% - 44px));
+}
+
+.showcase > .showcase-editor {
+  position: absolute;
+  z-index: 2;
+  top: 20px;
+  right: 22px;
+}
+
+.showcase > .showcase-controls {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+}
+
+/* ---- the one button, in three places ---- */
+
+.showcase-button {
+  position: relative;
+  padding: 10px 20px;
+  border: 1px solid var(--wood-deep);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--wood-lit) 0%, var(--wood) 52%, var(--wood-dark) 100%);
+  color: var(--wood-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 0 rgba(255, 246, 232, 0.55);
+  box-shadow:
+    0 6px 14px rgba(88, 52, 18, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -3px 6px rgba(96, 56, 18, 0.35);
+  cursor: pointer;
+}
+
+/* the lacquer: a highlight over the top half and nothing over the bottom */
+.showcase-button::after {
+  content: "";
+  position: absolute;
+  inset: 2px 4px auto;
+  height: 45%;
+  border-radius: 999px 999px 60% 60% / 999px 999px 100% 100%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.showcase-button:hover {
+  background: linear-gradient(180deg, #f6cf98 0%, #d8a061 52%, #ac7538 100%);
+}
+
+/* pressed: the light moves to the bottom edge, which is what a bead of lacquer
+   does when the thing it is on tips away from you */
+.showcase-button:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 6px rgba(88, 52, 18, 0.3),
+    inset 0 3px 7px rgba(96, 56, 18, 0.45),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.showcase-caret {
+  font-size: 10px;
+  opacity: 0.75;
+}
+
+/* ---- the lamp list ---- */
+
+.showcase-menu {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 200px;
+  max-height: 55vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid var(--wood-deep);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f7e6cd 0%, #ecd5b2 100%);
+  box-shadow:
+    0 12px 26px rgba(88, 52, 18, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.showcase-menu-item {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--wood-ink);
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.showcase-menu-item:hover {
+  background: linear-gradient(180deg, var(--wood-lit), var(--wood));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.showcase-menu-empty {
+  padding: 8px 12px;
+  color: #8a6a45;
+  font-size: 13px;
+}
+
+.showcase-error {
+  margin-top: 8px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: rgba(180, 60, 40, 0.14);
+  color: #8c2f1c;
+  font-size: 13px;
+}
+
+/* ---- the two measurements ---- */
+
+.showcase-controls {
+  display: grid;
+  grid-template-columns: auto minmax(140px, 1fr) auto;
+  align-items: center;
+  gap: 10px 16px;
+  width: min(520px, calc(100% - 44px));
+  padding: 16px 22px;
+  border: 1px solid var(--wood-deep);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f3e0c2 0%, #e0c399 55%, #cba775 100%);
+  box-shadow:
+    0 10px 24px rgba(88, 52, 18, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -4px 8px rgba(96, 56, 18, 0.2);
+}
+
+.showcase-dimension-label {
+  color: var(--wood-ink);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 0 rgba(255, 246, 232, 0.6);
+}
+
+/* the reading, in a fixed-width tabular figure so the plank does not twitch
+   sideways as the number goes from 99 to 100 */
+.showcase-dimension-value {
+  min-width: 76px;
+  color: var(--wood-ink);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  opacity: 0.85;
+}
+
+/* A groove in the plank with a turned knob riding in it. The track has to be
+   styled per engine — there is no cross-browser pseudo-element for it — so the
+   two blocks below say the same thing twice. */
+.showcase-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 22px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.showcase-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #7d4f20 0%, #a97b45 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(52, 28, 8, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.showcase-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #7d4f20 0%, #a97b45 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(52, 28, 8, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.showcase-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 21px;
+  height: 21px;
+  margin-top: -7px;
+  border: 1px solid var(--wood-deep);
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 26%, #fff8ea 0%, var(--wood-lit) 32%, var(--wood) 64%, var(--wood-dark) 100%);
+  box-shadow: 0 3px 6px rgba(70, 40, 10, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.showcase-slider::-moz-range-thumb {
+  width: 21px;
+  height: 21px;
+  border: 1px solid var(--wood-deep);
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 26%, #fff8ea 0%, var(--wood-lit) 32%, var(--wood) 64%, var(--wood-dark) 100%);
+  box-shadow: 0 3px 6px rgba(70, 40, 10, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.showcase-slider:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* ---- the way back into the showcase, on the workbench's tab strip ---- */
+
+.app-back {
+  margin: 0 14px 4px 0;
+  padding: 5px 12px;
+  background: transparent;
+  border: 1px solid var(--bp-border);
+  border-radius: 6px;
+  color: var(--bp-text-dim);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.app-back:hover {
+  background: var(--bp-panel);
+  color: var(--bp-text);
 }

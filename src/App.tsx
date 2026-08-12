@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useVariablesStore } from "./store/useVariablesStore";
+import { ShowcasePage } from "./components/ShowcasePage";
 import { LampDesignPage } from "./components/LampDesignPage";
 import { ComponentEditorPage } from "./components/ComponentEditorPage";
 import { TexturesPage } from "./components/TexturesPage";
@@ -19,8 +20,21 @@ const TABS: Array<{ id: Tab; label: string }> = [
 /** Every tab but Assets, which has no file menu — it *is* the library. */
 const hasFileMenu = (id: Tab): id is FileMenuTab => id !== "assets";
 
+/** The showcase, or the four-tab workbench behind it. */
+type View = "showcase" | "workbench";
+
 /**
- * Four tabs over one shared design.
+ * The showcase, and the four tabs behind it.
+ *
+ * The app opens on the **showcase** — the lamp itself, in wood, with two
+ * sliders. It is not a tab: the tab strip is the workbench's own furniture, and
+ * a view whose whole point is that there is nothing in front of the lamp cannot
+ * carry a row of file menus across the top of it. The Editor button walks
+ * through to the workbench and the leading tab-strip button walks back, with
+ * the same lamp on the bench either way — the showcase keeps no design of its
+ * own, it shows the one that is loaded.
+ *
+ * ## The workbench: four tabs over one shared design
  *
  * **Lamp Design** is the assembly — the main box in 3D, the variables that size
  * it, and the components hung on it; **Component Editor** is the four-view
@@ -49,6 +63,7 @@ const hasFileMenu = (id: Tab): id is FileMenuTab => id !== "assets";
  * because every formula in the app resolves against them.
  */
 function App() {
+  const [view, setView] = useState<View>("showcase");
   const [tab, setTab] = useState<Tab>("lamp");
   const [menu, setMenu] = useState<FileMenuTab | null>(null);
   const loaded = useVariablesStore((state) => state.loaded);
@@ -69,9 +84,37 @@ function App() {
     setMenu((current) => (current === id ? null : id));
   };
 
+  // Both views need the variables — every formula in the app resolves against
+  // them, and the showcase is a lamp cut from them like any other.
+  const loading = loadError ? (
+    <div className="loading variables-error">{loadError}</div>
+  ) : !loaded ? (
+    <div className="loading">Loading...</div>
+  ) : null;
+
+  if (view === "showcase") {
+    return (
+      <div className="app">
+        <div className="app-body">
+          {loading ?? <ShowcasePage onOpenEditor={() => setView("workbench")} />}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <div className="app-tabs">
+        {/* the way back, in the strip rather than on a page: it leaves the
+            workbench altogether, which is not something any one tab does */}
+        <button
+          type="button"
+          className="app-back"
+          title="Back to the lamp"
+          onClick={() => setView("showcase")}
+        >
+          &#8592; Showcase
+        </button>
         {TABS.map(({ id, label }) => (
           <div key={id} className={"app-tab" + (tab === id ? " active" : "")}>
             <button type="button" className="app-tab-label" onClick={() => select(id)}>
@@ -95,19 +138,16 @@ function App() {
       </div>
 
       <div className="app-body">
-        {loadError ? (
-          <div className="loading variables-error">{loadError}</div>
-        ) : !loaded ? (
-          <div className="loading">Loading...</div>
-        ) : tab === "lamp" ? (
-          <LampDesignPage />
-        ) : tab === "componentEditor" ? (
-          <ComponentEditorPage />
-        ) : tab === "textures" ? (
-          <TexturesPage />
-        ) : (
-          <AssetsPage onOpen={setTab} />
-        )}
+        {loading ??
+          (tab === "lamp" ? (
+            <LampDesignPage />
+          ) : tab === "componentEditor" ? (
+            <ComponentEditorPage />
+          ) : tab === "textures" ? (
+            <TexturesPage />
+          ) : (
+            <AssetsPage onOpen={setTab} />
+          ))}
       </div>
     </div>
   );

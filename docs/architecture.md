@@ -4,8 +4,9 @@
 
 ```
                     ┌──────────────────────────────────────────┐
-   React UI         │ App.tsx ─ tabs ─ Lamp Design / Component  │
-                    │           Editor / Textures / Assets      │
+   React UI         │ App.tsx ─ Showcase (default)              │
+                    │         └ tabs ─ Lamp Design / Component  │
+                    │                  Editor / Textures/Assets │
                     └───────────────┬──────────────────────────┘
                                     │ hooks / actions
         ┌───────────────────────────▼──────────────────────────┐
@@ -82,8 +83,9 @@ stores hold state; the libraries hold the arithmetic.
 | `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn the saves on at all, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
 | `CollapsiblePanel` | One sidebar panel, on every tab. Folds from its header; the state is remembered by `usePanelStore`. |
 | `ViewportGrid` | The view grid, shared by all three tabs: one to four cells over a single `<Canvas>`, the per-cell header (draw modes, minimise, drag-to-swap slots), the minimised strip, and each cell's measured pixel size. |
+| `ShowcasePage` | The page the app opens on, and the only one that is not a bench: the lamp alone — textured, unlined, no reference box, nothing pickable — with the lamp picker, the Editor button and the Width/Height sliders over it. Holds no state of its own; the lamp it shows is the lamp on the bench. |
 | `LampDesignPage` | The Lamp tab: the status strip, the view grid, and the sidebar. |
-| `LampView` | The lamp scene — main box, every instance, the connect pick overlay, the symmetry preview overlay — and the two cameras that draw it: `LampScene3D` and `LampOrthographicView`. |
+| `LampView` | The lamp scene — main box, every instance, the connect pick overlay, the symmetry preview overlay — and the three cameras that draw it: `LampScene3D`, `LampOrthographicView` and `LampShowcase3D`. |
 | `LampSidebar` | Two collapsible panels: variables (with sliders) and components (insert / delete / copy / connect / roll / fill symmetry). Opening and saving a lamp is in the file menu. |
 | `ComponentEditorPage` | Status strip + views + sidebar. |
 | `ComponentEditorViews` | The editor's half of the grid: which scene each cell draws, the per-cell Select Face and rotate buttons, and wheel-zoom / drag-pan wired to the component-editor store. |
