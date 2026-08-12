@@ -7,8 +7,12 @@
  *
  * Deployed, it has somewhere. The site is GitHub Pages, Pages is a branch of a
  * repository, and a repository can be written to — over the contents API, with a
- * token. So a save commits the file, and the push rebuilds the site: the design
- * is in the library for good rather than for this session.
+ * token. So a save commits the file: the design is in the library for good
+ * rather than for this session.
+ *
+ * The commit does not republish the site. `public/models/**` is ignored by the
+ * deploy workflow, because a minute of Actions to publish one JSON file is not
+ * worth paying per save — see .github/workflows/deploy.yml.
  *
  * ## The token
  *
@@ -24,10 +28,11 @@
  *
  * With one, *every* read goes through the API instead, including reads that the
  * site could have served. It is the slower path, and it is the right one: the
- * site is a build, so between saving a file and the rebuild finishing it serves
- * the version before the save. Reading the branch means what you open is what
- * you last saved, rather than what you saved the time before — worth more than
- * the hundred milliseconds it costs the one person holding a token.
+ * site is a build, and a saved design does not trigger one, so it goes on
+ * serving the library as it stood at the last code push. Reading the branch
+ * means what you open is what you last saved, rather than what was there the
+ * last time the site was published — worth more than the hundred milliseconds it
+ * costs the one person holding a token.
  */
 
 /** The three libraries, which are the three folders under `public/models`. */
@@ -307,5 +312,5 @@ export async function saveLibraryFile(
     }),
   });
   if (!res.ok) throw new Error(`Could not save ${file}: ${await apiError(res)}`);
-  return `Saved ${file} to the library — the site rebuilds with it in about a minute`;
+  return `Saved ${file} to the library`;
 }

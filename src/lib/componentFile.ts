@@ -328,10 +328,11 @@ export interface LoadReport {
   keptVariables: string[];
 }
 
-// Components are loaded from the project's own library — public/models/components
-// — and nowhere else, so what can be loaded is exactly what the project holds.
-// Whether that is read off the deployed site or straight off the branch is
-// lib/library.ts's decision, not this module's.
+// The project's own library — public/models/components — which is where
+// components are kept and what every picker lists. Whether that is read off the
+// deployed site or straight off the branch is lib/library.ts's decision, not
+// this module's. A file off the user's own disk skips both and goes straight to
+// `loadComponentFile`; the library is not the only way in, only the way back.
 
 /** File names in the library. @throws if the listing cannot be had. */
 export function listLibraryComponents(): Promise<string[]> {

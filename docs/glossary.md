@@ -24,6 +24,14 @@ picking one picks all four (`parallelEdges`).
 Everything currently on the bench: all meshes plus all connections. May be one
 joined solid or several separate subcomponents.
 
+### asset
+One file in one of the three libraries, read as something to *look at* rather
+than to work on: what kind it is, what a card should say about it, and the
+geometry its preview draws. A file that will not parse is still an asset — a
+`broken` one, which is how the Assets tab can say why a design is missing from
+every other picker. The three libraries read at once are a **catalogue**.
+`assets.ts`.
+
 ### bench
 Informal name for the editor's current contents. An STL upload or a component
 load *replaces* the bench.

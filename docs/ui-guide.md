@@ -61,9 +61,17 @@ the bench.
 **Library settings…**, at the foot of every file menu, is where a save stops
 being a download. Give it a GitHub user, a repository, a branch and a
 fine-grained token with *Contents: read and write*, and every save commits the
-file to `public/models/…` instead — the push rebuilds the site, so the design is
-in the library for good. The row says which mode you are in, `connected` or
+file to `public/models/…` instead, so the design is in the library for good
+rather than for the session. The row says which mode you are in, `connected` or
 `download only`.
+
+A save does **not** rebuild the site — `public/models/**` is ignored by the
+deploy workflow, because a minute of Actions to publish one JSON file is not
+worth paying per save. Nothing is lost while you are the one working: with a
+token the app reads the branch rather than the built site, so what you just saved
+is what the pickers list. It is the *other* visitor's view that waits, since they
+read the build (Actions → Deploy to GitHub Pages → **Run workflow** publishes the
+library as it stands).
 
 The settings are checked against GitHub before they are kept, so a token with the
 wrong repository on it is caught there rather than at the first save. They live
@@ -701,7 +709,7 @@ badge and the drawing agree.
 | Badge | Means |
 | --- | --- |
 | **5 ▣** | How many parametric blocks a component has, or how many components are on a lamp. |
-| **⚠ 3 unmeasured** | Three of this component's sizes are determined by nothing: no measurement states them and no chain of measurements reaches them, so they stay at the millimetres the solid was drawn at when the lamp changes size. **Implied sizes are not counted** — an implied size is what the measurements that *were* made already say, worked out by the span solver, and it scales like any other. Most components have some by design; none of the four in the library raises this badge. |
+| **⚠ 3 unmeasured** | Three of this component's sizes are determined by nothing: no measurement states them and no chain of measurements reaches them, so they stay at the millimetres the solid was drawn at when the lamp changes size. **Implied sizes are not counted** — an implied size is what the measurements that *were* made already say, worked out by the span solver, and it scales like any other. Most components have some by design; none of the ones this project ships raises this badge, which `src/lib/__assetscheck.ts` holds them to. |
 | **⚠ 2 missing** | This lamp names components the library no longer has. Those instances are not in the preview, and will not be there when it is loaded either. |
 | **■ solid** | The component names no texture, so it is drawn in the flat colour shown in the swatch. |
 | **▤ walnut-satin** | It is made of that texture. `▤ bench` means it is pointed at the Textures bench rather than at a saved file. |

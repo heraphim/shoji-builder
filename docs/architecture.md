@@ -78,6 +78,7 @@ stores hold state; the libraries hold the arithmetic.
 | --- | --- |
 | `FileMenu` | All three tabs' file menus, under the tab caret: upload, load from the library, and the two saves — plus the name dialog with its overwrite check. The only place a design is opened or written. Its header comment is the spec for what "overwrite" will mean once there is somewhere to write to. |
 | `FileStatusBar` | The strip above the views: what the last file action did, and what is on the bench. |
+| `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn every save from a download into a commit, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
 | `CollapsiblePanel` | One sidebar panel, on every tab. Folds from its header; the state is remembered by `usePanelStore`. |
 | `ViewportGrid` | The view grid, shared by all three tabs: one to four cells over a single `<Canvas>`, the per-cell header (draw modes, minimise, drag-to-swap slots), the minimised strip, and each cell's measured pixel size. |
 | `LampDesignPage` | The Lamp tab: the status strip, the view grid, and the sidebar. |
@@ -287,7 +288,7 @@ These hold everywhere and most of the code depends on them:
 
 ### Saving and opening a lamp
 
-The Lamp tab's third panel is the whole design's file I/O, and it mirrors the
+The Lamp tab's file menu is the whole design's file I/O, and it mirrors the
 component library because it is the same idea one level up — a component is a
 recipe for a part, a lamp a recipe for an assembly of them.
 
@@ -295,7 +296,7 @@ recipe for a part, a lamp a recipe for an assembly of them.
   GitHub's contents API when this browser has a token, a download to be dropped
   in by hand when it has not (`lib/library.ts`). The same round trip a component
   takes.
-- **Open lamp** lists that folder and replaces the bench: instances *and*
+- **Load…** lists that folder and replaces the bench: instances *and*
   variables, because a lamp is a whole design rather than something added to one.
 - Instances name their components rather than embedding them, so a component
   improved since the lamp was saved comes back improved.
@@ -304,15 +305,18 @@ recipe for a part, a lamp a recipe for an assembly of them.
 
 ## Build-time pieces
 
-`vite.config.ts` adds a tiny `library-index` plugin. Neither
-`public/models/components` nor `public/models/lamps` has a directory index, so
-the plugin serves `index.json` for both in dev and emits the same listings as
-build assets.
+`vite.config.ts` adds a tiny `library-index` plugin. None of
+`public/models/components`, `public/models/lamps` or `public/models/textures`
+has a directory index, so the plugin serves `index.json` for all three in dev and
+emits the same listings as build assets. It is the no-token path only: a browser
+with a token lists the branch through the contents API instead and never asks for
+`index.json` at all (`lib/library.ts`).
 
 The dev listing is `readdirSync` **per request**, so the server never needs
-restarting for a new component or lamp — but the page fetched it once, on mount,
-which made it look as though it did. **Insert component** and **Open lamp**
-therefore re-list every time they are opened (`togglePicker` in `LampSidebar`),
-fire-and-forget so the list already on screen shows straight away. The Component
-Editor's *Load Component* select still lists once per mount, which is enough
-there because switching tabs unmounts the page and re-runs it.
+restarting for a new design — but the page fetched it once, on mount, which made
+it look as though it did. Every picker therefore re-lists when it is opened:
+**Insert component** in `togglePicker` (`LampSidebar`), and each tab's file menu
+on mount and again on **Load…**. Fire-and-forget, so the list already on screen
+shows straight away. The file menus list on *opening the menu* rather than on
+opening the listing because **Save (copy)** checks the same listing for a name
+clash, and a clash check with nothing to check against is worse than none.

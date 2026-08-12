@@ -159,8 +159,9 @@ build — and **Save** downloads the file for you to drop into the folder by han
 **With one** (Library settings, at the foot of the file menu) both directions go
 through GitHub's contents API against the branch: a save is a commit, and a read
 is of the branch rather than of the deployed site. That second half is the part
-worth stating — the site is a build, so between saving a file and the rebuild
-finishing it still serves the version before the save. Reading the branch is
+worth stating — the site is a build, and a saved design does not trigger one
+(`public/models/**` is ignored by the deploy workflow), so the site goes on
+serving the library as it stood at the last code push. Reading the branch is
 slower and correct.
 
 Either way the picker re-lists on every open, so a lamp saved since the page

@@ -27,6 +27,26 @@ Then open the printed URL (default <http://localhost:5173>).
 | `npm run lint` | Oxlint over the repo |
 | `npm run preview` | Serve the built `dist/` |
 
+### The checks
+
+`src/lib/__*check.ts` are standalone harnesses for the four things that are worth
+asserting numerically rather than eyeballing: that a joint stays on the feature it
+was picked on (`__anchorcheck`), that a saved lamp responds to a slider exactly as
+a rebuilt one does (`__lampfilecheck`), that a union of boxes gives the outline
+the CSG would (`__outlinecheck`), and that the Assets tab's badges and previews
+agree with the library they describe (`__assetscheck`).
+
+There is no test runner. Each is bundled to ESM and run under Node, from the
+project root — `__assetscheck` answers `fetch` off `public/`, so it exercises the
+real `lib/library.ts` path:
+
+```bash
+npx vite build --ssr src/lib/__anchorcheck.ts --outDir dist-ssr --emptyOutDir && node dist-ssr/__anchorcheck.js
+```
+
+Each prints a `PASS`/`FAIL` line per assertion and exits non-zero on a failure.
+`dist-ssr/` is gitignored.
+
 ## The idea in one paragraph
 
 A saved component is a **recipe, not a snapshot**. Every part is an
@@ -52,7 +72,10 @@ component instead of the old one at the old size. See
 | [docs/algorithms/solid-simplification.md](docs/algorithms/solid-simplification.md) | CSG union, face topology, outline recovery, retessellation |
 | [docs/algorithms/rectangle-partition.md](docs/algorithms/rectangle-partition.md) | Minimum rectilinear rectangle partition |
 | [docs/algorithms/projection-and-dimensions.md](docs/algorithms/projection-and-dimensions.md) | Hidden-line removal, dimension chain layout, framing |
-| [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v3, save and load |
+| [docs/algorithms/wood-texture.md](docs/algorithms/wood-texture.md) | Solid (3-D) wood texturing: noise, rings, warp, pores |
+| [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v5, save and load |
+| [docs/lamp-file-format.md](docs/lamp-file-format.md) | `*.lamp.json` schema v1 — which components are on the lamp, and how |
+| [docs/texture-file-format.md](docs/texture-file-format.md) | `*.texture.json` schema v1 — the wood as parameters, never an image |
 | [docs/ui-guide.md](docs/ui-guide.md) | What each control does and the intended workflow |
 | [docs/glossary.md](docs/glossary.md) | Block, span, station, run, group, anchor, … |
 | [initial-plan.md](initial-plan.md) | The original iteration-1 plan (historical) |
@@ -63,11 +86,14 @@ component instead of the old one at the old size. See
 - **@react-three/fiber** / **@react-three/drei** — declarative three.js; `<View>`
   gives four scissored viewports on a single WebGL canvas
 - **three-bvh-csg** — boolean union of joined parts
-- **Zustand** — three stores (design variables, component editor, lamp assembly)
+- **Zustand** — one store per thing that has a life of its own: the design
+  variables, the component editor, the lamp assembly, the texture bench, the
+  view chrome, the folded panels, and what the last file action had to say
 
 Data lives as JSON under `public/`: design variables in
-`public/data/variables.json`, the component library in
-`public/models/components/` (listed by a small Vite plugin, see
+`public/data/variables.json`, and the three libraries in
+`public/models/components/`, `public/models/lamps/` and
+`public/models/textures/` (each listed by a small Vite plugin, see
 `vite.config.ts`).
 
 ## Deploying

@@ -92,9 +92,10 @@ decimals**. Not for size — for stability: two saves of the same texture have t
 be the same bytes, or a file that differs only in float noise shows up as changed
 in every diff.
 
-`downloadTextureJSON()` wraps the result in a Blob and clicks a temporary anchor,
-revoking the object URL immediately after — the same round trip as components and
-lamps, because the browser cannot write into the project.
+The file menu then hands the result to `saveLibraryFile` (`lib/library.ts`) — the
+same round trip as components and lamps: a commit to the repository when this
+browser has a token, a download to be dropped into the folder by hand when it has
+not.
 
 ## Loading — `parseTextureFile(data)`
 
@@ -118,18 +119,19 @@ all.
 
 ## The library
 
-`public/models/textures/`, listed by the `library-index` Vite plugin
-(`vite.config.ts`) exactly as the component and lamp libraries are: read per
-request in dev, emitted as a build asset for `dist`.
+`public/models/textures/`, read and written through `lib/library.ts` exactly as
+the component and lamp libraries are: the `library-index` Vite plugin
+(`vite.config.ts`) serves `index.json` for a browser with no token — read per
+request in dev, emitted as a build asset for `dist` — and a browser with one
+reads and commits against the branch through GitHub's contents API.
 
 ```
-listLibraryTextures()      → GET /models/textures/index.json  → string[]
-loadLibraryTexture(name)   → GET /models/textures/<name>      → TextureFile
+listLibraryTextures()      → listLibrary("textures")            → string[]
+loadLibraryTexture(name)   → readLibraryFile("textures", name)  → TextureFile
 ```
 
-Unlike components, textures **can** be uploaded from the user's own disk
-(`Upload…` in the tab's file menu), because a texture is inert data — it names no
-files, resolves no variables and cannot affect any geometry.
+A texture can also be opened straight off the user's own disk — `Upload…` in the
+tab's file menu — as a component or a lamp can.
 
 Library entries are fetched once and cached in `useTextureStore.loaded`: a
 component asks for its texture on every render, and the answer cannot be a

@@ -77,8 +77,9 @@ component instead of the old one at the old size.
     "grainAxis": "y"                      // which component axis the grain runs along
   },
 
-  // Baked geometry for anything that only wants to LOOK at the component.
-  // Ignored on load.
+  // Baked geometry for anything that only wants to LOOK at the component —
+  // the Assets tab's turning card is what it is for. Ignored on load, which
+  // rebuilds every block from the formulas instead.
   "preview": {
     "variables": { "frameWidth": 7, "innerWidth": 200 },   // resolved values
     "solids": [ { "vertices": [x,y,z, …], "triangles": [i,j,k, …] } ]
@@ -127,8 +128,9 @@ the preview.
 `toIndexed` welds coincident vertices by rounded position, so the file carries
 each corner once instead of once per triangle that touches it.
 
-`downloadComponentJSON()` wraps the result in a Blob and clicks a temporary
-anchor; the object URL is revoked immediately after.
+The file menu then hands the result to `saveLibraryFile` (`lib/library.ts`),
+which either commits it to the repository or downloads it — see
+[the library](#the-library).
 
 ## Loading — `loadComponentFile(data)`
 
@@ -202,19 +204,28 @@ as set.
 
 ## The library
 
-Components are loaded from the project's own library,
-`public/models/components/`, and nowhere else — so what can be loaded is exactly
-what the project ships. There is no upload path for a component file.
+`public/models/components/`, read and written through the one module every
+library goes through — `lib/library.ts`, which has two modes.
 
-The folder has no directory index of its own, so the `component-index` Vite
-plugin (`vite.config.ts`) serves `models/components/index.json`: read per request
-in dev, so dropping a file in shows up on reload, and emitted as a build asset
-for `dist`.
+**Without a token** the listing comes from `index.json`. The folder has no
+directory index of its own, so the `library-index` Vite plugin
+(`vite.config.ts`) serves one — read per request in dev, so dropping a file in
+shows up on the next open, and emitted as a build asset for `dist`. **Save**
+downloads the file for you to drop into the folder by hand.
+
+**With one** (Library settings, at the foot of the file menu) both directions go
+through GitHub's contents API against the branch: a save is a commit, and a read
+is of the branch rather than of the deployed site, so what you open is what you
+last saved rather than what the last build shipped.
 
 ```
-listLibraryComponents()      → GET /models/components/index.json  → string[]
-loadLibraryComponent(name)   → GET /models/components/<name>      → LoadReport
+listLibraryComponents()      → listLibrary("components")            → string[]
+loadLibraryComponent(name)   → readLibraryFile("components", name)  → LoadReport
 ```
+
+A component can also be opened straight off the user's own disk — **Upload…** in
+the tab's file menu, which parses the JSON and calls `loadComponentFile` with it.
+The library is where components are *kept*; it is not the only way in.
 
 ## Round-trip guarantees
 
