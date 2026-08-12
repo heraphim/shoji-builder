@@ -140,6 +140,16 @@ interface LampState {
 
   loadLibrary: () => Promise<void>;
   loadLampLibrary: () => Promise<void>;
+  /**
+   * The lamp as the file it would be written as, or null on an empty bench.
+   *
+   * Where that file then goes is the caller's business — the library or the
+   * user's downloads — which is the whole reason it is separate from
+   * {@link LampState.saveLamp}. Naming the lamp is *saving's* business too: this
+   * one settles what the file is called without claiming the bench is now called
+   * that, because a download is a copy taken out rather than a design filed.
+   */
+  toFile: (name?: string) => { id: string; data: LampFile } | null;
   saveLamp: (name?: string) => Promise<string | null>;
   loadLamp: (file: string) => Promise<void>;
   /** Open a `*.lamp.json` the user picked off their own disk. */
@@ -451,22 +461,26 @@ export const useLampStore = create<LampState>((set, get) => ({
    *          nothing to save and the reason is already in `error`.
    * @throws when the repository refuses the write.
    */
-  saveLamp: async (name) => {
+  toFile: (name) => {
     const state = get();
-    if (state.instances.length === 0) {
+    if (state.instances.length === 0) return null;
+    const id = sanitizeName(name ?? state.lampName ?? "") ?? "lamp";
+    return {
+      id,
+      data: buildLampFile(id, state.instances, useVariablesStore.getState(), state.description),
+    };
+  },
+
+  saveLamp: async (name) => {
+    const built = get().toFile(name);
+    if (!built) {
       set({ error: "Nothing to save — the lamp is empty." });
       return null;
     }
-    const variables = useVariablesStore.getState();
-    const id = sanitizeName(name ?? state.lampName ?? "") ?? "lamp";
-    const note = await saveLibraryFile(
-      "lamps",
-      `${id}.lamp.json`,
-      buildLampFile(id, state.instances, variables, state.description)
-    );
+    const note = await saveLibraryFile("lamps", `${built.id}.lamp.json`, built.data);
     // saving under a name is what names the lamp, so the next save knows what
     // "overwrite" means
-    set({ error: null, lampName: id });
+    set({ error: null, lampName: built.id });
     return note;
   },
 

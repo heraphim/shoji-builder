@@ -199,7 +199,9 @@ function TexturePerspectiveView({ cellSize }: { cellSize: CellSize }) {
           RIGHT: THREE.MOUSE.PAN,
         }}
       />
-      <AxisTriad position={[BENCH_BOX.min.x, BENCH_BOX.min.y, BENCH_BOX.max.z]} length={40} />
+      {modes.showAxes && (
+        <AxisTriad position={[BENCH_BOX.min.x, BENCH_BOX.min.y, BENCH_BOX.max.z]} length={40} />
+      )}
     </>
   );
 }
@@ -303,7 +305,7 @@ function TextureOrthographicView({ viewId, cellSize }: { viewId: ViewId; cellSiz
           not the sheen, and half of what a finish changes is the sheen */}
       <SceneLights />
       <TextureBench material={modes.material} />
-      <AxisTriad position={triad.position} length={triad.length} />
+      {modes.showAxes && <AxisTriad position={triad.position} length={triad.length} />}
     </>
   );
 }

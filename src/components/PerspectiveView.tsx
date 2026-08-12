@@ -164,7 +164,7 @@ export function PerspectiveView({ cellSize }: { cellSize: CellSize }) {
           RIGHT: THREE.MOUSE.PAN,
         }}
       />
-      <AxisTriad />
+      {modes.showAxes && <AxisTriad />}
     </>
   );
 }

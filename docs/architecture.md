@@ -67,8 +67,9 @@ stores hold state; the libraries hold the arithmetic.
 | `useComponentEditorStore` | `meshes`, `connections`, `measurements`, the current pick mode, the accumulated model rotation, and per-view zoom/pan. |
 | `useLampStore` | The inserted component `instances`, each one's connection *anchors*, the parked position of the ones with none, which are hidden (`hiddenIds` — a way of working on a design, so not a flag on the instance and not in the saved file), the two library listings (components, saved lamps), and the five-click connect draft
 (the middle click names the target and hides everything else). Plus two pointers into that list for the scene to highlight — `highlightedId` (row hovered) and `symmetryPreview` (row whose ❖ is hovered). No geometry — see below. |
-| `useViewportStore` | The view chrome, one store per tab (`useEditorViewports`, `useLampViewports`, `useTextureViewports`): which views are on screen and in what slot order, each one's material and geometry draw modes, the saved 3D orbit, and the projections' zoom/pan. The editor keeps its own zoom/pan in `useComponentEditorStore` instead, because turning a component resets it — that framing is part of the model edit, not part of the chrome. |
-| `usePanelStore` | Which sidebar panels are folded, keyed by a stable per-panel id and written through to `localStorage`. The only state in the app that outlives the session — it is a working preference rather than part of a design. |
+| `useViewportStore` | The view chrome, one store per tab (`useEditorViewports`, `useLampViewports`, `useTextureViewports`): which views are on screen and in what slot order, each one's material, geometry and axis-triad draw settings, the saved 3D orbit, and the projections' zoom/pan. The first two of those — the *arrangement* — are written through to `localStorage` under a key per tab; the orbit and the framing are not, being facts about the model that was on the bench rather than about how the user works. The editor keeps its own zoom/pan in `useComponentEditorStore` instead, because turning a component resets it — that framing is part of the model edit, not part of the chrome. |
+| `useLookStore` | How the whole app is lit (ambient / key / fill) and the two cues that stand in for arrises — contact shadows and the faint outline. One store for every tab, unlike the viewports: a face turned away from the key is hard to read everywhere for the same reason. Written through to `localStorage`. |
+| `usePanelStore` | Which sidebar panels are folded, keyed by a stable per-panel id and written through to `localStorage`. |
 | `useTextureStore` | Two things that are two views of one idea: the **bench** — the texture being designed on the Textures tab, which the sliders write straight into — and the **library**, every saved texture the project ships, cached once fetched, which is what a component picks from. The bench is offered to components too, under `BENCH_TEXTURE`, so a slider drag on one tab redraws a component on another. |
 | `useFileStatus` | What the last file action had to say. It is a store because the two halves are no longer in the same place: the actions are in the tab's file menu, and their report belongs beside the work. |
 
@@ -78,7 +79,7 @@ stores hold state; the libraries hold the arithmetic.
 | --- | --- |
 | `FileMenu` | All three tabs' file menus, under the tab caret: upload, load from the library, and the two saves — plus the name dialog with its overwrite check. The only place a design is opened or written. Its header comment is the spec for what "overwrite" will mean once there is somewhere to write to. |
 | `FileStatusBar` | The strip above the views: what the last file action did, and what is on the bench. |
-| `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn every save from a download into a commit, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
+| `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn the saves on at all, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
 | `CollapsiblePanel` | One sidebar panel, on every tab. Folds from its header; the state is remembered by `usePanelStore`. |
 | `ViewportGrid` | The view grid, shared by all three tabs: one to four cells over a single `<Canvas>`, the per-cell header (draw modes, minimise, drag-to-swap slots), the minimised strip, and each cell's measured pixel size. |
 | `LampDesignPage` | The Lamp tab: the status strip, the view grid, and the sidebar. |
@@ -292,10 +293,10 @@ The Lamp tab's file menu is the whole design's file I/O, and it mirrors the
 component library because it is the same idea one level up — a component is a
 recipe for a part, a lamp a recipe for an assembly of them.
 
-- **Save** writes a `*.lamp.json` to `public/models/lamps` — a commit through
-  GitHub's contents API when this browser has a token, a download to be dropped
-  in by hand when it has not (`lib/library.ts`). The same round trip a component
-  takes.
+- **Save** writes a `*.lamp.json` to `public/models/lamps` as a commit through
+  GitHub's contents API, and needs a token to do it; **Download** hands the same
+  file to the browser, to be dropped in by hand, and needs nothing
+  (`lib/library.ts`). The same round trip a component takes.
 - **Load…** lists that folder and replaces the bench: instances *and*
   variables, because a lamp is a whole design rather than something added to one.
 - Instances name their components rather than embedding them, so a component

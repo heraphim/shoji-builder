@@ -23,8 +23,9 @@
  *
  * ## Two modes, not one with patches
  *
- * Without a token every read is a plain fetch of what the site serves, and a
- * save is the old download — which is exactly what a visitor should get.
+ * Without a token every read is a plain fetch of what the site serves, and there
+ * is nothing to save with: the file menus disable the saves and leave the
+ * download — which is exactly what a visitor should get.
  *
  * With one, *every* read goes through the API instead, including reads that the
  * site could have served. It is the slower path, and it is the right one: the
@@ -255,6 +256,22 @@ export async function deleteLibraryFile(lib: Library, file: string): Promise<str
   return `Deleted ${file} from the library`;
 }
 
+/**
+ * Take a design out of the app as a file, whatever the settings say.
+ *
+ * The way out that is always open. Saving to the library needs a token, and the
+ * file menus disable it when there is none rather than quietly doing something
+ * else — but a page you cannot get your work out of is a page that can lose it,
+ * so this sits beside the saves and is never disabled. Dropped into
+ * `public/models/<lib>` by hand it is the same file a commit would have written.
+ *
+ * @returns what happened, in the words the file menu shows.
+ */
+export function downloadLibraryFile(lib: Library, file: string, data: unknown): string {
+  download(file, JSON.stringify(data, null, 2));
+  return `Saved ${file} to your downloads — drop it into public/models/${lib} to have it listed`;
+}
+
 /** Hand the file to the browser to put in the user's downloads. */
 function download(file: string, text: string): void {
   const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
@@ -268,12 +285,18 @@ function download(file: string, text: string): void {
 }
 
 /**
- * Put a design in the library: a commit when there is a token, a download when
- * there is not.
+ * Put a design in the library: a commit when there is a token.
  *
  * The write is two requests because the contents API needs the blob's `sha` to
  * agree to replace it — which doubles as the check for whether this is a new
  * file or an overwrite, and so for what the commit should be called.
+ *
+ * Without a token it falls back to {@link downloadLibraryFile}. The menus no
+ * longer reach that: they disable the saves and offer the download as its own
+ * item, because a "Save" that silently means something else is a save you cannot
+ * tell has not happened. The fallback stays because this is the general way to
+ * put a file in a library and it should not lose the work of the one caller that
+ * forgets to ask.
  *
  * @returns what happened, in the words the file menu shows.
  * @throws when the repository refuses the write.
@@ -283,13 +306,10 @@ export async function saveLibraryFile(
   file: string,
   data: unknown
 ): Promise<string> {
-  const text = JSON.stringify(data, null, 2);
   const config = readRepoConfig();
-  if (!config) {
-    download(file, text);
-    return `Saved ${file} to your downloads — drop it into public/models/${lib} to have it listed`;
-  }
+  if (!config) return downloadLibraryFile(lib, file, data);
 
+  const text = JSON.stringify(data, null, 2);
   const path = repoPath(lib, file);
   const existing = await contents(
     config,

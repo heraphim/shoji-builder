@@ -806,6 +806,14 @@ export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
 
       <LampSceneContents scene={scene} modes={modes} />
 
+      {/* At the world origin, which is the corner the box is built out from, and
+          sized off the lamp rather than left to the triad's own default — that
+          one measures the component editor's bench, which is not what is
+          standing here. */}
+      {modes.showAxes && (
+        <AxisTriad length={overall.getSize(new THREE.Vector3()).length() * 0.2} />
+      )}
+
       {/* the same bindings as the editor's 3D cell: drag rotates, wheel zooms,
           wheel-button (middle) drag pans */}
       <OrbitControls
@@ -983,7 +991,7 @@ export function LampOrthographicView({
         size={cellSize}
       />
       <LampSceneContents scene={scene} modes={modes} />
-      <AxisTriad position={triadPosition} length={triadLength} />
+      {modes.showAxes && <AxisTriad position={triadPosition} length={triadLength} />}
     </>
   );
 }

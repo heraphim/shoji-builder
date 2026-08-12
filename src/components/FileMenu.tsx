@@ -14,7 +14,7 @@ import {
   sanitizeName,
 } from "../lib/componentFile";
 import { loadLibraryTexture, textureDisplayName } from "../lib/textureFile";
-import { canWriteToRepo, saveLibraryFile } from "../lib/library";
+import { canWriteToRepo, downloadLibraryFile, saveLibraryFile } from "../lib/library";
 import { LibrarySettings } from "./LibrarySettings";
 
 /**
@@ -32,22 +32,26 @@ import { LibrarySettings } from "./LibrarySettings";
  * one level apart: a component is parts joined into a component, a lamp is
  * components hung on a box.
  *
- * ## What "save" means
+ * ## The three ways out
  *
  * - **Save (overwrite)** replaces the file the design was opened from. It asks
- *   nothing, because the answer is already known — except the first time, when
- *   there is no name yet and it has to ask once.
+ *   nothing, because the answer is already known — and it is offered only when
+ *   there is genuinely a file to stand on, which is to say when the name on the
+ *   bench is one the library is already holding. A component sawn out of an STL,
+ *   a lamp built from scratch, a texture renamed to something new: none of them
+ *   have anything to overwrite, and an "overwrite" that quietly creates a file
+ *   is a different operation wearing the same word.
  * - **Save (copy)** writes a new file under a name you give it. It checks the
  *   library for that name first and asks before standing on one that is already
  *   there.
+ * - **Download** hands the same file to the browser instead of the library.
  *
- * The distinction was always about *intent* rather than mechanism, which is why
- * a writable library arrived without anything above this line changing: all
- * three menus hand the built file to `saveLibraryFile` and report what it says
- * it did. Whether that was a commit to the repository or a file in your
- * downloads is settled by whether this browser has a token — Library settings,
- * at the foot of the menu — and neither the overwrite check nor the prompt nor
- * the listing they work against cares which.
+ * Both saves need a token — Library settings, at the foot of the menu — and are
+ * disabled without one. The download never is. That split is the point: a save
+ * that silently became a download was indistinguishable, on the way past, from
+ * one that had filed the design where the rest of the library is, and the design
+ * you thought you had saved is the one you find missing tomorrow. Offering the
+ * download as its own item says which of the two just happened.
  */
 
 // ---------------------------------------------------------------------------
@@ -202,6 +206,73 @@ function NamePrompt({
   );
 }
 
+/**
+ * The three ways out, which are the same three at all three levels.
+ *
+ * One component rather than three copies because the *rules* are what is shared:
+ * which of them a token gates, which needs the design to be one the library is
+ * already holding, and which is always there. Three copies of that is three
+ * chances for the levels to disagree about when a save is a save.
+ */
+function SaveItems({
+  connected,
+  /** Why there is nothing to save, or null when there is. */
+  emptyReason,
+  /** What the design is called *as a file*, or null if it has no such name. */
+  named,
+  /** Whether the library is already holding a file of that name. */
+  inLibrary,
+  /** The file a download would write, for the row to name. */
+  downloadFile,
+  onOverwrite,
+  onCopy,
+  onDownload,
+}: {
+  connected: boolean;
+  emptyReason: string | null;
+  named: string | null;
+  inLibrary: boolean;
+  downloadFile: string;
+  onOverwrite: () => void;
+  onCopy: () => void;
+  onDownload: () => void;
+}) {
+  const blocked = emptyReason ?? (connected ? null : "Saving needs a connected repository — see Library settings, below");
+
+  return (
+    <>
+      <MenuItem
+        label="Save (overwrite)"
+        disabled={blocked !== null || !inLibrary}
+        title={
+          blocked ??
+          (inLibrary
+            ? `Save over “${named}”`
+            : named
+              ? `“${named}” is not in the library — save a copy to put it there`
+              : "Nothing to overwrite: this has never been saved or opened from the library")
+        }
+        trailing={inLibrary ? (named ?? undefined) : undefined}
+        onClick={onOverwrite}
+      />
+      <MenuItem
+        label="Save (copy)…"
+        disabled={blocked !== null}
+        title={blocked ?? "Save under a new name"}
+        onClick={onCopy}
+      />
+      {/* Never disabled by the token, only by an empty bench: the way out of the
+          app has to be open to somebody who has no way into the repository. */}
+      <MenuItem
+        label="Download"
+        disabled={emptyReason !== null}
+        title={emptyReason ?? `Put ${downloadFile} in your downloads`}
+        onClick={onDownload}
+      />
+    </>
+  );
+}
+
 /** The library listing, as a second page of the menu rather than a submenu. */
 function LibraryList({
   files,
@@ -245,11 +316,15 @@ function LampFileMenu({ close }: { close: () => void }) {
   const saveLamp = useLampStore((state) => state.saveLamp);
   const loadLamp = useLampStore((state) => state.loadLamp);
   const openLampFile = useLampStore((state) => state.openLampFile);
+  const toFile = useLampStore((state) => state.toFile);
   const setError = useFileStatus((state) => state.setError);
   const setNote = useFileStatus((state) => state.setNote);
 
   const [listing, setListing] = useState(false);
   const [prompting, setPrompting] = useState(false);
+  // read once per opening of the menu — it cannot change while this is mounted,
+  // because reaching the settings unmounts it
+  const [connected] = useState(canWriteToRepo);
 
   const empty = instances.length === 0;
   const names = lampLibrary.map((file) => file.replace(/(\.lamp)?\.json$/, ""));
@@ -257,6 +332,11 @@ function LampFileMenu({ close }: { close: () => void }) {
   // asks. The name can be typed in the sidebar's Name panel, so it is not
   // necessarily something that may go in a file name.
   const named = sanitizeName(lampName ?? "");
+  // Whether there is a file to stand on, rather than merely a name. Against the
+  // listing loaded below, so a lamp renamed in the sidebar to something the
+  // library has never held stops being an overwrite the moment it is renamed.
+  const inLibrary =
+    named !== null && names.some((n) => n.toLowerCase() === named.toLowerCase());
 
   // Read when the menu opens, not when the list is asked for.
   //
@@ -305,6 +385,15 @@ function LampFileMenu({ close }: { close: () => void }) {
     }
   };
 
+  // Not `saveLamp` with the settings taken away: a download is a copy taken out
+  // of the app, and it should not rename the lamp on the bench the way filing
+  // one under a name does.
+  const downloadIt = () => {
+    close();
+    const built = toFile();
+    if (built) setNote(downloadLibraryFile("lamps", `${built.id}.lamp.json`, built.data));
+  };
+
   if (prompting) {
     return (
       <NamePrompt
@@ -342,26 +431,15 @@ function LampFileMenu({ close }: { close: () => void }) {
       />
       <MenuItem label="Load…" title="Open a lamp from the project library" onClick={showLibrary} />
       <div className="file-menu-rule" />
-      <MenuItem
-        label="Save (overwrite)"
-        disabled={empty}
-        title={
-          empty
-            ? "Nothing to save yet"
-            : named
-              ? `Save over “${named}”`
-              : "This lamp has no name yet — you will be asked for one"
-        }
-        trailing={named ?? undefined}
-        // no name yet means nothing to overwrite, so the first save of a new
-        // lamp is a copy whether it says so or not
-        onClick={() => (named ? save() : setPrompting(true))}
-      />
-      <MenuItem
-        label="Save (copy)…"
-        disabled={empty}
-        title={empty ? "Nothing to save yet" : "Save under a new name"}
-        onClick={() => setPrompting(true)}
+      <SaveItems
+        connected={connected}
+        emptyReason={empty ? "Nothing to save yet" : null}
+        named={named}
+        inLibrary={inLibrary}
+        downloadFile={`${named ?? "lamp"}.lamp.json`}
+        onOverwrite={() => save()}
+        onCopy={() => setPrompting(true)}
+        onDownload={downloadIt}
       />
     </>
   );
@@ -384,12 +462,17 @@ function ComponentFileMenu({ close }: { close: () => void }) {
   const [libraryError, setLibraryError] = useState<string | null>(null);
   const [listing, setListing] = useState(false);
   const [prompting, setPrompting] = useState(false);
+  const [connected] = useState(canWriteToRepo);
 
   const empty = meshes.length === 0;
   const names = library.map((file) => file.replace(/(\.component)?\.json$/, ""));
   // As in the lamp menu: what it is called *as a file*, which is what
-  // "overwrite" needs and what the Name panel does not guarantee.
+  // "overwrite" needs and what the Name panel does not guarantee — and whether
+  // the library is actually holding one under that name, which is what makes an
+  // overwrite an overwrite rather than a first save in disguise.
   const named = sanitizeName(documentName ?? "");
+  const inLibrary =
+    named !== null && names.some((n) => n.toLowerCase() === named.toLowerCase());
 
   // On opening the menu, not on opening the list — see the same effect in
   // LampFileMenu for why: "Save (copy)" checks this listing for a name clash,
@@ -499,6 +582,16 @@ function ComponentFileMenu({ close }: { close: () => void }) {
     }
   };
 
+  // As in the lamp menu: a copy taken out of the app, which does not rename the
+  // component on the bench the way filing one under a name does.
+  const downloadIt = () => {
+    close();
+    const file = componentFileFor();
+    if (file) {
+      setNote(downloadLibraryFile("components", `${file.id}.component.json`, file));
+    }
+  };
+
   if (prompting) {
     return (
       <NamePrompt
@@ -547,24 +640,17 @@ function ComponentFileMenu({ close }: { close: () => void }) {
         onClick={showLibrary}
       />
       <div className="file-menu-rule" />
-      <MenuItem
-        label="Save (overwrite)"
-        disabled={empty}
-        title={
-          empty
-            ? "Nothing on the bench"
-            : named
-              ? `Save over “${named}”`
-              : "This component has no name yet — you will be asked for one"
-        }
-        trailing={named ?? undefined}
-        onClick={() => (named ? save() : setPrompting(true))}
-      />
-      <MenuItem
-        label="Save (copy)…"
-        disabled={empty}
-        title={empty ? "Nothing on the bench" : "Save under a new name"}
-        onClick={() => setPrompting(true)}
+      <SaveItems
+        connected={connected}
+        emptyReason={empty ? "Nothing on the bench" : null}
+        named={named}
+        inLibrary={inLibrary}
+        // an unnamed component is written under the id derived from the parts,
+        // which is not a name this row can know without building the file
+        downloadFile={named ? `${named}.component.json` : "this component"}
+        onOverwrite={() => save()}
+        onCopy={() => setPrompting(true)}
+        onDownload={downloadIt}
       />
     </>
   );
@@ -580,8 +666,8 @@ function ComponentFileMenu({ close }: { close: () => void }) {
  *
  * It has no "nothing on the bench" state — there is always a texture, because
  * the parameters have defaults and a wood with every slider at zero is still a
- * wood. So neither save is ever disabled, and the only reason the overwrite
- * prompts is the same as everywhere else: nothing has been named yet.
+ * wood. So the only things that can disable a row here are the two that disable
+ * one everywhere: no token, and nothing in the library under this name.
  */
 function TextureFileMenu({ close }: { close: () => void }) {
   const documentName = useTextureStore((state) => state.documentName);
@@ -595,9 +681,12 @@ function TextureFileMenu({ close }: { close: () => void }) {
 
   const [listing, setListing] = useState(false);
   const [prompting, setPrompting] = useState(false);
+  const [connected] = useState(canWriteToRepo);
 
   const names = library.map(textureDisplayName);
   const named = sanitizeName(documentName ?? "");
+  const inLibrary =
+    named !== null && names.some((n) => n.toLowerCase() === named.toLowerCase());
 
   // As in the other two menus: "Save (copy)" checks this listing for a clash,
   // and a check with nothing to check against is worse than no check.
@@ -641,6 +730,12 @@ function TextureFileMenu({ close }: { close: () => void }) {
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     }
+  };
+
+  const downloadIt = () => {
+    close();
+    const id = named ?? "texture";
+    setNote(downloadLibraryFile("textures", `${id}.texture.json`, toFile(id)));
   };
 
   if (prompting) {
@@ -687,20 +782,17 @@ function TextureFileMenu({ close }: { close: () => void }) {
         }}
       />
       <div className="file-menu-rule" />
-      <MenuItem
-        label="Save (overwrite)"
-        title={
-          named
-            ? `Save over “${named}”`
-            : "This texture has no name yet — you will be asked for one"
-        }
-        trailing={named ?? undefined}
-        onClick={() => (named ? save() : setPrompting(true))}
-      />
-      <MenuItem
-        label="Save (copy)…"
-        title="Save under a new name"
-        onClick={() => setPrompting(true)}
+      <SaveItems
+        connected={connected}
+        // never empty: the parameters have defaults, and a wood with every
+        // slider at zero is still a wood
+        emptyReason={null}
+        named={named}
+        inLibrary={inLibrary}
+        downloadFile={`${named ?? "texture"}.texture.json`}
+        onOverwrite={() => save()}
+        onCopy={() => setPrompting(true)}
+        onDownload={downloadIt}
       />
     </>
   );
@@ -776,7 +868,7 @@ export function FileMenu({ tab, onClose }: { tab: FileMenuTab; onClose: () => vo
         title={
           connected
             ? "Saving commits to your repository"
-            : "Saving downloads a file — connect a repository to commit instead"
+            : "Saving is off until a repository is connected — download still works"
         }
         trailing={connected ? "connected" : "download only"}
         onClick={() => setSettings(true)}

@@ -985,7 +985,7 @@ export function OrthographicView({ viewId, cellSize }: { viewId: ViewId; cellSiz
       {meshes.length > 0 && <MeasurementLabels radius={radius} />}
       <PickableEdges groups={groups} threshold={EDGE_PICK_PX / zoom} />
       <SelectionOverlays />
-      <AxisTriad position={triadPosition} length={triadLength} />
+      {modes.showAxes && <AxisTriad position={triadPosition} length={triadLength} />}
     </>
   );
 }

@@ -152,6 +152,7 @@ function ViewportHeader({
   const modes = store((state) => state.modes[id]);
   const setMaterial = store((state) => state.setMaterial);
   const setGeometry = store((state) => state.setGeometry);
+  const setShowAxes = store((state) => state.setShowAxes);
   const hideViewport = store((state) => state.hideViewport);
   const setDragging = store((state) => state.setDragging);
 
@@ -181,6 +182,17 @@ function ViewportHeader({
         title="How the lines are drawn in this view"
         onChange={(geometry) => setGeometry(id, geometry)}
       />
+      {/* A checkbox rather than a fourth select: it is the one setting here with
+          two states, and a two-entry dropdown is a checkbox that takes two
+          clicks. */}
+      <label className="view-axes" title="Show the world-axis triad in this view">
+        <input
+          type="checkbox"
+          checked={modes.showAxes}
+          onChange={(event) => setShowAxes(id, event.target.checked)}
+        />
+        <span>Axes</span>
+      </label>
       <button
         type="button"
         className="view-minimize"

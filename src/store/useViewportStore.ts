@@ -19,8 +19,10 @@ import type { ViewId, Vec3 } from "./useComponentEditorStore";
  * and how the lines are drawn are separate questions, and pairing them off
  * produces a menu that grows as their product.
  *
- * There is one store per page (see the two exports at the bottom): the editor
- * and the lamp are looked at differently and should not share a layout.
+ * There is one store per page (see the three exports at the bottom): the editor,
+ * the lamp and the textures bench are looked at differently and should not share
+ * a layout — which is also why each keeps its own arrangement across reloads,
+ * under its own key. See {@link parseLayout} for what is kept and what is not.
  */
 
 export type ViewportId = "3d" | ViewId;
@@ -71,6 +73,17 @@ export const TEXTURE_READY = true;
 export interface ViewportModes {
   material: MaterialMode;
   geometry: GeometryMode;
+  /**
+   * Whether the world-axis triad is drawn in this cell.
+   *
+   * Per cell rather than per page, and beside the other two for the same reason
+   * they are beside each other: it is a question about *this drawing*. The triad
+   * earns its place while you are working out which way a part is lying and is
+   * in the way the moment you are looking at the part itself — and which of
+   * those you are doing differs from cell to cell, which is why the four views
+   * exist at all.
+   */
+  showAxes: boolean;
 }
 
 /**
@@ -121,6 +134,7 @@ export interface ViewportStore {
   swapViewports: (a: ViewportId, b: ViewportId) => void;
   setMaterial: (id: ViewportId, material: MaterialMode) => void;
   setGeometry: (id: ViewportId, geometry: GeometryMode) => void;
+  setShowAxes: (id: ViewportId, showAxes: boolean) => void;
   setDragging: (id: ViewportId | null) => void;
   setOrbit: (orbit: ViewportOrbit) => void;
   zoomViewport: (id: ViewportId, factor: number) => void;
@@ -147,74 +161,194 @@ const DEFAULT_FRAMING: Record<ViewportId, ViewportFraming> = {
   front: NO_FRAMING,
 };
 
-function createViewportStore(defaults: Record<ViewportId, ViewportModes>) {
-  return create<ViewportStore>((set) => ({
-    order: [...ALL_VIEWPORTS],
-    modes: defaults,
-    framing: DEFAULT_FRAMING,
-    orbit: null,
-    dragging: null,
+// ---------------------------------------------------------------------------
+// What is kept across reloads
+// ---------------------------------------------------------------------------
 
-    // restored to the end of the row rather than to the slot it left: the slots
-    // are positions in a layout that has since changed shape, so there is no
-    // "its own" slot to go back to
-    showViewport: (id) =>
-      set((state) =>
-        state.order.includes(id) ? state : { order: [...state.order, id] }
-      ),
+/**
+ * The arrangement: which views are on screen, in what order, and how each draws.
+ *
+ * Exactly this much and no more. The framing and the orbit are *not* kept, and
+ * the difference is what each one is a fact about: an arrangement is a fact
+ * about how you like to work — three of us keep the Side view solid and the rest
+ * blueprint — while a zoom is a fact about the model that was on the bench when
+ * you left, and restoring it against a different one is restoring nothing.
+ * `dragging` is a gesture in flight and cannot outlive the page it happened on.
+ */
+type ViewportLayout = Pick<ViewportStore, "order" | "modes">;
 
-    // the last one standing cannot be minimised — a grid with nothing in it is
-    // not a state the user can get out of
-    hideViewport: (id) =>
-      set((state) =>
-        state.order.length <= 1 ? state : { order: state.order.filter((v) => v !== id) }
-      ),
+/** One value out of a labelled set, or the default for anything else. */
+function oneOf<T extends string>(value: unknown, labels: Record<T, string>, fallback: T): T {
+  return typeof value === "string" && value in labels ? (value as T) : fallback;
+}
 
-    swapViewports: (a, b) =>
-      set((state) => {
-        const i = state.order.indexOf(a);
-        const j = state.order.indexOf(b);
-        if (i < 0 || j < 0 || i === j) return state;
-        const order = [...state.order];
-        order[i] = b;
-        order[j] = a;
-        return { order };
-      }),
+/**
+ * A saved arrangement read back, with every field checked against what it is
+ * allowed to be.
+ *
+ * Nothing here trusts the blob: it is a string in a store the user can edit, it
+ * outlives the version of the app that wrote it, and a view id or a draw mode
+ * that no longer exists must cost that one setting rather than the page. An
+ * order that comes back empty — every id in it unknown — falls back to the full
+ * row, because a grid with nothing in it is not a state anybody can get out of.
+ *
+ * Exported for `__settingscheck`; it is a pure function of its arguments.
+ */
+export function parseLayout(raw: unknown, defaults: Record<ViewportId, ViewportModes>): ViewportLayout {
+  const saved = (raw && typeof raw === "object" ? raw : {}) as {
+    order?: unknown;
+    modes?: unknown;
+  };
 
-    setMaterial: (id, material) =>
-      set((state) => ({ modes: { ...state.modes, [id]: { ...state.modes[id], material } } })),
+  const order = (Array.isArray(saved.order) ? saved.order : []).filter(
+    (id, i, all): id is ViewportId =>
+      ALL_VIEWPORTS.includes(id as ViewportId) && all.indexOf(id) === i
+  );
 
-    setGeometry: (id, geometry) =>
-      set((state) => ({ modes: { ...state.modes, [id]: { ...state.modes[id], geometry } } })),
+  const savedModes = (
+    saved.modes && typeof saved.modes === "object" ? saved.modes : {}
+  ) as Partial<Record<ViewportId, Partial<Record<keyof ViewportModes, unknown>>>>;
 
-    setDragging: (id) => set({ dragging: id }),
-
-    setOrbit: (orbit) => set({ orbit }),
-
-    zoomViewport: (id, factor) =>
-      set((state) => ({
-        framing: {
-          ...state.framing,
-          [id]: {
-            ...state.framing[id],
-            zoom: Math.min(50, Math.max(0.05, state.framing[id].zoom * factor)),
-          },
+  const modes = Object.fromEntries(
+    ALL_VIEWPORTS.map((id) => {
+      const mode = savedModes[id] ?? {};
+      const fallback = defaults[id];
+      return [
+        id,
+        {
+          material: oneOf(mode.material, MATERIAL_LABELS, fallback.material),
+          geometry: oneOf(mode.geometry, GEOMETRY_LABELS, fallback.geometry),
+          showAxes: typeof mode.showAxes === "boolean" ? mode.showAxes : fallback.showAxes,
         },
-      })),
+      ];
+    })
+  ) as Record<ViewportId, ViewportModes>;
 
-    panViewport: (id, dx, dy) =>
-      set((state) => ({
-        framing: {
-          ...state.framing,
-          [id]: {
-            ...state.framing[id],
-            pan: { x: state.framing[id].pan.x + dx, y: state.framing[id].pan.y + dy },
+  return { order: order.length > 0 ? order : [...ALL_VIEWPORTS], modes };
+}
+
+function readLayout(key: string, defaults: Record<ViewportId, ViewportModes>): ViewportLayout {
+  try {
+    const raw = localStorage.getItem(key);
+    return parseLayout(raw ? JSON.parse(raw) : null, defaults);
+  } catch {
+    // private mode, a full quota, storage switched off, half-written JSON —
+    // none of them are worth failing to draw the grid over
+    return parseLayout(null, defaults);
+  }
+}
+
+function createViewportStore(key: string, defaults: Record<ViewportId, ViewportModes>) {
+  const saved = readLayout(key, defaults);
+
+  return create<ViewportStore>((set) => {
+    /**
+     * Write the arrangement, and hand it back for the `set` that asked.
+     *
+     * Every action that changes one goes through here, so what is on screen and
+     * what comes back tomorrow are the same thing by construction — rather than
+     * a subscription on the whole store, which would write on every frame of a
+     * pan for a value that pans do not touch.
+     */
+    const remember = (layout: ViewportLayout): ViewportLayout => {
+      try {
+        localStorage.setItem(key, JSON.stringify(layout));
+      } catch {
+        // as above: the view still changes, it just will not be remembered
+      }
+      return layout;
+    };
+
+    return {
+      order: saved.order,
+      modes: saved.modes,
+      framing: DEFAULT_FRAMING,
+      orbit: null,
+      dragging: null,
+
+      // restored to the end of the row rather than to the slot it left: the
+      // slots are positions in a layout that has since changed shape, so there
+      // is no "its own" slot to go back to
+      showViewport: (id) =>
+        set((state) =>
+          state.order.includes(id)
+            ? state
+            : remember({ order: [...state.order, id], modes: state.modes })
+        ),
+
+      // the last one standing cannot be minimised — a grid with nothing in it is
+      // not a state the user can get out of
+      hideViewport: (id) =>
+        set((state) =>
+          state.order.length <= 1
+            ? state
+            : remember({ order: state.order.filter((v) => v !== id), modes: state.modes })
+        ),
+
+      swapViewports: (a, b) =>
+        set((state) => {
+          const i = state.order.indexOf(a);
+          const j = state.order.indexOf(b);
+          if (i < 0 || j < 0 || i === j) return state;
+          const order = [...state.order];
+          order[i] = b;
+          order[j] = a;
+          return remember({ order, modes: state.modes });
+        }),
+
+      setMaterial: (id, material) =>
+        set((state) =>
+          remember({
+            order: state.order,
+            modes: { ...state.modes, [id]: { ...state.modes[id], material } },
+          })
+        ),
+
+      setGeometry: (id, geometry) =>
+        set((state) =>
+          remember({
+            order: state.order,
+            modes: { ...state.modes, [id]: { ...state.modes[id], geometry } },
+          })
+        ),
+
+      setShowAxes: (id, showAxes) =>
+        set((state) =>
+          remember({
+            order: state.order,
+            modes: { ...state.modes, [id]: { ...state.modes[id], showAxes } },
+          })
+        ),
+
+      setDragging: (id) => set({ dragging: id }),
+
+      setOrbit: (orbit) => set({ orbit }),
+
+      zoomViewport: (id, factor) =>
+        set((state) => ({
+          framing: {
+            ...state.framing,
+            [id]: {
+              ...state.framing[id],
+              zoom: Math.min(50, Math.max(0.05, state.framing[id].zoom * factor)),
+            },
           },
-        },
-      })),
+        })),
 
-    resetFraming: () => set({ framing: DEFAULT_FRAMING }),
-  }));
+      panViewport: (id, dx, dy) =>
+        set((state) => ({
+          framing: {
+            ...state.framing,
+            [id]: {
+              ...state.framing[id],
+              pan: { x: state.framing[id].pan.x + dx, y: state.framing[id].pan.y + dy },
+            },
+          },
+        })),
+
+      resetFraming: () => set({ framing: DEFAULT_FRAMING }),
+    };
+  });
 }
 
 export type ViewportStoreHook = ReturnType<typeof createViewportStore>;
@@ -224,11 +358,11 @@ export type ViewportStoreHook = ReturnType<typeof createViewportStore>;
  * all: they are hidden-line blueprints, and a filled solid is the exception
  * there rather than the norm.
  */
-export const useEditorViewports = createViewportStore({
-  "3d": { material: "solid", geometry: "materialEdges" },
-  top: { material: "none", geometry: "materialEdges" },
-  side: { material: "none", geometry: "materialEdges" },
-  front: { material: "none", geometry: "materialEdges" },
+export const useEditorViewports = createViewportStore("shoji.viewports.editor", {
+  "3d": { material: "solid", geometry: "materialEdges", showAxes: true },
+  top: { material: "none", geometry: "materialEdges", showAxes: true },
+  side: { material: "none", geometry: "materialEdges", showAxes: true },
+  front: { material: "none", geometry: "materialEdges", showAxes: true },
 });
 
 /**
@@ -237,11 +371,11 @@ export const useEditorViewports = createViewportStore({
  * assembly being drawn over the near side, and without faces a kumiko panel
  * projects as an unreadable mat of lines.
  */
-export const useLampViewports = createViewportStore({
-  "3d": { material: "solid", geometry: "materialEdges" },
-  top: { material: "solid", geometry: "materialEdges" },
-  side: { material: "solid", geometry: "materialEdges" },
-  front: { material: "solid", geometry: "materialEdges" },
+export const useLampViewports = createViewportStore("shoji.viewports.lamp", {
+  "3d": { material: "solid", geometry: "materialEdges", showAxes: true },
+  top: { material: "solid", geometry: "materialEdges", showAxes: true },
+  side: { material: "solid", geometry: "materialEdges", showAxes: true },
+  front: { material: "solid", geometry: "materialEdges", showAxes: true },
 });
 
 /**
@@ -254,9 +388,9 @@ export const useLampViewports = createViewportStore({
  * able to put those beside each other is the point of giving this tab the same
  * four views as the rest of the app rather than a single preview.
  */
-export const useTextureViewports = createViewportStore({
-  "3d": { material: "texture", geometry: "none" },
-  top: { material: "texture", geometry: "none" },
-  side: { material: "texture", geometry: "none" },
-  front: { material: "texture", geometry: "none" },
+export const useTextureViewports = createViewportStore("shoji.viewports.textures", {
+  "3d": { material: "texture", geometry: "none", showAxes: true },
+  top: { material: "texture", geometry: "none", showAxes: true },
+  side: { material: "texture", geometry: "none", showAxes: true },
+  front: { material: "texture", geometry: "none", showAxes: true },
 });

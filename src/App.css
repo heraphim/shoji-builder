@@ -1043,6 +1043,29 @@ select.view-mode option:disabled {
   color: var(--bp-text-dim);
 }
 
+/* the third draw setting, which has two states rather than a list of them */
+.view-axes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px;
+  background: rgba(20, 46, 86, 0.85);
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  color: var(--bp-text);
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.view-axes input {
+  width: 11px;
+  height: 11px;
+  margin: 0;
+  accent-color: var(--bp-accent);
+  cursor: pointer;
+}
+
 .view-minimize {
   width: 22px;
   padding: 3px 0 !important;

@@ -36,11 +36,13 @@ and nowhere else. Nothing in the sidebars opens or saves anything.
 | **Upload STL…** | — | Start a new component from one or more `.stl` solids off your own disk. | — |
 | **Upload…** | Open a `.lamp.json` off your own disk. | Open a `.component.json` off your own disk. | Open a `.texture.json` off your own disk. |
 | **Load…** | Open one from `public/models/lamps`. | Open one from `public/models/components`. | Open one from `public/models/textures`. |
-| **Save (overwrite)** | Save over the file this was opened from. | Same. | Same. |
+| **Save (overwrite)** | Save over the library file this was opened from. | Same. | Same. |
 | **Save (copy)…** | Save under a new name. | Same. | Same. |
+| **Download** | Put the same file in your downloads. | Same. | Same. |
 
 Textures has no "nothing on the bench" state — there is always a texture,
-because the parameters have defaults — so neither of its saves is ever disabled.
+because the parameters have defaults — so nothing there is ever disabled for
+being empty.
 
 **Load…** turns the menu into the library listing, with **← Back** to return.
 The folder is re-read every time the menu opens, so a design saved a moment ago
@@ -52,18 +54,26 @@ ahead. Changing the name clears that, so an armed overwrite can never be aimed a
 a name you did not check.
 
 **Save (overwrite)** asks nothing, because the answer is already known: it writes
-under the name shown beside it. A design that has never been named has nothing to
-overwrite, so the first save of a new one asks for a name like a copy would.
+under the name shown beside it. It is offered only when the library is actually
+holding a file under that name — a component sawn out of an STL, a lamp built
+from scratch, a design opened off your own disk or renamed to something new have
+nothing to stand on, and an "overwrite" that quietly creates a file is a
+different operation wearing the same word. **Save (copy)…** is the way to put any
+of them in the library, and once it is there the overwrite lights up.
+
+**Both saves need a token** and are disabled without one; **Download** never is.
+The row's tooltip says which of the two is stopping it. Downloading is a copy
+taken out of the app rather than a design filed, so it leaves the name on the
+bench alone.
 
 The strip above the views reports what the last file action did, and what is on
 the bench.
 
-**Library settings…**, at the foot of every file menu, is where a save stops
-being a download. Give it a GitHub user, a repository, a branch and a
-fine-grained token with *Contents: read and write*, and every save commits the
-file to `public/models/…` instead, so the design is in the library for good
-rather than for the session. The row says which mode you are in, `connected` or
-`download only`.
+**Library settings…**, at the foot of every file menu, is what turns the saves
+on. Give it a GitHub user, a repository, a branch and a fine-grained token with
+*Contents: read and write*, and a save commits the file to `public/models/…`, so
+the design is in the library for good rather than for the session. The row says
+which mode you are in, `connected` or `download only`.
 
 A save does **not** rebuild the site — `public/models/**` is ignored by the
 deploy workflow, because a minute of Actions to publish one JSON file is not
@@ -79,8 +89,8 @@ in this browser's `localStorage` and nowhere else: anyone else opening the site
 reads the same library and saves by download, which is why deploying it publicly
 does not hand out write access.
 
-> **Without a token, saving downloads a file**, and the round trip is what it
-> always was: save, then drop the file into `public/models/lamps`,
+> **Without a token there is still Download**, and the round trip is what it
+> always was: download, then drop the file into `public/models/lamps`,
 > `public/models/components` or `public/models/textures`. Either way the pickers
 > re-list on every open, so it is there the next time you look.
 
@@ -95,14 +105,15 @@ is still shut tomorrow.
 The first panel on all three editing tabs, because all three ask the same two
 questions of whatever is on the bench.
 
-**The name is the file name.** Not a label beside one: **Save (overwrite)**
-writes `<name>.component.json` / `.lamp.json` / `.texture.json`, so typing a new
-name here and overwriting is how a design is renamed — the old file stays in the
-library until it is deleted from the Assets tab. The note under the field spells
-the file name out, because what may go in one is narrower than what may be typed:
-`frame/2` is saved as `frame2`, and it says so before the save rather than in the
-status bar afterwards. With the field empty there is nothing to overwrite, so the
-first save asks for a name.
+**The name is the file name.** Not a label beside one: a save writes
+`<name>.component.json` / `.lamp.json` / `.texture.json`, so typing a new name
+here and saving a copy is how a design is renamed — the old file stays in the
+library until it is deleted from the Assets tab. (A copy, not an overwrite: the
+moment the name is one the library has never held there is nothing to overwrite,
+and the row says so.) The note under the field spells the file name out, because
+what may go in one is narrower than what may be typed: `frame/2` is saved as
+`frame2`, and it says so before the save rather than in the status bar
+afterwards.
 
 **The description** is prose, saved into the file and read by nothing. A library
 of `frameVertical`, `frameVertical2` cannot say which one takes the shoji panel,
@@ -124,6 +135,10 @@ tab's cards with them. Only which panels you have folded is per sidebar.
 | **Contact shadows** | A soft pool of shade under whatever is on the bench, so it stands on the floor rather than floating over it. |
 | **Draw solid outline** | Keeps a faint outline on every part when a view is set to **No lines**, in the part's own timber — see [below](#the-colour-an-arris-is-drawn-in). |
 | **Reset** | Back to 0.55 / 1.1 / 0.35 with both toggles off. Disabled while nothing has moved. |
+
+All of it is kept in this browser's `localStorage`, so the light you found a face
+by is the light you come back to. A reset is remembered too — it is a setting
+like any other, not a way of forgetting them.
 
 The three lights reach **every lit cell**, projections included. The shadow is
 the 3D cells only: a pool of shade on the floor of a Top view is a shadow looked
@@ -518,7 +533,11 @@ anywhere highlights everywhere.
 Projection zoom and pan are per-cell and reset whenever the model is turned or a
 new solid arrives, since what has to fit has changed.
 
-Both tabs have this grid, and each keeps its own layout.
+All three editing tabs have this grid, and each keeps its own layout — in this
+browser's `localStorage`, so which views are on screen, in what order, and how
+each one draws are all still true tomorrow. The zoom, the pan and the orbit are
+not: those are facts about the model that was on the bench when you left, and
+restoring them against a different one restores nothing.
 
 ### Layout
 
@@ -541,9 +560,10 @@ drop into is outlined in yellow.
 
 ### How a view draws
 
-Two dropdowns in each cell's header, set per view. They are separate settings on
-purpose — how the faces are drawn and how the lines are drawn are separate
-questions, and one combined list would be every pairing of them.
+Two dropdowns and a checkbox in each cell's header, set per view. The dropdowns
+are separate settings on purpose — how the faces are drawn and how the lines are
+drawn are separate questions, and one combined list would be every pairing of
+them.
 
 **Material** — the faces:
 
@@ -564,6 +584,14 @@ questions, and one combined list would be every pairing of them.
 Turning either off never turns off picking. The solid and its outline stay in the
 scene as bodies that write no colour, so Select Edges, Select Face and vertex
 picking work the same in a view drawing nothing at all.
+
+**Axes** — the red/green/blue triad, on by default. Per cell like the other two,
+because which way a part is lying is a question you are asking in one view and
+not in the next: it earns its corner while you are working the orientation out,
+and is in the way the moment you are looking at the part itself. In the 3D cells
+it stands at the origin and scales with the model; in the projections it is
+pinned to the cell corner nearest the middle of the screen, at a fixed size on
+screen, so it neither vanishes nor swallows the cell as you zoom.
 
 ### Per-cell controls (lower right of each projection)
 
@@ -683,8 +711,9 @@ green.
 
 ### 5. Save
 
-**Save (overwrite)** or **Save (copy)…** from the [file menu](#the-file-menu)
-writes `<name>.component.json` — the recipe, plus a baked preview. See
+**Save (overwrite)**, **Save (copy)…** or **Download** from the
+[file menu](#the-file-menu) writes `<name>.component.json` — the recipe, plus a
+baked preview. See
 [component-file-format.md](component-file-format.md).
 
 **Clear**, in the sidebar, empties the bench and disposes the geometry. It stays
@@ -831,7 +860,9 @@ is greyed and says so.
 | Done (measurement) | No edges selected, or the formula does not resolve. |
 | Select Face / ↺ / ↻ | Nothing loaded. |
 | Clear | Nothing loaded. |
-| Save (overwrite) / Save (copy) | Nothing on the bench to save. |
+| Save (copy) / Download | Nothing on the bench to save. |
+| Save (overwrite) / Save (copy) | This browser has no repository token, so there is nowhere to save *to* — Library settings. Download is still open. |
+| Save (overwrite), with a token | The library is not holding a file under this name, so there is nothing to stand on. Save a copy first. |
 | Delete (Assets) | This browser has no repository token, and a page cannot remove a file from a site it only reads. |
 | Load (Assets) | The file is there and cannot be read as a design. |
 | Save, in the name dialog | The name is empty once the characters a file cannot carry are taken out of it. |
