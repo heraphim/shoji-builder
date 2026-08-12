@@ -1,15 +1,23 @@
 # Build the site and publish it to GitHub Pages.
 #
-# Every push to main deploys — including the pushes the app itself makes when a
-# component, lamp or texture is saved from the browser, which is the whole point:
-# a save is a commit, and a commit is a rebuild, so the library the site offers is
-# the library the repository holds.
+# A push of *code* deploys. A push of a design does not — saving a component,
+# lamp or texture from the browser is a commit, and rebuilding the whole site for
+# each one would mean a minute of Actions per save to publish one JSON file.
+#
+# Nothing is lost by skipping it while you are the one working: with a token the
+# app reads the branch rather than the deployed site, so what you just saved is
+# what the pickers list, immediately. What is deferred is the *other* visitor's
+# view — they read the built site, so a design saved since the last code push is
+# not there for them yet. Run this workflow by hand (Actions → Deploy to GitHub
+# Pages → Run workflow) when you want the library as it stands to be public.
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-  # so a deploy can be re-run from the Actions tab without an empty commit
+    paths-ignore:
+      - 'public/models/**'
+  # publish the library as it stands, without an empty commit to trigger it
   workflow_dispatch:
 
 permissions:

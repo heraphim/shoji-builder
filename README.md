@@ -72,8 +72,8 @@ Data lives as JSON under `public/`: design variables in
 
 ## Deploying
 
-The app is entirely client-side, so it is a static site. Pushing to `main` builds
-it and publishes it to GitHub Pages — see
+The app is entirely client-side, so it is a static site. Pushing **code** to
+`main` builds it and publishes it to GitHub Pages — see
 [.github/workflows/deploy.yml](.github/workflows/deploy.yml). Once, on a fresh
 repository:
 
@@ -97,8 +97,18 @@ can be better than that, because the site *is* a branch of a repository:
 2. Open any file menu → **Library settings…**, fill in the user, repository,
    branch and token, and press Connect.
 
-Every save now commits the file, and the push rebuilds the site — so a design is
-in the library for good rather than for the session. The token is kept in that
+Every save now commits the file, so a design is in the library for good rather
+than for the session.
+
+Saving does **not** rebuild the site — `public/models/**` is ignored by the
+workflow, because a minute of Actions to publish one JSON file is not worth
+paying per save. It costs nothing while you are the one working: with a token the
+app reads the branch rather than the built site, so what you just saved is what
+the pickers list. It is only the *other* visitor's view that waits, since they
+read the build. Actions → Deploy to GitHub Pages → **Run workflow** publishes the
+library as it stands whenever you want it seen.
+
+The token is kept in that
 browser's `localStorage`: it is never in the source, never in the bundle, and
 never sent anywhere but `api.github.com`. Anyone else opening the site has no
 token, reads the same library, and saves by downloading — which is what makes a
