@@ -2,9 +2,9 @@
 
 ## Tabs
 
-Three folder tabs at the top left, each with a **▾** that opens that tab's file
-menu. They run down through the model: an assembly is made of components, and a
-component is made of a material.
+Four folder tabs at the top left. The first three each have a **▾** that opens
+that tab's file menu, and they run down through the model: an assembly is made of
+components, and a component is made of a material.
 
 **Lamp Design** — the assembly. The main box, the variables that size it, and
 the saved components hung on it.
@@ -14,6 +14,9 @@ measured into a component.
 
 **Textures** — where a wood is designed, on four test beams. The only tab that
 changes no geometry at all.
+
+**Assets** — everything the three libraries hold, side by side. Not a bench, and
+so the one tab with no file menu of its own.
 
 Pressing the tab switches to it; pressing its caret switches *and* opens the
 menu — a menu that acted on a tab you were not looking at would be acting on a
@@ -653,6 +656,76 @@ Two settings decide whether it looks like anything at all:
 Save writes `<name>.texture.json` — the parameters and nothing else, no image.
 See [texture-file-format.md](texture-file-format.md).
 
+# Assets
+
+```
+┌─────────────────────────────────────────────┐
+│ COMPONENTS  4                               │
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐         │
+│ │ ╱▔▔▔▔╱ │ │ ╱▔▔▔▔╱ │ │ ╱▔▔▔▔╱ │  turning  │
+│ │╱____╱  │ │╱____╱  │ │╱____╱  │  models   │
+│ │ leg     │ │ beam    │ │ frameH  │         │
+│ │ 5▣ ■solid│ │ 5▣ ■solid│ │3▣ ⚠3 unm│        │
+│ │ Load Del│ │ Load Del│ │ Load Del│         │
+│ └─────────┘ └─────────┘ └─────────┘         │
+│ LAMPS  1     TEXTURES  3                    │
+└─────────────────────────────────────────────┘
+```
+
+Every file in `public/models/components`, `…/lamps` and `…/textures`, as a card
+with a small model turning on it. The three file menus list the same files by
+name, which is the right shape for opening something you already have in mind and
+the wrong one for *browsing* — every component in the library is a box assembly,
+so a still thumbnail of one is a rectangle, and a name is all a list can offer.
+One slow revolution is what makes a leg tell itself apart from a rail.
+
+What the preview is, per kind:
+
+| Kind | Preview |
+| --- | --- |
+| Component | The picture baked into the file when it was saved, wearing whatever texture or flat colour the file dresses it in. No variables are read: this is the component as it is *in the library*. |
+| Lamp | Every part of every instance, laid out at the lamp's own saved variables. |
+| Texture | A 10 × 10 × 200 mm beam with the grain along its length, so the two small faces are end grain — the long faces show the figure and the ends show the rings that produced it. |
+
+All of them are drawn by one WebGL canvas, the same way the four view cells are:
+a canvas per card would run a page out of contexts on the first library worth
+browsing.
+
+The badges are the things a file name cannot tell you. They are **derived**, not
+read off the file: a component records how well each size was pinned down at the
+moment it was saved, and that note can be stale — `frameHorizontal` records three
+literal heights and opens with every size determined, because a measurement in
+the same file covers them. The card replays what the editor will say, so the
+badge and the drawing agree.
+
+| Badge | Means |
+| --- | --- |
+| **5 ▣** | How many parametric blocks a component has, or how many components are on a lamp. |
+| **⚠ 3 unmeasured** | Three of this component's sizes are determined by nothing: no measurement states them and no chain of measurements reaches them, so they stay at the millimetres the solid was drawn at when the lamp changes size. **Implied sizes are not counted** — an implied size is what the measurements that *were* made already say, worked out by the span solver, and it scales like any other. Most components have some by design; none of the four in the library raises this badge. |
+| **⚠ 2 missing** | This lamp names components the library no longer has. Those instances are not in the preview, and will not be there when it is loaded either. |
+| **■ solid** | The component names no texture, so it is drawn in the flat colour shown in the swatch. |
+| **▤ walnut-satin** | It is made of that texture. `▤ bench` means it is pointed at the Textures bench rather than at a saved file. |
+| **⚠ unreadable** | The file is there and is not a design this app can read. Shown rather than hidden, so a file missing from every other picker has somewhere to say why. |
+
+**Load** opens the asset on the tab that owns it — a component in the Component
+Editor, a lamp in Lamp Design, a texture on the Textures bench — and switches to
+that tab. It is the same loader the tab's own file menu uses, so a design opens
+the same way whichever list you picked it from.
+
+**Delete** removes the file from the library. It arms on the first press
+(**Delete?**) and goes on the second. It is the one thing in the app that
+*requires* a connected repository: saving without one falls back to a download
+you drop into `public/models/…` by hand, and there is no equivalent gesture for
+taking a file out of a site your browser only reads. Without a token the button
+is greyed and says so.
+
+> A delete is a commit, like a save, and like a save it does **not** rebuild the
+> site — `public/models/**` is ignored by the deploy workflow. With a token you
+> are reading the branch, so the file is gone from your pickers at once; another
+> visitor reads the build and still sees it until the site is next published.
+
+**Refresh** re-reads all three libraries.
+
 ## Why some buttons are disabled
 
 | Disabled | Because |
@@ -663,6 +736,8 @@ See [texture-file-format.md](texture-file-format.md).
 | Select Face / ↺ / ↻ | Nothing loaded. |
 | Clear | Nothing loaded. |
 | Save (overwrite) / Save (copy) | Nothing on the bench to save. |
+| Delete (Assets) | This browser has no repository token, and a page cannot remove a file from a site it only reads. |
+| Load (Assets) | The file is there and cannot be read as a design. |
 | Save, in the name dialog | The name is empty once the characters a file cannot carry are taken out of it. |
 | ⚭ (Lamp) | A connect pick is in progress on a different component. |
 | ❖ (Lamp) | Every place the symmetry reaches already holds this part. Greyed rather than removed, and still hoverable — see above. |

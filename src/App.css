@@ -1649,3 +1649,232 @@ select.view-mode option:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ---- the Assets tab ---- */
+
+/* Cards over one canvas, exactly as the view grid is cells over one: the models
+   are drawn by scissored <View>s tracking each card's preview box, so the layout
+   is ordinary scrolling HTML and the GL context is never rebuilt. */
+.assets-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text);
+}
+
+.assets-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.assets-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 14px 18px 24px;
+  z-index: 1;
+}
+
+/* Above the cards in the stack but transparent and unclickable: the previews
+   have to be drawn over the scrolling list, and nothing on them is a control. */
+.assets-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.assets-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+
+.assets-toolbar button {
+  padding: 5px 12px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.assets-toolbar button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.assets-toolbar button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.assets-error {
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--bp-unknown);
+  border-radius: 5px;
+  background: rgba(248, 113, 113, 0.08);
+  color: var(--bp-unknown);
+  font-size: 12px;
+}
+
+.assets-section {
+  margin-bottom: 18px;
+}
+
+.assets-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--bp-border);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--bp-text-dim);
+}
+
+.assets-count {
+  padding: 1px 7px;
+  border: 1px solid var(--bp-border);
+  border-radius: 9px;
+  font-size: 10px;
+  letter-spacing: 0;
+  color: var(--bp-text);
+}
+
+.assets-empty {
+  font-size: 12px;
+  color: var(--bp-text-dim);
+}
+
+/* auto-fill rather than auto-fit: a library with two things in it should show
+   two cards their own size, not two stretched across the window */
+.assets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(184px, 1fr));
+  gap: 10px;
+}
+
+.asset-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 7px;
+}
+
+.asset-card:hover {
+  border-color: var(--bp-line);
+}
+
+.asset-card.armed {
+  border-color: var(--bp-accent);
+  background: rgba(255, 204, 0, 0.07);
+}
+
+/* A fixed shape, so the camera can frame the model without measuring the cell —
+   see PREVIEW_ASPECT in AssetPreview. */
+.asset-preview {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 5px;
+  background: var(--bp-bg-dark);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.asset-preview-empty {
+  font-size: 11px;
+}
+
+.asset-name {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 18px;
+}
+
+.asset-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 1px 6px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 9px;
+  font-size: 10px;
+  color: var(--bp-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The same red the four views paint a length nothing pins down: one convention
+   for "this is not determined" across the whole app. */
+.asset-badge.warn {
+  border-color: var(--bp-unknown);
+  color: var(--bp-unknown);
+}
+
+.asset-swatch {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--bp-border);
+  border-radius: 2px;
+}
+
+.asset-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.asset-actions button {
+  flex: 1;
+  padding: 4px 6px;
+  background: var(--bp-bg-dark);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.asset-actions button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.asset-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.asset-delete:hover:not(:disabled) {
+  border-color: var(--bp-unknown);
+  color: var(--bp-unknown);
+}
+
+.asset-delete.armed {
+  border-color: var(--bp-unknown);
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--bp-unknown);
+}

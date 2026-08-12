@@ -210,6 +210,46 @@ export async function readLibraryFile(lib: Library, file: string): Promise<unkno
   return await res.json();
 }
 
+/**
+ * Take a file out of the library.
+ *
+ * Saving has a fallback — no token means a download the user drops into
+ * `public/models/…` by hand — and deleting has none: there is no gesture in a
+ * browser that removes a file from a site it only reads. So the Assets tab asks
+ * {@link canWriteToRepo} and disables the button rather than offering one that
+ * cannot work, and this refuses outright if it is called anyway.
+ *
+ * Two requests for the same reason a save is two: the contents API will only
+ * delete a blob it is handed the `sha` of, which is also the check that the file
+ * is still the one being looked at.
+ *
+ * @returns what happened, in the words the Assets tab shows.
+ * @throws when there is no token, when the file is already gone, or when the
+ *         repository refuses the write.
+ */
+export async function deleteLibraryFile(lib: Library, file: string): Promise<string> {
+  const config = readRepoConfig();
+  if (!config) {
+    throw new Error(
+      `Deleting needs a connected repository — a page cannot remove ${file} from a site it only reads`
+    );
+  }
+
+  const path = repoPath(lib, file);
+  const existing = await contents(config, `${path}?ref=${encodeURIComponent(config.branch)}`);
+  if (existing.status === 404) throw new Error(`${file} is not in the library any more`);
+  if (!existing.ok) throw new Error(`Could not delete ${file}: ${await apiError(existing)}`);
+  const { sha } = (await existing.json()) as { sha: string };
+
+  const res = await contents(config, path, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: `Delete ${lib}/${file}`, sha, branch: config.branch }),
+  });
+  if (!res.ok) throw new Error(`Could not delete ${file}: ${await apiError(res)}`);
+  return `Deleted ${file} from the library`;
+}
+
 /** Hand the file to the browser to put in the user's downloads. */
 function download(file: string, text: string): void {
   const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));

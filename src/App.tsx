@@ -3,19 +3,24 @@ import { useVariablesStore } from "./store/useVariablesStore";
 import { LampDesignPage } from "./components/LampDesignPage";
 import { ComponentEditorPage } from "./components/ComponentEditorPage";
 import { TexturesPage } from "./components/TexturesPage";
+import { AssetsPage } from "./components/AssetsPage";
 import { FileMenu, type FileMenuTab } from "./components/FileMenu";
 import "./App.css";
 
-type Tab = FileMenuTab;
+type Tab = FileMenuTab | "assets";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "lamp", label: "Lamp Design" },
   { id: "componentEditor", label: "Component Editor" },
   { id: "textures", label: "Textures" },
+  { id: "assets", label: "Assets" },
 ];
 
+/** Every tab but Assets, which has no file menu — it *is* the library. */
+const hasFileMenu = (id: Tab): id is FileMenuTab => id !== "assets";
+
 /**
- * Three tabs over one shared design.
+ * Four tabs over one shared design.
  *
  * **Lamp Design** is the assembly — the main box in 3D, the variables that size
  * it, and the components hung on it; **Component Editor** is the four-view
@@ -26,8 +31,13 @@ const TABS: Array<{ id: Tab; label: string }> = [
  * editor does not have to be mounted for the change to apply.
  *
  * The tabs are in the order the work runs down through the model: an assembly is
- * made of components, and a component is made of a material. Textures is last
- * because it is the only one that changes nothing about the geometry.
+ * made of components, and a component is made of a material. Textures is last of
+ * the three because it is the only one that changes nothing about the geometry.
+ *
+ * **Assets** is after all of them and is not a bench at all: it is every file the
+ * three libraries hold, side by side, which is the one view of the project that
+ * cuts across the three. Its Load buttons send a design to whichever of the
+ * other tabs owns it, which is why it is handed `setTab`.
  *
  * Each tab carries its own **file menu** under the caret: everything that puts a
  * design on the bench or takes one off it, per tab, in the one place. Pressing
@@ -40,7 +50,7 @@ const TABS: Array<{ id: Tab; label: string }> = [
  */
 function App() {
   const [tab, setTab] = useState<Tab>("lamp");
-  const [menu, setMenu] = useState<Tab | null>(null);
+  const [menu, setMenu] = useState<FileMenuTab | null>(null);
   const loaded = useVariablesStore((state) => state.loaded);
   const loadError = useVariablesStore((state) => state.loadError);
   const loadVariables = useVariablesStore((state) => state.loadVariables);
@@ -54,7 +64,7 @@ function App() {
     if (menu !== null && menu !== id) setMenu(null);
   };
 
-  const toggleMenu = (id: Tab) => {
+  const toggleMenu = (id: FileMenuTab) => {
     setTab(id);
     setMenu((current) => (current === id ? null : id));
   };
@@ -67,17 +77,19 @@ function App() {
             <button type="button" className="app-tab-label" onClick={() => select(id)}>
               {label}
             </button>
-            <button
-              type="button"
-              className="app-tab-caret"
-              aria-haspopup="menu"
-              aria-expanded={menu === id}
-              title={`${label} file menu`}
-              onClick={() => toggleMenu(id)}
-            >
-              ▾
-            </button>
-            {menu === id && <FileMenu tab={id} onClose={() => setMenu(null)} />}
+            {hasFileMenu(id) && (
+              <button
+                type="button"
+                className="app-tab-caret"
+                aria-haspopup="menu"
+                aria-expanded={menu === id}
+                title={`${label} file menu`}
+                onClick={() => toggleMenu(id)}
+              >
+                ▾
+              </button>
+            )}
+            {hasFileMenu(id) && menu === id && <FileMenu tab={id} onClose={() => setMenu(null)} />}
           </div>
         ))}
       </div>
@@ -91,8 +103,10 @@ function App() {
           <LampDesignPage />
         ) : tab === "componentEditor" ? (
           <ComponentEditorPage />
-        ) : (
+        ) : tab === "textures" ? (
           <TexturesPage />
+        ) : (
+          <AssetsPage onOpen={setTab} />
         )}
       </div>
     </div>

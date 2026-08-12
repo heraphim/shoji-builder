@@ -5,7 +5,7 @@
 ```
                     ┌──────────────────────────────────────────┐
    React UI         │ App.tsx ─ tabs ─ Lamp Design / Component  │
-                    │              Editor / Textures           │
+                    │           Editor / Textures / Assets      │
                     └───────────────┬──────────────────────────┘
                                     │ hooks / actions
         ┌───────────────────────────▼──────────────────────────┐
@@ -20,12 +20,15 @@
    Domain (src/lib) │ formula  blocks  measure  rectangles      │
                     │ assembly picking componentFile  lamp      │
                     │ symmetry wood  woodMaterial  textureFile  │
+                    │ assets                                    │
                     └──────────────────────────────────────────┘
 ```
 
-The three tabs are the model's three levels: a lamp is made of components, a
-component is made of a material. Textures is the only one that changes no
-geometry at all.
+The first three tabs are the model's three levels: a lamp is made of components,
+a component is made of a material. Textures is the only one of them that changes
+no geometry at all. **Assets** is not a level but a cross-section — every file
+all three libraries hold — and owns no store: it reads the libraries, and loading
+anything from it calls the same loader that tab's own file menu calls.
 
 Everything under `src/lib` is pure and side-effect free apart from `library.ts`,
 which is nothing but I/O — it is where `fetch`, `localStorage` and the download
@@ -46,7 +49,7 @@ stores hold state; the libraries hold the arithmetic.
 | `rectangles.ts` | Minimum partition of a rectilinear polygon (with holes) into axis-aligned rectangles. |
 | `assembly.ts` | CSG union of joined parts, face-topology extraction, outline recovery, solid retessellation, hidden-line splitting, parallel-edge lookup. |
 | `picking.ts` | Raycast-hit helpers (nearest vertex, world normal, world triangle), STL island splitting, bounding volumes, orthographic camera basis. |
-| `library.ts` | The one place that knows where the three libraries are read from and written to: the deployed site, or — when this browser has been given a token — the GitHub branch itself, where a save is a commit. Holds the settings and all the I/O. |
+| `library.ts` | The one place that knows where the three libraries are read from and written to: the deployed site, or — when this browser has been given a token — the GitHub branch itself, where a save is a commit and a delete is a commit. Holds the settings and all the I/O. |
 | `componentFile.ts` | Serialise the editor to `*.component.json` and load it back. Owns the file format. |
 | `lampFile.ts` | The same one level up: the `*.lamp.json` format — which components are on the lamp and how each is fixed on. Pure; the store does the fetching. |
 | `lamp.ts` | The assembly layer above the editor: the main box, cutting a saved component at the current variables, the outline of a union of boxes, projected construction edges, two-point alignment, clearance sweeps, feature-point picking. |
@@ -54,6 +57,7 @@ stores hold state; the libraries hold the arithmetic.
 | `wood.ts` | What a wood texture *is*, as data: the parameter set, the ten species presets and four finishes taken verbatim from three.js's `WoodNodeMaterial`, and the seed. No three.js, no shader — just numbers, because the numbers are what gets saved. |
 | `woodMaterial.ts` | Those numbers as something the renderer can draw: the solid-texture GLSL, injected into a `MeshPhysicalMaterial` through `onBeforeCompile`, plus the object → texture-space matrix. The one file that would be replaced wholesale by `WoodNodeMaterial` if the app ever moved to `WebGPURenderer`. |
 | `textureFile.ts` | Serialise a texture to `*.texture.json` and read it back, field by field against the defaults. Owns that format. |
+| `assets.ts` | All three libraries read as things to *look at*: one catalogue entry per file, cut down to what a card shows (how many sizes nothing measures, what it is dressed in, which components a lamp is missing), plus the geometry each preview draws. Loads nothing onto a bench — that stays with the three loaders above. |
 
 ### `src/store`
 
@@ -90,6 +94,8 @@ stores hold state; the libraries hold the arithmetic.
 | `UploadedMesh` | The merged solids themselves plus every hover/selection overlay, and the edge-picking hooks shared by all four views. |
 | `ComponentEditorSidebar` | Connections panel, measurements panel, implied-values panel, and Clear. All collapsible; saving is in the file menu. |
 | `VariablesList` | The variable table (shared by the Lamp tab and, potentially, the editor). |
+| `AssetsPage` | The Assets tab: the catalogue as sections of cards, the badges, Load (into the tab that owns the design) and Delete (the one action that needs a token), over one `<Canvas>` for every preview. |
+| `AssetPreview` | One card's turning model — a `<View>` on that shared canvas — and the camera that frames its swept sphere so nothing leaves the cell mid-turn. |
 | `AxisTriad`, `TextSprite` | Scene-space widgets that work inside scissored `<View>`s (drei's `GizmoHelper` and HTML overlays do not). |
 
 ## Data flow

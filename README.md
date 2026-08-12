@@ -98,7 +98,10 @@ can be better than that, because the site *is* a branch of a repository:
    branch and token, and press Connect.
 
 Every save now commits the file, so a design is in the library for good rather
-than for the session.
+than for the session — and the **Assets** tab can delete one, which is the single
+thing in the app that a token is *required* for: saving falls back to a download
+you drop in by hand, and there is no equivalent gesture for taking a file out of
+a site your browser only reads.
 
 Saving does **not** rebuild the site — `public/models/**` is ignored by the
 workflow, because a minute of Actions to publish one JSON file is not worth

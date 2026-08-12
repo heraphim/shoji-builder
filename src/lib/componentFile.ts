@@ -298,14 +298,16 @@ export function componentFileFor(name?: string): ComponentFile | null {
 }
 
 /**
- * The appearance block, validated field by field.
+ * The appearance block, validated field by field. Exported because the Assets
+ * tab reads it off a file it is only *looking* at, and a second reader that
+ * disagreed about what a malformed block means would be a second format.
  *
  * A missing block is a format 4 file and reads as the defaults; a *malformed*
  * one reads as the defaults too, field by field, rather than being rejected. The
  * geometry is the component; refusing to open one because somebody hand-edited
  * its colour to `blue` would be losing the part over the paint.
  */
-function readAppearance(raw: Appearance | undefined): Appearance {
+export function readAppearance(raw: Appearance | undefined): Appearance {
   if (!raw || typeof raw !== "object") return DEFAULT_APPEARANCE;
   return {
     solidColor: /^#[0-9a-fA-F]{6}$/.test(raw.solidColor)
