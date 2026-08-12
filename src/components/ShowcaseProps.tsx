@@ -168,7 +168,21 @@ export type PropPlacement = Omit<PropFit, "dress" | "fallback">;
 export function fitOf(
   scene: THREE.Object3D,
   fit: PropPlacement
-): { turn: THREE.Matrix4; scale: number; offset: THREE.Vector3 } {
+): {
+  turn: THREE.Matrix4;
+  scale: number;
+  offset: THREE.Vector3;
+  /**
+   * The prop's own bounds after the turn and before the scale — the box the two
+   * numbers above were derived from.
+   *
+   * Handed back rather than thrown away because a placement is not only where
+   * the anchor went: anything that has to line up with an *edge* of a prop needs
+   * the whole box in room millimetres, and the only other way to it is a second
+   * traversal of the same scene. See {@link useFittedBox}.
+   */
+  box: THREE.Box3;
+} {
   scene.updateMatrixWorld(true);
   const turn = new THREE.Matrix4().makeRotationY(fit.turn ?? 0);
 
@@ -199,7 +213,29 @@ export function fitOf(
     turn,
     scale,
     offset: new THREE.Vector3(fit.at[0] - corner.x, fit.at[1] - corner.y, fit.at[2] - corner.z),
+    box,
   };
+}
+
+/**
+ * Where a prop ends up, as a box in room millimetres.
+ *
+ * Suspends off the same cache `Prop` does, so a thing that has to be sized
+ * against a prop can ask how big it came out without a second download and
+ * without a copy of the fit arithmetic.
+ *
+ * It exists because the alternative is writing the answer down. The bed is
+ * fitted on its *length* — 2,050 mm of it — and how wide that leaves it depends
+ * on the proportions of the file, which is a number nobody chose: 1,669 mm, as
+ * it happens. A picture hung to the bed's width with 1669 typed into it is
+ * correct until the bed is replaced, and then it is silently the wrong size.
+ */
+export function useFittedBox(fit: PropPlacement): THREE.Box3 {
+  const { scene } = useGLTF(siteUrl(`models/props/${fit.file}`));
+  return useMemo(() => {
+    const { scale, offset, box } = fitOf(scene, fit);
+    return box.clone().applyMatrix4(new THREE.Matrix4().makeScale(scale, scale, scale)).translate(offset);
+  }, [scene, fit]);
 }
 
 /** A flat, upward-facing patch of a prop, in room millimetres. */

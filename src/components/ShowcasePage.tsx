@@ -79,6 +79,18 @@ const DEFAULT_GLOW = 0.2;
  */
 const COMPACT_PX = 720;
 
+/**
+ * The pictures on the walls, which are the page's only real downloads.
+ *
+ * A list rather than the one filename this used to be, because there are two of
+ * them now — the scroll's and the bed's — and the milestone below is "the images
+ * have arrived", not "an image has". `ShowcaseRoom` names the same two files for
+ * itself, which is a duplication worth noticing if a third is ever added: a room
+ * with three pictures in it and a loading screen waiting for two lifts early,
+ * which is the one failure the screen exists to prevent.
+ */
+const PICTURES = ["paper-roll.png", "painting.png"];
+
 function useCompact(): boolean {
   const [compact, setCompact] = useState(
     () => typeof window !== "undefined" && window.innerWidth < COMPACT_PX
@@ -386,16 +398,26 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
   const [dismissed, setDismissed] = useState(false);
   const { progress, stage } = useShowcaseProgress(painted, drawn);
 
-  // The painting is the one asset with a real download behind it. Fetched here
+  // The two pictures are the only assets with a real download behind them —
+  // `paper-roll.png` on the scroll and `painting.png` over the bed. Fetched here
   // as well as in the room so that the loading screen has something to wait for;
-  // the room's own loader then finds it in the browser cache, which is the
-  // cheapest possible way to share it and needs no plumbing between the two.
+  // the room's own loader then finds them in the browser cache, which is the
+  // cheapest possible way to share them and needs no plumbing between the two.
+  //
+  // Both, because the loading screen's promise is that what is behind it is
+  // finished. Waiting on one of two pictures would lift it just in time to watch
+  // the other one appear on the wall.
   useEffect(() => {
-    const image = new Image();
-    const finish = () => setPainted(true);
-    image.onload = finish;
-    image.onerror = finish;
-    image.src = siteUrl("painting.png");
+    let left = PICTURES.length;
+    const finish = () => {
+      if (--left === 0) setPainted(true);
+    };
+    for (const file of PICTURES) {
+      const image = new Image();
+      image.onload = finish;
+      image.onerror = finish;
+      image.src = siteUrl(file);
+    }
   }, []);
 
   // A backstop. Every milestone above can fail to arrive for a reason nobody

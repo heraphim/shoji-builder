@@ -8,13 +8,13 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { MeshReflectorMaterial } from "@react-three/drei";
 import type { MeshReflectorMaterial as ReflectorMaterial } from "@react-three/drei/materials/MeshReflectorMaterial";
 import { loadLibraryTexture, type TextureFile } from "../lib/textureFile";
-import { Prop, preloadProps, useFlatTop, type PropFit } from "./ShowcaseProps";
+import { Prop, preloadProps, useFittedBox, useFlatTop, type PropFit } from "./ShowcaseProps";
 import { siteUrl } from "../lib/library";
 import type { ShowcaseLook } from "../lib/showcaseLook";
 
 /**
- * The room the lamp is shown in: a wall, a nightstand, the corner of a bed, and
- * a hanging scroll behind it.
+ * The room the lamp is shown in: a wall, a nightstand, the corner of a bed, a
+ * hanging scroll behind the lamp and a framed painting over the bed.
  *
  * Everything here is built out of boxes, cylinders and one canvas — no
  * downloaded models and no downloaded texture maps. Three reasons, in order of
@@ -106,37 +106,92 @@ export const CEILING_FIXTURE = { x: 420, y: 1584, z: 320 } as const;
 const SCROLL_X = -168;
 
 /**
- * The painting, filling the panel it is on.
+ * The picture, filling the panel it is on.
  *
  * No mount. A kakejiku normally has one — silk borders in traditional and quite
  * unequal proportions — and this had one, and it was wrong here: the mount is a
  * frame, a frame reads as a picture *hung on* a wall, and what is wanted is the
- * painting itself. So the panel is the image, at the image's own ratio, and the
+ * image itself. So the panel is the image, at the image's own ratio, and the
  * only thing left of the scroll is the two rods.
+ *
+ * The framed painting over the bed is the other half of that argument rather
+ * than a contradiction of it — see {@link FramedPainting}.
  */
 const SCROLL_W = 268;
 
 /**
- * What shape the painting is until the file says otherwise.
+ * What shape the scroll's picture is until the file says otherwise.
  *
  * Only ever on screen for the frame or two before the image arrives — the real
  * ratio is read off the loaded texture, which is the whole point: this was a
  * hard-coded 135:516 and the day the picture was replaced with a 273:613 one
  * the panel went on being the old shape and squashed it. A number that describes
- * a file belongs to the file.
+ * a file belongs to the file, and this one is `public/paper-roll.png`.
  */
-const SCROLL_FALLBACK_ASPECT = 273 / 613;
+const SCROLL_FALLBACK_ASPECT = 410 / 607;
 
 /**
- * How far above the nightstand the painting starts.
+ * How far above the nightstand the scroll starts.
  *
  * A quarter of a metre, so it begins around the lamp's shoulder. Half a metre
  * — the first try — was right about the object and wrong about the picture: it
- * put the painting so far up that the frame cut it off before anything in it
+ * put the image so far up that the frame cut it off before anything in it
  * had happened. It still runs off the top, which is what the reference
  * photograph does too — a scroll is taller than a photograph of a bedside table.
  */
 const SCROLL_BOTTOM = 250;
+
+/**
+ * How far the painting over the bed runs past the bed, at each end.
+ *
+ * Twenty centimetres, so the picture is 40 cm wider than the thing under it. The
+ * usual advice for hanging over a bed is the other way round — two thirds of the
+ * width, tucked inside the headboard — and that advice is about a *wall*, where
+ * a picture narrower than the furniture leaves the wall visibly in charge. Here
+ * the wall is nearly black and there is one light in the room, so a picture that
+ * stops short of the bed reads as a small bright patch floating over it. Running
+ * it past both ends makes it the horizontal in the frame that the bed is lying
+ * along, which is what the eye needs in order to read the depth at all.
+ *
+ * Measured off the bed rather than written down as an absolute width: the bed is
+ * fitted on its length and how wide that leaves it is the file's business. See
+ * `useFittedBox`.
+ */
+const PICTURE_MARGIN = 200;
+
+/**
+ * The face width of the frame's mouldings.
+ *
+ * Outside the picture, not over it — so the image is exactly as wide as the two
+ * margins above say and the timber is extra. A frame that ate into the canvas
+ * would make the *picture* the thing that changed size whenever the moulding did,
+ * which is the wrong way round: the moulding is trim.
+ */
+const PICTURE_FRAME = 55;
+
+/**
+ * What shape the painting is until the file says otherwise.
+ *
+ * `public/painting.png`, five to two. Same bargain as {@link SCROLL_FALLBACK_ASPECT}
+ * — on screen for a frame or two, and the loaded texture then has the last word.
+ *
+ * The file arrived letterboxed in black and was cropped to its picture, which is
+ * why this is 2.50 rather than the 2.00 the original measured: the bars were
+ * 90-odd pixels of nothing at the top and bottom, and inside a wooden frame they
+ * would have read as a second, painted-on frame just inside the real one.
+ */
+const PICTURE_FALLBACK_ASPECT = 1757 / 702;
+
+/**
+ * The gap between the top of the bed and the bottom of the frame.
+ *
+ * A quarter of a metre, over the headboard rather than over the mattress — the
+ * clearance is measured from whatever the bed's highest point turns out to be,
+ * which on this file is the headboard at 144 mm above the nightstand's top. A
+ * gap this size is what says the two objects are related without the picture
+ * appearing to rest on the bed.
+ */
+const PICTURE_LIFT = 250;
 
 /**
  * Where the camera is allowed to be, in room coordinates.
@@ -711,13 +766,37 @@ function pillowGeometry(
 }
 
 /**
+ * The shape of a picture file, once it has arrived.
+ *
+ * Measured off a plain `Image` rather than off the texture, because a
+ * `THREE.Texture` has no "the picture arrived" event to listen for — only
+ * `dispose`. The browser has the file in cache by now anyway: the loading screen
+ * fetched both pictures, and these are the same URLs.
+ *
+ * @param fallback what shape to assume for the frame or two before then. It is
+ *        deliberately a caller's constant and not, say, 1 — a square panel that
+ *        snaps to a 2:1 one is a visible flinch on the first frame, and the file
+ *        the constant describes is the file the caller names.
+ */
+function usePictureAspect(file: string, fallback: number): number {
+  const [aspect, setAspect] = useState(fallback);
+
+  useEffect(() => {
+    const image = new Image();
+    image.onload = () => setAspect(image.width / image.height);
+    image.src = siteUrl(file);
+  }, [file]);
+
+  return aspect;
+}
+
+/**
  * The scroll on the wall, sized by the picture on it.
  *
- * Its own component, and the one thing in this room that is not built once and
- * left alone: the panel's height is the painting's height, and nothing knows
- * that until the image has loaded. So the geometry is rebuilt when the texture
- * arrives, from the texture — which means dropping a different picture into
- * `public/painting.png` is the whole of the work of changing it.
+ * The panel's height is the picture's height, and nothing knows that until the
+ * image has loaded. So the geometry is rebuilt when the texture arrives, from
+ * the texture — which means dropping a different picture into
+ * `public/paper-roll.png` is the whole of the work of changing it.
  *
  * The width is fixed and the height follows. The other way round would be
  * defensible but this is a wall: what is scarce is how far the picture can
@@ -732,20 +811,10 @@ function HangingScroll({
   paper: PaperMaterial;
   rods: THREE.Material;
   wrap: THREE.Material;
-  /** Just the painting, with none of the scroll round it. See `bareScroll`. */
+  /** Just the picture, with none of the scroll round it. See `bareScroll`. */
   bare: boolean;
 }) {
-  const [aspect, setAspect] = useState(SCROLL_FALLBACK_ASPECT);
-
-  // Measured off a plain `Image` rather than off the texture, because a
-  // `THREE.Texture` has no "the picture arrived" event to listen for — only
-  // `dispose`. The browser has the file in cache by now anyway: the loading
-  // screen fetched it, and this is the same URL.
-  useEffect(() => {
-    const image = new Image();
-    image.onload = () => setAspect(image.width / image.height);
-    image.src = siteUrl("painting.png");
-  }, []);
+  const aspect = usePictureAspect("paper-roll.png", SCROLL_FALLBACK_ASPECT);
 
   const geometry = useMemo(() => {
     const height = SCROLL_W / Math.max(aspect, 0.01);
@@ -799,7 +868,7 @@ function HangingScroll({
     [geometry]
   );
 
-  // The painting is the scroll; everything else is what it is mounted on. So
+  // The picture is the scroll; everything else is what it is mounted on. So
   // the bare hanging is an early return rather than nine conditionals — the
   // geometry is still built, because it is one memo for the whole hanging and
   // splitting it would be more code than the nine boxes cost.
@@ -827,17 +896,101 @@ function HangingScroll({
 }
 
 /**
- * The painting.
+ * The framed painting over the bed, sized to the bed under it.
  *
- * A real image — `public/painting.png` — because a painting is the one thing in
- * this room that is a *picture* rather than a material, and nothing procedural
- * was going to be a sumi-e landscape. Everything else about the scroll is: the
- * creases across it and the fibre in it are a height field over the flat panel
- * (see `PaperMaterial`), so the picture stays rectangular and only the light
- * across it bends.
+ * A frame, and the scroll pointedly has none — see {@link SCROLL_W}. The two are
+ * the same argument from opposite ends. What the scroll is doing is standing
+ * *behind* the lamp, and a moulding round it would put a second rectangle in the
+ * one place the eye is already busy; what this is doing is filling the wall over
+ * a bed that is otherwise the largest untouched thing in the room, and there a
+ * bare panel reads as a poster taped up rather than as a picture hung. The room
+ * ends up with one of each, which is also what a bedroom has.
+ *
+ * ## Both of its sizes come from somewhere else
+ *
+ * The **width** is the bed's, plus {@link PICTURE_MARGIN} at each end, measured
+ * off the bed as it actually landed rather than written down — so this suspends
+ * on the same model `Prop` does. The **height** is then the picture's own ratio
+ * applied to that width, off the loaded file, exactly as the scroll's is. Nothing
+ * about the shape of this object is a number chosen here, which is the point: it
+ * is a picture hung to fit a bed, and both halves of that stay true when either
+ * the bed file or the picture file is replaced.
  */
-function paintingTexture(): THREE.Texture {
-  const texture = new THREE.TextureLoader().load(siteUrl("painting.png"));
+function FramedPainting({
+  picture,
+  frame,
+}: {
+  picture: PaperMaterial;
+  frame: THREE.Material;
+}) {
+  const bed = useFittedBox(BED);
+  const aspect = usePictureAspect("painting.png", PICTURE_FALLBACK_ASPECT);
+
+  const geometry = useMemo(() => {
+    // Centred on the bed rather than on the wall. The bed is what the picture is
+    // over, and the two margins are equal, so the picture's middle is the bed's.
+    const width = bed.max.x - bed.min.x + PICTURE_MARGIN * 2;
+    const height = width / Math.max(aspect, 0.01);
+    const x = [(bed.min.x + bed.max.x - width) / 2, (bed.min.x + bed.max.x + width) / 2] as const;
+
+    // Off the bed's own highest point — the headboard, on this file — so the
+    // clearance is a clearance rather than a height above the floor that happens
+    // to clear the bed.
+    const bottom = bed.max.y + PICTURE_LIFT;
+    const y = [bottom, bottom + height] as const;
+
+    // Same 4 mm off the plaster the scroll's paper stands at, and the moulding in
+    // front of that. The frame is 24 mm deep against the canvas's 3, which is
+    // what gives the picture an edge to sit *inside*: a frame flush with the
+    // image is a printed border.
+    const face = WALL_Z + 4;
+    const front = face + 24;
+
+    return {
+      art: boxAt(x, y, [face, face + 3]),
+
+      // Four butt-jointed mouldings outside the image, long pieces top and
+      // bottom. Not mitred: a mitre is four extra triangles apiece to show a join
+      // that at this distance is one pixel wide, and the long-over-short overlap
+      // is how a cheap frame is actually made.
+      top: boxAt([x[0] - PICTURE_FRAME, x[1] + PICTURE_FRAME], [y[1], y[1] + PICTURE_FRAME], [face, front]),
+      bottom: boxAt([x[0] - PICTURE_FRAME, x[1] + PICTURE_FRAME], [y[0] - PICTURE_FRAME, y[0]], [face, front]),
+      left: boxAt([x[0] - PICTURE_FRAME, x[0]], y, [face, front]),
+      right: boxAt([x[1], x[1] + PICTURE_FRAME], y, [face, front]),
+    };
+  }, [bed, aspect]);
+
+  useEffect(
+    () => () => {
+      for (const part of Object.values(geometry)) part.dispose();
+    },
+    [geometry]
+  );
+
+  return (
+    <>
+      <mesh geometry={geometry.art} material={picture} castShadow receiveShadow />
+      <mesh geometry={geometry.top} material={frame} castShadow receiveShadow />
+      <mesh geometry={geometry.bottom} material={frame} castShadow receiveShadow />
+      <mesh geometry={geometry.left} material={frame} castShadow receiveShadow />
+      <mesh geometry={geometry.right} material={frame} castShadow receiveShadow />
+    </>
+  );
+}
+
+/**
+ * A picture, as a texture.
+ *
+ * The two real images in this room — `public/paper-roll.png` on the scroll and
+ * `public/painting.png` over the bed — because a picture is the one thing here
+ * that is a *picture* rather than a material, and nothing procedural was going to
+ * be either of them. Everything else about them is: the creases across the sheet
+ * and the fibre in it are a height field over the flat panel (see
+ * `PaperMaterial`), so the image stays rectangular and only the light across it
+ * bends.
+ */
+function pictureTexture(file: string): THREE.Texture {
+  const texture = new THREE.TextureLoader().load(siteUrl(file));
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 8;
   return texture;
@@ -935,7 +1088,8 @@ function useRoom(detail: number) {
       oak,
       walnut,
       ebony,
-      paper: new PaperMaterial(paintingTexture(), detail),
+      paper: new PaperMaterial(pictureTexture("paper-roll.png"), detail),
+      picture: new PaperMaterial(pictureTexture("painting.png"), detail),
       plaster: new PlasterMaterial("#b6a892", detail),
       ceiling: new PlasterMaterial("#c2b6a2", 0.6 * detail),
       floor: new PlasterMaterial("#4c3a2a", 0.4 * detail),
@@ -1021,7 +1175,11 @@ function useRoom(detail: number) {
       for (const value of Object.values(room)) {
         if (value instanceof THREE.Material) value.dispose();
       }
+      // The two downloaded images, which the material loop above does not reach:
+      // `Material.dispose` leaves its maps alone, on the reasonable assumption
+      // that something else may be wearing them.
       room.paper.map?.dispose();
+      room.picture.map?.dispose();
       for (const value of Object.values(room.geometry)) {
         if (value instanceof THREE.BufferGeometry) value.dispose();
         else {
@@ -1156,6 +1314,17 @@ export function ShowcaseRoom({
       <Suspense fallback={null}>
         <Prop fit={fits.nightstand} />
         <Prop fit={fits.bed} />
+      </Suspense>
+
+      {/* The painting over the bed, on its own boundary.
+       *
+       * It is sized to the bed, so it has to wait for the bed's model — and a
+       * boundary of its own rather than the props' above for the same reason the
+       * varnish has one: sharing theirs would mean the picture could hold up the
+       * furniture, or the furniture the picture. Whichever arrives first draws
+       * first. */}
+      <Suspense fallback={null}>
+        <FramedPainting picture={room.picture} frame={room.ebony} />
       </Suspense>
 
       <HangingScroll
