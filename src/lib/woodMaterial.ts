@@ -118,6 +118,7 @@ uniform float uWoodPoreIntensity;
 uniform float uWoodDarken;
 
 uniform float uWoodRelief;
+uniform float uWoodFilmRelief;
 uniform float uWoodGlossVariance;
 
 varying vec3 vWoodObjectPosition;
@@ -165,6 +166,16 @@ float gWoodPatina = 0.5;
 
 /** How much texture space one screen pixel covers, at this fragment. */
 float gWoodTexel = 0.0;
+
+/**
+ * How hard the varnish's normal is turning inside this one pixel.
+ *
+ * Left behind by the clearcoat's perturbation for the roughness to read, and it
+ * exists because the two cannot be done in one place: the normal is settled
+ * three chunks before the material's roughness is assembled, and by then the
+ * derivatives that measured it are gone.
+ */
+float gWoodFilmVariance = 0.0;
 
 // --- noise -----------------------------------------------------------------
 
@@ -434,8 +445,13 @@ vec3 woodColor(vec3 objectPosition) {
  * The relief is scaled by how far away the fragment is, in the crudest possible
  * way: a millimetre of grain that is a tenth of a pixel across is not relief,
  * it is noise, and left in it sparkles as the camera turns.
+ *
+ * "relief" is a parameter rather than the uniform it used to read, because this
+ * is called twice against two different surfaces: the timber, and the film of
+ * varnish lying on it. They are not equally rough and the second one is the
+ * whole reason a polished board looks polished. See "uWoodFilmRelief".
  */
-vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
+vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height, float relief) {
   vec3 dpdx = dFdx(surfacePosition);
   vec3 dpdy = dFdy(surfacePosition);
   float dhdx = dFdx(height);
@@ -471,7 +487,7 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
   // ring to see, whatever scale the timber was cut at.
   float fade = 1.0 - smoothstep(uWoodRingThickness * 0.35, uWoodRingThickness * 1.4, gWoodTexel);
 
-  vec3 gradient = sign(det) * (dhdx * r1 + dhdy * r2) * uWoodRelief * fade;
+  vec3 gradient = sign(det) * (dhdx * r1 + dhdy * r2) * relief * fade;
 
   // The backstop, and the whole reason the grain stopped sparkling.
   //
@@ -505,6 +521,33 @@ vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
  * can feel, and at arm's length the second one is what shows.
  */
 const RELIEF = 0.62;
+
+/**
+ * How much the varnish itself follows the grain under it, as a surface gradient.
+ *
+ * This is not the same surface as {@link RELIEF} and that is the entire point.
+ * A clearcoat in `MeshPhysicalMaterial` is a second interface with its own
+ * normal, and three.js sets that normal to the *unperturbed* geometric one —
+ * so the grain was reaching the diffuse and the base specular and never once
+ * reaching the mirror lobe on top. A gloss finish is almost nothing but that
+ * lobe, which is why a polished board came out looking like a sheet of brown
+ * plastic: it was, optically, a perfectly flat film.
+ *
+ * A real film is not flat. It is poured onto an uneven surface and it levels
+ * only partly, and finishers have a word for what is left — the grain
+ * *telegraphs* through. On an open-pored oak you can read the pores in the
+ * reflection of a window across the room.
+ *
+ * How much survives depends on how much film there is, and `clearcoatRoughness`
+ * is the same proxy for that used a few lines below: a matte lacquer is one thin
+ * coat that follows everything, a built gloss is several that have been cut back
+ * level. But the floor is high — a bit under half — because levelling and
+ * *looking* level are opposites here. A mirror magnifies the shallowest slope,
+ * so the flatter the film gets, the more plainly what is left of the grain shows
+ * in it. Take the floor to zero and a gloss goes back to brown plastic; take it
+ * to one and it reads as orange peel, which is a fault rather than a finish.
+ */
+const FILM_RELIEF = 0.24;
 
 /**
  * How far the roughness swings between latewood and earlywood, as a fraction.
@@ -542,6 +585,7 @@ function makeUniforms(): WoodUniforms {
     uWoodPoreIntensity: { value: 0.407 },
     uWoodDarken: { value: 1 },
     uWoodRelief: { value: 0 },
+    uWoodFilmRelief: { value: 0 },
     uWoodGlossVariance: { value: 0 },
   };
 }
@@ -614,6 +658,12 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
     // went on, which is exactly what decides the answer.
     const filled = params.clearcoat > 0 ? 0.15 + 0.6 * params.clearcoatRoughness : 1;
     u.uWoodRelief.value = RELIEF * filled;
+
+    // And how much of it the film's own surface still has. Zero without a film,
+    // because then there is no second interface to give relief to. See
+    // {@link FILM_RELIEF} for why the floor is so much higher than `filled`'s.
+    u.uWoodFilmRelief.value =
+      params.clearcoat > 0 ? FILM_RELIEF * (0.45 + 0.55 * params.clearcoatRoughness) : 0;
     u.uWoodGlossVariance.value = GLOSS_VARIANCE * (1 - 0.5 * params.clearcoat);
 
     const hadClearcoat = this.clearcoat > 0;
@@ -659,8 +709,53 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
         "#include <normal_fragment_maps>",
         `#include <normal_fragment_maps>
   if (uWoodRelief > 0.0) {
-    normal = woodPerturbNormal(normal, -vViewPosition, gWoodField);
+    normal = woodPerturbNormal(normal, -vViewPosition, gWoodField, uWoodRelief);
   }`
+      )
+      // The varnish, which is a second surface and needs telling so.
+      //
+      // three.js opens the clearcoat with `clearcoatNormal = nonPerturbedNormal`
+      // — the geometric normal, deliberately untouched by anything the base
+      // normal has had done to it, because the usual reason to perturb a base
+      // normal is a bump map of a texture *under* the film. Here it is the grain,
+      // and the film sits on the grain rather than under it.
+      //
+      // So the same construction runs a second time at its own strength. It has
+      // to be after this chunk and not before: the variable does not exist yet.
+      .replace(
+        "#include <clearcoat_normal_fragment_begin>",
+        `#include <clearcoat_normal_fragment_begin>
+#ifdef USE_CLEARCOAT
+  if (uWoodFilmRelief > 0.0) {
+    clearcoatNormal = woodPerturbNormal(clearcoatNormal, -vViewPosition, gWoodField, uWoodFilmRelief);
+    vec3 filmDx = dFdx(clearcoatNormal);
+    vec3 filmDy = dFdy(clearcoatNormal);
+    gWoodFilmVariance = dot(filmDx, filmDx) + dot(filmDy, filmDy);
+  }
+#endif`
+      )
+      // What the wobble costs, paid back as roughness.
+      //
+      // A mirror sampled once per pixel over a normal that turns inside that
+      // pixel does not average, it picks — so the grain that has just been put
+      // into the film comes back as a field of white sparks that crawl when the
+      // camera moves. The standard answer, and the one three itself uses on the
+      // geometric normal a few lines above this: measure how far the normal
+      // swings across the pixel and widen the lobe until it covers the swing.
+      // A rougher clearcoat is what a surface that is not flat *is*.
+      //
+      // three's own version reads the unperturbed normal, which is flat here and
+      // so contributes nothing — this is the same correction against the normal
+      // that actually varies. Capped, because past a point it stops being
+      // anti-aliasing and starts being a matte finish nobody asked for.
+      .replace(
+        "#include <lights_physical_fragment>",
+        `#include <lights_physical_fragment>
+#ifdef USE_CLEARCOAT
+  material.clearcoatRoughness = min(1.0, sqrt(
+    material.clearcoatRoughness * material.clearcoatRoughness
+      + min(2.0 * gWoodFilmVariance, 0.2)));
+#endif`
       );
   }
 
