@@ -2173,6 +2173,34 @@ select.view-mode option:disabled {
   --sc-thumb-shadow: 0 1px 2px rgba(20, 24, 14, 0.4);
 }
 
+/* Watercolour.
+
+   The picture is a wash on a sheet, so the controls are washes on the same
+   sheet: a thin, barely-there panel that lets the paper through, a soft blue
+   line round it in the colour a brush leaves, and text in ink rather than in
+   white. There is no drop shadow — nothing on a watercolour sits above the
+   paper — and the panel darkens rather than lightens on hover, which is what a
+   second pass of the same wash does. */
+.showcase[data-style="watercolor"] {
+  --sc-page: #efe6d2;
+  --sc-panel: rgba(253, 245, 227, 0.66);
+  --sc-panel-lit: rgba(216, 205, 182, 0.82);
+  --sc-border: rgba(91, 108, 130, 0.4);
+  --sc-border-lit: rgba(91, 108, 130, 0.8);
+  --sc-text: #4a4335;
+  --sc-text-dim: #8a7f6b;
+  --sc-accent: #a0563a;
+  --sc-radius: 12px;
+  --sc-pill: 999px;
+  --sc-blur: blur(3px) saturate(0.9);
+  --sc-shadow: none;
+  --sc-inset: none;
+  --sc-track: rgba(91, 108, 130, 0.28);
+  --sc-track-shadow: none;
+  --sc-thumb: #7b8a9e;
+  --sc-thumb-shadow: none;
+}
+
 .showcase {
   position: absolute;
   inset: 0;

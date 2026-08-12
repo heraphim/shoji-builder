@@ -237,15 +237,76 @@ const GHIBLI: ShowcaseLook = {
   facet: 0,
 };
 
+/**
+ * Watercolour: washes that pool at the edges, paper showing through.
+ *
+ * Three things and no others make a watercolour, and all three are about the
+ * water rather than the colour.
+ *
+ * **It pools.** A wash dries darkest where it stopped, because that is where
+ * the pigment ended up — so `bleed` darkens the picture along every edge the
+ * detector finds, off a much lower threshold and a wider foot than the line.
+ * That is the single most recognisable thing about the medium and the thing
+ * every "watercolour filter" leaves out.
+ *
+ * **It misses.** The line is drawn first and the colour is brushed near it, so
+ * the two do not line up. `wobble` samples the whole picture along a slow
+ * wander, which puts the paint a few pixels off the drawing everywhere and
+ * nowhere by the same amount.
+ *
+ * **It is on paper.** Not behind it — the tooth of the sheet breaks the wash
+ * lying on it, and the white of it is the only white in the picture. Hence the
+ * heavy `lift`: a wash cannot go darker than the pigment, and it can never
+ * reach black, so the shadows in the far corner of this room have to come up to
+ * a warm grey however dark the room really is.
+ *
+ * The line stays, but it is a dry brown rather than ink, and it is almost
+ * entirely a silhouette line — `inkFromLuma` near zero, because a watercolourist
+ * does not draw round the edge of a shadow.
+ */
+const WATERCOLOR: ShowcaseLook = {
+  background: "#efe6d2",
+  paint: {
+    ...NO_PAINT,
+    exposure: 2,
+    bands: 5,
+    bandSoft: 0.62,
+    ink: 0.34,
+    inkColor: "#5b4030",
+    inkWidth: 1.5,
+    inkFromDepth: 0.95,
+    inkFromLuma: 0.14,
+    bleed: 0.34,
+    paper: 0.44,
+    paperScale: 2.4,
+    paperColor: "#fdf5e3",
+    wobble: 7,
+    wobbleScale: 55,
+    saturation: 1.4,
+    tint: "#fff8ec",
+    lift: 0.16,
+    contrast: 1,
+  },
+  bloom: { intensity: 0.7, threshold: 0.55, smoothing: 0.6 },
+  vignette: null,
+  ambient: 2.4,
+  ambientColor: { sky: "#96abc6", ground: "#7a6a58" },
+  fill: 0.3,
+  fillColor: "#f0e2c8",
+  bulb: 1,
+  detail: 0.35,
+  facet: 0,
+};
+
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   realistic: REALISTIC,
   anime: ANIME,
   cartoon: CARTOON,
   ghibli: GHIBLI,
+  watercolor: WATERCOLOR,
   // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
   // menu offering them. Pointed at the photograph rather than left out so that
   // this stays a total record and nothing has to check for a hole in it.
-  watercolor: REALISTIC,
   inkWash: REALISTIC,
   minimalist: REALISTIC,
   lowPoly: REALISTIC,

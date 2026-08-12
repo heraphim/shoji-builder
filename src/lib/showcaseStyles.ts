@@ -75,7 +75,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     id: "watercolor",
     label: "Watercolour",
     note: "Washes that pool at the edges, paper showing through.",
-    built: false,
+    built: true,
   },
   {
     id: "inkWash",
