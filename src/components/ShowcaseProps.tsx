@@ -143,9 +143,9 @@ function facetGeometry(source: THREE.BufferGeometry, grid: number): THREE.Buffer
  *
  * The scene graph is cloned rather than used directly: `useGLTF` caches by URL
  * and hands every caller the same objects, so mutating the loaded meshes would
- * mean the second showcase to mount inherits the first one's transform. Cloning
- * is cheap here because the geometry is shared by reference — only the nodes are
- * copied.
+ * mean the second showcase to mount inherits the first one's transform. The
+ * geometry is copied with it rather than shared, because the fit is baked into
+ * the vertices — see the note on that inside.
  */
 export function Prop({ fit }: { fit: PropFit }) {
   const { scene } = useGLTF(siteUrl(`models/props/${fit.file}`));
@@ -174,19 +174,34 @@ export function Prop({ fit }: { fit: PropFit }) {
         ? fit.height / Math.max(size.y, 1e-6)
         : (fit.length ?? 1000) / Math.max(size.x, size.z, 1e-6);
 
-    // Faceted after the scale is known and before it is applied: the lattice is
-    // given in millimetres of the *room*, and the geometry is still in whatever
-    // units its author used. Measuring first also means the prop keeps the size
-    // it was fitted to rather than the slightly smaller one snapping leaves.
+    // The fit is applied to the *geometry* rather than to the node, and it has
+    // to be.
+    //
+    // Every material in this room is a solid texture read in the object's own
+    // coordinates — the wood's grain scale, the cloth's weave pitch and fold
+    // size are all millimetres of the model (see `wood.ts` and `surfaces.ts`).
+    // A node scale does not reach them: the shader sees `position`, which is
+    // whatever unit the file's author worked in. The bed arrives at 1 unit to
+    // 830 mm, so a 55 mm fold was being asked for over 45 metres of bedspread
+    // and a 4.7 mm ring over most of a tree — which is why the two downloaded
+    // props were the only things in this room with no figure and no weave in
+    // them, and why nobody noticed: a flat brown bed looks like a bed.
+    //
+    // So the vertices are moved instead and the node is left at unit scale,
+    // which makes a prop's object space room millimetres like everything else.
+    // The price is that the geometry can no longer be shared with `useGLTF`'s
+    // cache — hence `cut`, which is disposed with the clone.
     const cut: THREE.BufferGeometry[] = [];
-    if (fit.facet) {
-      const grid = fit.facet / scale;
-      root.traverse((object) => {
-        if (!(object instanceof THREE.Mesh)) return;
-        object.geometry = facetGeometry(object.geometry, grid);
-        cut.push(object.geometry);
-      });
-    }
+    root.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      // Faceted first and in the geometry's own units, so the lattice is the
+      // one the caller asked for in room millimetres either way.
+      const source = fit.facet ? facetGeometry(object.geometry, fit.facet / scale) : object.geometry;
+      const sized = fit.facet ? source : source.clone();
+      sized.scale(scale, scale, scale);
+      object.geometry = sized;
+      cut.push(sized);
+    });
 
     const corner = new THREE.Vector3(
       box.min.x + size.x * fit.anchor[0],
@@ -196,19 +211,18 @@ export function Prop({ fit }: { fit: PropFit }) {
 
     const group = new THREE.Group();
     group.add(root);
-    root.scale.setScalar(scale);
     group.position.set(fit.at[0] - corner.x, fit.at[1] - corner.y, fit.at[2] - corner.z);
     return { group, cut };
   }, [scene, fit]);
 
-  // The clone owns nodes, not geometry or materials — both of those belong to
-  // the cache and to the room respectively, and disposing either from here would
-  // pull them out from under whoever else is using them.
+  // The clone owns its nodes and its geometry, and not its materials — those
+  // belong to the room, and disposing one from here would pull it out from under
+  // whoever else is wearing it.
   //
-  // The one exception is geometry this clone *cut* for itself. That is not the
-  // cache's and nobody else holds it, and a style change makes a fresh set — so
-  // without this, orbiting through the eight styles would leave eight beds'
-  // worth of vertex buffers on the card.
+  // The geometry it does own, because it had to be scaled into room millimetres
+  // and could not stay the cache's. A style change makes a fresh set, so without
+  // this, walking through the eight styles would leave eight beds' worth of
+  // vertex buffers on the card.
   useEffect(
     () => () => {
       model.group.clear();
