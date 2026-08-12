@@ -2083,10 +2083,10 @@ select.view-mode option:disabled {
   --sc-blur: blur(14px) saturate(1.15);
   --sc-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
   --sc-inset: inset 0 1px 0 rgba(255, 226, 190, 0.16);
-  --sc-track: rgba(255, 228, 196, 0.13);
-  --sc-track-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7);
-  --sc-thumb: radial-gradient(circle at 34% 26%, #fff0d8 0%, #ffb163 46%, #a8631f 100%);
-  --sc-thumb-shadow: 0 2px 7px rgba(0, 0, 0, 0.6), 0 0 12px rgba(255, 168, 84, 0.45);
+  --sc-track: rgba(255, 228, 196, 0.16);
+  --sc-track-shadow: none;
+  --sc-thumb: #f0c491;
+  --sc-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
 }
 
 .showcase {
@@ -2136,8 +2136,7 @@ select.view-mode option:disabled {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 10px;
-  /* the right-hand padding leaves the zen button its corner */
-  padding: max(16px, env(safe-area-inset-top)) calc(max(16px, env(safe-area-inset-right)) + 48px) 0
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 0
     max(16px, env(safe-area-inset-left));
   pointer-events: none;
 }
@@ -2227,6 +2226,13 @@ select.view-mode option:disabled {
   color: var(--sc-text);
 }
 
+/* Sodium is not tungsten, and the switch says so: the accent is the colour of
+   the light it turns on, which is the fastest possible label. */
+.showcase-icon[data-outside="street"] {
+  --sc-accent: #ffa74e;
+  --sc-border-lit: rgba(255, 167, 78, 0.6);
+}
+
 .showcase-icon.on {
   --bulb-glass: 0.85;
   border-color: var(--sc-border-lit);
@@ -2244,51 +2250,27 @@ select.view-mode option:disabled {
 
 /* ---- zen ----
 
-   Pinned to the corner and never hidden, because it is the way back. The bar's
-   right-hand padding is set below to keep the Editor button clear of it. */
-.showcase-zen {
+   In the light row rather than pinned to a corner, because it belongs to the
+   same set: these are the four things you press while looking at the lamp. In
+   zen it is the only one left, and it steps back as far as it can without
+   becoming something you have to hunt for — and comes all the way back the
+   moment the pointer finds it. */
+/* In zen it leaves the row and takes the bottom corner, where a control that is
+   the only thing on the page belongs.
+
+   It keeps its glass and its hairline. It had neither — faded to a third and
+   stripped of both, on the theory that zen means nothing on screen — and the
+   result was a mode you could get into and not see the way out of, which is the
+   one thing this button exists to prevent. Slightly quiet is the most it may be. */
+.showcase-zen.corner {
   position: absolute;
   z-index: 3;
-  top: max(16px, env(safe-area-inset-top));
   right: max(16px, env(safe-area-inset-right));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 1px solid var(--sc-border);
-  border-radius: 50%;
-  background: var(--sc-panel);
-  -webkit-backdrop-filter: var(--sc-blur);
-  backdrop-filter: var(--sc-blur);
-  box-shadow: var(--sc-shadow), var(--sc-inset);
-  color: var(--sc-text-dim);
-  font-family: inherit;
-  font-size: 15px;
-  line-height: 1;
-  cursor: pointer;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  opacity: 0.8;
 }
 
-.showcase-zen:hover {
-  background: var(--sc-panel-lit);
-  color: var(--sc-text);
-}
-
-/* In zen it is the only thing on the page, so it steps back as far as it can
-   without becoming something you have to hunt for — and comes all the way back
-   the moment the pointer finds it. */
-.showcase-zen.on {
-  border-color: transparent;
-  background: none;
-  box-shadow: none;
-  opacity: 0.32;
-}
-
-.showcase-zen.on:hover {
-  background: var(--sc-panel);
-  border-color: var(--sc-border);
-  box-shadow: var(--sc-shadow), var(--sc-inset);
+.showcase-zen.corner:hover {
   opacity: 1;
 }
 
@@ -2397,20 +2379,35 @@ select.view-mode option:disabled {
    with a floor wider than the space left over does not shrink, it overflows,
    and on a 360 px phone that pushed the reading off the right-hand edge. The
    floor belongs on the panel, which is what `min()` on the width is. */
-.showcase-controls {
+/* ---- the dock: the switches, and the sliders under them ---- */
+
+.showcase-dock {
   position: absolute;
   z-index: 2;
   left: 50%;
   transform: translateX(-50%);
   bottom: calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(400px, calc(100% - 28px));
+}
+
+.showcase-lights {
+  display: flex;
+  gap: 10px;
+}
+
+.showcase-controls {
+  width: 100%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 12px 14px;
-  width: min(520px, calc(100% - 28px));
-  padding: 14px 18px;
+  gap: 8px 12px;
+  padding: 10px 14px;
   border: 1px solid var(--sc-border);
-  border-radius: var(--sc-radius);
+  border-radius: 12px;
   background: var(--sc-panel);
   -webkit-backdrop-filter: var(--sc-blur);
   backdrop-filter: var(--sc-blur);
@@ -2418,25 +2415,33 @@ select.view-mode option:disabled {
 }
 
 .showcase-dimension-label {
-  color: var(--sc-text);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  color: var(--sc-text-dim);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 /* the reading, in a tabular figure so the panel does not twitch sideways as the
    number goes from 99 to 100 */
 .showcase-dimension-value {
-  min-width: 68px;
-  color: var(--sc-text-dim);
-  font-size: 13px;
+  min-width: 56px;
+  color: var(--sc-text);
+  font-size: 12px;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 
-/* A groove with a lit bead riding in it. The track has to be styled per engine
-   — there is no cross-browser pseudo-element for it — so the two blocks below
-   say the same thing twice. */
+/* A hairline groove with a small flat bead in it.
+
+   This was a 22 px turned knob with a glow, riding a 6 px channel with an inner
+   shadow — three effects on a control whose whole job is to say where a number
+   is between two others. It read as jewellery. What is left is a 2 px track and
+   a 13 px bead: still the largest thing in the panel, and no longer the largest
+   thing on the page. The row stays 26 px so the *target* is unchanged; only the
+   ink is smaller. The track has to be styled per engine — there is no
+   cross-browser pseudo-element for it — so the two blocks below say the same
+   thing twice. */
 .showcase-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -2449,39 +2454,43 @@ select.view-mode option:disabled {
 }
 
 .showcase-slider::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 2px;
   border-radius: 999px;
   background: var(--sc-track);
-  box-shadow: var(--sc-track-shadow);
 }
 
 .showcase-slider::-moz-range-track {
-  height: 6px;
+  height: 2px;
   border-radius: 999px;
   background: var(--sc-track);
-  box-shadow: var(--sc-track-shadow);
 }
 
-/* 22 px across and sitting in a 26 px row: the whole row is the touch target,
-   which is what makes the slider usable with a thumb rather than a mouse */
 .showcase-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  margin-top: -8px;
-  border: 1px solid var(--sc-border-lit);
+  width: 13px;
+  height: 13px;
+  margin-top: -5.5px;
+  border: none;
   border-radius: 50%;
   background: var(--sc-thumb);
   box-shadow: var(--sc-thumb-shadow);
 }
 
 .showcase-slider::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--sc-border-lit);
+  width: 13px;
+  height: 13px;
+  border: none;
   border-radius: 50%;
   background: var(--sc-thumb);
   box-shadow: var(--sc-thumb-shadow);
+}
+
+.showcase-slider:hover::-webkit-slider-thumb {
+  background: #fff0dc;
+}
+
+.showcase-slider:hover::-moz-range-thumb {
+  background: #fff0dc;
 }
 
 .showcase-slider:disabled {
@@ -2512,8 +2521,7 @@ select.view-mode option:disabled {
 
   /* 34 px switches and a tighter gap: three controls plus the lamp's name and
      the Editor button have to share 375 px */
-  .showcase-icon,
-  .showcase-zen {
+  .showcase-icon {
     width: 34px;
     height: 34px;
   }
@@ -2522,31 +2530,25 @@ select.view-mode option:disabled {
     gap: 6px;
   }
 
-  .showcase-bar {
-    padding-right: calc(max(12px, env(safe-area-inset-right)) + 42px);
+  /* The centre slot is back to holding one control, now that the switches have
+     moved down to the dock, so the bar fits on one row again. */
+  .showcase-slot-centre {
+    justify-content: center;
   }
 
-  /* Onto a line of its own. Three equal slots is the right shape when there is
-     room for three; at 375 px the middle one holds two switches and a style
-     name, which is more than a third of the bar, and it grew out under the
-     lamp's name on the left. So on a phone the switches take the second row and
-     everything gets its width back. */
-  .showcase-slot-centre {
-    order: 3;
-    flex: 1 0 100%;
-    justify-content: flex-start;
+  .showcase-dock {
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    width: calc(100% - 20px);
+    gap: 8px;
   }
 
   .showcase-controls {
-    gap: 10px 12px;
-    padding: 12px 14px;
-    bottom: calc(14px + env(safe-area-inset-bottom));
-    width: calc(100% - 20px);
+    gap: 8px 10px;
+    padding: 10px 12px;
   }
 
   .showcase-dimension-value {
-    min-width: 58px;
-    font-size: 12px;
+    min-width: 52px;
   }
 }
 
@@ -2568,4 +2570,64 @@ select.view-mode option:disabled {
 .app-back:hover {
   background: var(--bp-panel);
   color: var(--bp-text);
+}
+
+/* ===========================================================================
+   The loading screen
+
+   Over the canvas and under nothing. It is the first thing on the page and for
+   a moment it is the only thing, so it carries the style's tokens like the rest
+   of the chrome — a lamp being built out of the same warm amber the finished one
+   glows with.
+   =========================================================================== */
+
+.showcase-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background: var(--sc-page);
+  /* the fade is on the way out only: it arrives instantly, because a loading
+     screen that fades *in* has spent its first frames not saying anything */
+  transition: opacity 400ms ease-out;
+}
+
+.showcase-loading.done {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Every part is drawn in the timber colour and lights up with the lamp. The
+   fill is on the svg rather than on each rect so a part is one line. */
+.showcase-loading-lamp {
+  fill: #6b5031;
+  filter: drop-shadow(0 0 26px rgba(255, 168, 84, 0.16));
+}
+
+.showcase-loading-text {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--sc-text-dim);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+
+.showcase-loading-stage {
+  text-transform: lowercase;
+}
+
+.showcase-loading-percent {
+  color: var(--sc-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-loading {
+    transition: none;
+  }
 }

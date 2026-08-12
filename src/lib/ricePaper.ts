@@ -23,6 +23,13 @@ import * as THREE from "three";
  * the one thing a flat emissive colour cannot be. See {@link RicePaperMaterial}.
  */
 
+/**
+ * How far the sheet stands proud of the main box, in mm.
+ *
+ * See {@link paperShellGeometry} for why it is negative.
+ */
+const SIDE_INSET = -2.5;
+
 /** How many mm of paper one tile of the fibre texture covers. */
 const TILE_MM = 150;
 
@@ -187,12 +194,23 @@ function quad(
  * would give: the fibres have a real size, and a sheet whose grain stretches
  * because the panel it is on is tall is a sheet nobody has ever seen.
  *
- * @param inset how far inside the box the paper is pasted, in mm. Small — the
- *        paper goes on the back of the lattice, not somewhere behind it.
+ * @param inset how far inside the box the paper sits, in mm. **Negative**, and
+ *        that is the point: pasted a hair *inside* the main box the sheet stopped
+ *        short of the corner posts, and from a low angle you could see between
+ *        the two and straight into the lit inside of the lamp. Standing it a
+ *        couple of millimetres proud buries its edges in the posts instead,
+ *        which is also where they are on a real one — the paper goes on the back
+ *        of the lattice and the lattice covers the join.
+ * @param topInset the lid, which stays inside: it is under the cap rather than
+ *        behind a post, and pushing it out would lift it through the cap.
  */
-export function paperShellGeometry(box: THREE.Box3, inset = 0.6): THREE.BufferGeometry {
+export function paperShellGeometry(
+  box: THREE.Box3,
+  inset = SIDE_INSET,
+  topInset = 0.6
+): THREE.BufferGeometry {
   const min = new THREE.Vector3(box.min.x + inset, box.min.y, box.min.z + inset);
-  const max = new THREE.Vector3(box.max.x - inset, box.max.y - inset, box.max.z - inset);
+  const max = new THREE.Vector3(box.max.x - inset, box.max.y - topInset, box.max.z - inset);
   const size = max.clone().sub(min);
 
   const target = { position: [] as number[], normal: [] as number[], uv: [] as number[] };
@@ -209,6 +227,46 @@ export function paperShellGeometry(box: THREE.Box3, inset = 0.6): THREE.BufferGe
   quad(target, new THREE.Vector3(min.x, min.y, min.z), z, y, new THREE.Vector3(-1, 0, 0));
   quad(target, new THREE.Vector3(max.x, min.y, min.z), z, y, new THREE.Vector3(1, 0, 0));
   quad(target, new THREE.Vector3(min.x, max.y, min.z), x, z, new THREE.Vector3(0, 1, 0));
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(target.position, 3));
+  geometry.setAttribute("normal", new THREE.Float32BufferAttribute(target.normal, 3));
+  geometry.setAttribute("uv", new THREE.Float32BufferAttribute(target.uv, 2));
+  geometry.computeBoundingBox();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
+
+/**
+ * The board the shade sits on: the sixth face, and the one that is not paper.
+ *
+ * The shell is open underneath because the bottom is inside the base and nobody
+ * sees it — but *the light* saw it. With nothing there the bulb lit the table
+ * through the floor of its own shade, and a lantern that glows out of its
+ * underside is one with no bottom in it, which no lantern has. A real one is
+ * closed with a board.
+ *
+ * Separate from the shell rather than a sixth quad on it because it is a
+ * different material and a different job: the paper is a diffuser that must not
+ * cast, and this is a piece of wood whose entire purpose is to cast. Keeping
+ * them apart is also what lets `__papercheck` go on asserting that the shell has
+ * no floor.
+ */
+export function shellFloorGeometry(box: THREE.Box3, inset = SIDE_INSET): THREE.BufferGeometry {
+  const target = { position: [] as number[], normal: [] as number[], uv: [] as number[] };
+  const min = new THREE.Vector3(box.min.x + inset, box.min.y, box.min.z + inset);
+  const size = new THREE.Vector3(
+    box.max.x - inset - min.x,
+    0,
+    box.max.z - inset - min.z
+  );
+  quad(
+    target,
+    min,
+    new THREE.Vector3(size.x, 0, 0),
+    new THREE.Vector3(0, 0, size.z),
+    new THREE.Vector3(0, -1, 0)
+  );
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(target.position, 3));

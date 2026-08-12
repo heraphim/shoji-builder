@@ -13,6 +13,31 @@
  * silently falling back to a style the visitor did not ask for.
  */
 
+/**
+ * What is going on outside the window: nothing, or a street lamp.
+ *
+ * One control rather than two switches, because these are answers to one
+ * question and no two of them can be true at once \— a pair of toggles would let
+ * you have two different nights at the same time.
+ *
+ * Daylight was here and has been taken out. It worked, and it was the wrong
+ * thing to have: a lamp is for the dark, and a room with the sun in it is a room
+ * where the lamp has nothing to do. Adding it back is a third entry in this list
+ * and a branch in `ShowcaseScene` \— nothing else knows how many there are.
+ */
+export type OutsideLight = "none" | "street";
+
+export const OUTSIDE_ORDER: readonly OutsideLight[] = ["none", "street"];
+
+export const OUTSIDE_LABELS: Record<OutsideLight, string> = {
+  none: "Outside: dark",
+  street: "Outside: street lamp",
+};
+
+export function nextOutside(current: OutsideLight): OutsideLight {
+  return OUTSIDE_ORDER[(OUTSIDE_ORDER.indexOf(current) + 1) % OUTSIDE_ORDER.length];
+}
+
 export type ShowcaseStyleId =
   | "realistic"
   | "anime"

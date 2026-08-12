@@ -117,9 +117,27 @@ uniform float uWoodCellSize;
 uniform float uWoodPoreIntensity;
 uniform float uWoodDarken;
 
+uniform float uWoodRelief;
+uniform float uWoodGlossVariance;
+
 varying vec3 vWoodObjectPosition;
 
 const float WOOD_TAU = 6.283185307179586;
+
+/**
+ * The surface, as one number, left behind by the last call to woodColor().
+ *
+ * 1 is earlywood — the pale, open, spring growth, which stands slightly proud
+ * of a planed board because it is softer and the plane rides over it, and which
+ * scatters light because it is porous. 0 is latewood and the open pores: dense,
+ * dark, sunk, and glossy.
+ *
+ * A global rather than an out-parameter because the colour and the two surface
+ * terms are consumed at three different points in three.js's fragment shader
+ * (map, roughness, normal) and there is nowhere to thread a value between them.
+ * It is written once per fragment, before either reader runs.
+ */
+float gWoodField = 1.0;
 
 // --- noise -----------------------------------------------------------------
 
@@ -293,11 +311,39 @@ vec3 woodColor(vec3 objectPosition) {
                           uWoodBarkThickness, uWoodGrainContrast);
 
   vec3 color = mix(uWoodDark, uWoodLight, rings);
+  gWoodField = rings;
 
   // a uniform branch, so it costs one test per draw rather than per pixel —
   // and skipping it takes 27 hash evaluations out of the fragment
   if (uWoodPoreIntensity > 0.001) {
-    color = woodSoftLight(uWoodPoreIntensity, color, vec3(woodCells(mainWarp, uWoodCellScale, uWoodCellSize)));
+    float pores = woodCells(mainWarp, uWoodCellScale, uWoodCellSize);
+
+    // Faded out once a pore is down to about a pixel across.
+    //
+    // This is what the black speckle on the timber actually was, and it is worth
+    // being precise about because it looks like an anti-aliasing problem and is
+    // not one: a pore in red oak is a bit under a millimetre, the cell scale puts
+    // them at 1/cellScale of a texture unit, and at arm's length that is roughly
+    // one screen pixel each. A feature one pixel wide is not smoothed by any
+    // amount of anti-aliasing — MSAA resolves *edges between triangles* and SMAA
+    // resolves *edges in the finished image*, and this is neither. It is the
+    // texture being asked a question finer than the screen can answer, and the
+    // only fix is to stop asking it.
+    float poreSize = 1.0 / max(uWoodCellScale, 1.0);
+    float texel = max(fwidth(p.x), max(fwidth(p.y), fwidth(p.z)));
+    float poreFade = 1.0 - smoothstep(poreSize * 0.4, poreSize * 1.6, texel);
+
+    color = woodSoftLight(uWoodPoreIntensity * poreFade, color, vec3(pores));
+    // A pore is a hole. It cuts into whatever the ring underneath was doing
+    // rather than averaging with it, which is why this is a min and not a mix —
+    // an open-pored oak is a ring pattern with pits punched through it.
+    // Multiplied rather than min'd, and at a third of the strength it has in the
+    // colour. A min is a fold in the field - the two surfaces meet at a crease
+    // with no slope on one side and all of it on the other - and every one of
+    // those creases came back as a hard blotch once the field started driving a
+    // normal as well as a colour. A pore is also a shallow pit rather than a
+    // crater: it is visible because it is dark, not because it is deep.
+    gWoodField *= mix(1.0, pores, uWoodPoreIntensity * poreFade * 0.3);
   }
 
   float detail = woodDetail(detailWarp, p, radius, uWoodSplotchScale);
@@ -305,11 +351,78 @@ vec3 woodColor(vec3 objectPosition) {
   // the blend — the clamp is what keeps that from going negative
   return clamp(woodSoftLight(uWoodSplotchIntensity, color, vec3(detail)), 0.0, 1.0) * uWoodDarken;
 }
+
+/**
+ * The grain, as relief, without a normal map or a single UV.
+ *
+ * The height field is {@link gWoodField}, and the trick is that its slope costs
+ * nothing to find: the GPU shades in 2×2 quads, so "dFdx"/"dFdy" of a value
+ * already computed give its screen-space gradient for free. Converting that to a
+ * surface gradient needs the surface position's own derivatives, which is the
+ * standard Mikkelsen construction and is what three.js's own "bumpMap" does —
+ * this is that, with the height coming from a function instead of a texture.
+ *
+ * Doing it this way is what keeps the whole wood pipeline UV-free. Nothing in
+ * this app generates texture coordinates; every solid that reaches a view is a
+ * position-only buffer out of "simplifySolid" or "mergeGeometries", and a normal
+ * map would need the one thing none of them has.
+ *
+ * The relief is scaled by how far away the fragment is, in the crudest possible
+ * way: a millimetre of grain that is a tenth of a pixel across is not relief,
+ * it is noise, and left in it sparkles as the camera turns.
+ */
+vec3 woodPerturbNormal(vec3 normal, vec3 surfacePosition, float height) {
+  vec3 dpdx = dFdx(surfacePosition);
+  vec3 dpdy = dFdy(surfacePosition);
+  float dhdx = dFdx(height);
+  float dhdy = dFdy(height);
+
+  vec3 r1 = cross(dpdy, normal);
+  vec3 r2 = cross(normal, dpdx);
+  float det = dot(dpdx, r1);
+
+  // one screen pixel, in surface units: past a fraction of a millimetre the
+  // grain is finer than the pixel and there is nothing left to shade
+  float pixel = max(length(dpdx), length(dpdy));
+  float fade = 1.0 - smoothstep(1.5, 6.0, pixel);
+
+  vec3 gradient = sign(det) * (dhdx * r1 + dhdy * r2) * uWoodRelief * fade;
+
+  // The backstop, and the whole reason the grain stopped sparkling.
+  //
+  // The ring field is a sawtooth: it runs 0 to 1 across the pale band and drops
+  // back over the dark one in a fraction of a millimetre. Zoom in far enough and
+  // that drop lands inside a single pixel, the measured slope goes to something
+  // enormous, and the normal tips past the surface's own horizon - N dot L turns
+  // negative and the fragment goes black. On a planed board that is not grain,
+  // it is a row of dots along every ring, which is exactly what it looked like.
+  //
+  // 0.75 is a thirty-seven-degree slope. Far steeper than any planed timber and
+  // still, unmistakably, a surface.
+  float limit = abs(det) * 0.75;
+  float steep = length(gradient);
+  if (steep > limit) gradient *= limit / steep;
+
+  return normalize(abs(det) * normal - gradient);
+}
 `;
 
 // ---------------------------------------------------------------------------
 // The material
 // ---------------------------------------------------------------------------
+
+/**
+ * How steeply the grain rises, as a surface gradient on raw timber.
+ *
+ * The field runs 0 to 1 across a ring at a pitch of about 4.7 mm. This started
+ * at 1.2, which reads correctly from across a room and turns to corduroy with
+ * your nose against it — a planed board has grain you can see and almost none you
+ * can feel, and at arm's length the second one is what shows.
+ */
+const RELIEF = 0.62;
+
+/** How far the roughness swings between latewood and earlywood, as a fraction. */
+const GLOSS_VARIANCE = 0.42;
 
 type WoodUniforms = Record<string, THREE.IUniform>;
 
@@ -337,6 +450,8 @@ function makeUniforms(): WoodUniforms {
     uWoodCellSize: { value: 0.2 },
     uWoodPoreIntensity: { value: 0.407 },
     uWoodDarken: { value: 1 },
+    uWoodRelief: { value: 0 },
+    uWoodGlossVariance: { value: 0 },
   };
 }
 
@@ -400,6 +515,16 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
     u.uWoodPoreIntensity.value = params.poreIntensity;
     u.uWoodDarken.value = params.clearcoatDarken;
 
+    // How much grain there is to feel, and how much of it a finish has filled.
+    // Raw timber off a plane has the softer rings standing a tenth of a
+    // millimetre proud; a wiped oil leaves most of that; a built gloss is a
+    // levelled film with the grain underneath it and nothing on top. The
+    // clearcoat's own roughness is the best available proxy for how many coats
+    // went on, which is exactly what decides the answer.
+    const filled = params.clearcoat > 0 ? 0.15 + 0.6 * params.clearcoatRoughness : 1;
+    u.uWoodRelief.value = RELIEF * filled;
+    u.uWoodGlossVariance.value = GLOSS_VARIANCE * (1 - 0.5 * params.clearcoat);
+
     const hadClearcoat = this.clearcoat > 0;
     this.roughness = params.roughness;
     this.clearcoat = params.clearcoat;
@@ -422,6 +547,27 @@ export class WoodMaterial extends THREE.MeshPhysicalMaterial {
       .replace(
         "#include <map_fragment>",
         "#include <map_fragment>\n  diffuseColor.rgb = woodColor(vWoodObjectPosition);"
+      )
+      // Latewood is denser than earlywood and takes a burnish; earlywood is open
+      // and scatters. On a raw board that difference is most of what tells you it
+      // is wood and not brown plastic, and it survives a finish — a wiped oil
+      // sinks into the soft rings and sits on the hard ones.
+      .replace(
+        "#include <roughnessmap_fragment>",
+        `#include <roughnessmap_fragment>
+  roughnessFactor = clamp(
+    roughnessFactor * mix(1.0 - uWoodGlossVariance, 1.0 + uWoodGlossVariance, gWoodField),
+    0.02, 1.0);`
+      )
+      // After the map chunk, not before: this perturbs whatever normal the rest
+      // of the pipeline settled on, and on a flat-shaded solid that is the face
+      // normal.
+      .replace(
+        "#include <normal_fragment_maps>",
+        `#include <normal_fragment_maps>
+  if (uWoodRelief > 0.0) {
+    normal = woodPerturbNormal(normal, -vViewPosition, gWoodField);
+  }`
       );
   }
 

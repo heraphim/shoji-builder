@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { RealisticShowcase } from "./ShowcaseScene";
+import { LOADING_STAGES, ShowcaseLoading } from "./ShowcaseLoading";
 import { useLampStore } from "../store/useLampStore";
 import { useResolvedVariables, useVariablesStore } from "../store/useVariablesStore";
 import { isLiteralFormula } from "../store/useComponentEditorStore";
 import { assetName } from "../lib/assets";
+import { siteUrl } from "../lib/library";
 import {
   DEFAULT_SHOWCASE_STYLE,
+  OUTSIDE_LABELS,
   SHOWCASE_STYLES,
+  nextOutside,
   showcaseStyle,
+  type OutsideLight,
   type ShowcaseStyleId,
 } from "../lib/showcaseStyles";
 
@@ -125,6 +130,66 @@ function BulbIcon({ hanging }: { hanging?: boolean }) {
   );
 }
 
+/**
+ * What is outside, as one drawing per state.
+ *
+ * Three separate glyphs rather than one glyph in three colours, because these
+ * are not three intensities of the same thing — an afternoon and a sodium lamp
+ * are different light, and the control has to say which you are about to get
+ * before you press it rather than after.
+ */
+function OutsideIcon({ mode }: { mode: OutsideLight }) {
+  if (mode === "street") {
+    return (
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+        <path d="M6.5 7.5h7l1.6 3.4H4.9L6.5 7.5Z" fill="currentColor" />
+        <path
+          d="M10 10.9v2.4a3.6 3.6 0 0 0 3.6 3.6H16a3 3 0 0 1 3 3v1.6"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <path d="M8.4 12.6h3.2" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.75" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+      <rect x="4.2" y="3.4" width="15.6" height="17.2" rx="1.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M12 3.4v17.2M4.2 12h15.6" fill="none" stroke="currentColor" strokeWidth="1.4" opacity="0.7" />
+    </svg>
+  );
+}
+
+/**
+ * Zen, as the glyph every full-screen control in the world uses.
+ *
+ * It was a diamond, which said nothing: a symbol has to be one somebody has
+ * seen before, and nobody has ever pressed a diamond to hide a toolbar. Four
+ * corner brackets pointing out is *give this the whole screen*, and the same
+ * brackets pointing in is *give it back* — the same pair on every video player
+ * and every map.
+ */
+function ZenIcon({ open }: { open: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false">
+      <path
+        d={
+          open
+            ? "M9.4 3.6H5.2a1.6 1.6 0 0 0-1.6 1.6v4.2M14.6 3.6h4.2a1.6 1.6 0 0 1 1.6 1.6v4.2M20.4 14.6v4.2a1.6 1.6 0 0 1-1.6 1.6h-4.2M3.6 14.6v4.2a1.6 1.6 0 0 0 1.6 1.6h4.2"
+            : "M3.6 9.4V5.2a1.6 1.6 0 0 1 1.6-1.6h4.2M20.4 9.4V5.2a1.6 1.6 0 0 0-1.6-1.6h-4.2M14.6 20.4h4.2a1.6 1.6 0 0 0 1.6-1.6v-4.2M9.4 20.4H5.2a1.6 1.6 0 0 1-1.6-1.6v-4.2"
+        }
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** One light, as a switch. */
 function LightSwitch({
   on,
@@ -149,6 +214,38 @@ function LightSwitch({
       <BulbIcon hanging={hanging} />
     </button>
   );
+}
+
+/**
+ * How ready the showcase is, as a number between 0 and 1.
+ *
+ * Five milestones, weighted equally, because what a visitor wants from a
+ * progress reading is *is it moving* rather than a calibrated fraction of the
+ * bytes. Weighting them by how long each really takes would be more honest and
+ * less useful: the slow one is the last one, and a bar that sits at 30% while
+ * the shaders compile is a bar nobody believes.
+ *
+ * The reveal is one-way. Every input here can flicker \— loading a different lamp
+ * empties the instance list for a frame \— and a loading screen that comes back
+ * because you changed your mind about which lamp to look at is a bug wearing a
+ * feature's clothes.
+ */
+function useShowcaseProgress(painted: boolean, drawn: boolean) {
+  const loaded = useVariablesStore((state) => state.loaded);
+  const library = useLampStore((state) => state.lampLibrary.length > 0);
+  const parts = useLampStore((state) => state.instances.length > 0);
+  const error = useLampStore((state) => state.error);
+  const libraryError = useLampStore((state) => state.lampLibraryError);
+
+  // Whatever cannot be waited for any longer. A library that is not there and a
+  // lamp that would not parse are answers, not stalls, and the page behind this
+  // one says so far better than a screen that never goes away.
+  const done = [loaded, library || !!libraryError, parts || !!error, painted, drawn];
+  const reached = useRef(0);
+  reached.current = Math.max(reached.current, done.filter(Boolean).length);
+
+  const stage = LOADING_STAGES[Math.min(reached.current, LOADING_STAGES.length - 1)];
+  return { progress: reached.current / done.length, stage };
 }
 
 interface DimensionProps {
@@ -268,7 +365,46 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
   // and the one where turning the ceiling on is a change worth making.
   const [lampOn, setLampOn] = useState(true);
   const [ceilingOn, setCeilingOn] = useState(false);
+  // Lamp on, street lamp on: the picture the whole style was built for, so it is
+  // the one you land on rather than one you have to press two buttons to reach.
+  const [outside, setOutside] = useState<OutsideLight>("street");
   const [zen, setZen] = useState(false);
+  const [painted, setPainted] = useState(false);
+  const [drawn, setDrawn] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const { progress, stage } = useShowcaseProgress(painted, drawn);
+
+  // The painting is the one asset with a real download behind it. Fetched here
+  // as well as in the room so that the loading screen has something to wait for;
+  // the room's own loader then finds it in the browser cache, which is the
+  // cheapest possible way to share it and needs no plumbing between the two.
+  useEffect(() => {
+    const image = new Image();
+    const finish = () => setPainted(true);
+    image.onload = finish;
+    image.onerror = finish;
+    image.src = siteUrl("painting.png");
+  }, []);
+
+  // A backstop. Every milestone above can fail to arrive for a reason nobody
+  // predicted \— a driver that will not give a WebGL context, a fetch that hangs
+  // \— and a loading screen is the one piece of UI where a bug means the app is
+  // simply gone. After this it lifts regardless and whatever is behind it,
+  // working or broken, is at least on screen and says so.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDismissed(true), 12000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const ready = progress >= 1 || dismissed;
+
+  // Held one beat past ready so the fade has something to fade.
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    if (!ready) return;
+    const timer = window.setTimeout(() => setHidden(true), 420);
+    return () => window.clearTimeout(timer);
+  }, [ready]);
 
   useEffect(() => {
     void loadLampLibrary();
@@ -300,6 +436,25 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
     void loadLamp(file);
   };
 
+  // One button, rendered in whichever of the two places it belongs to right now.
+  // Written once rather than twice because the two are the same control and a
+  // second copy is a second thing to keep in step.
+  const zenButton = (
+    <button
+      key="zen"
+      type="button"
+      className={"showcase-icon showcase-zen" + (zen ? " corner" : "")}
+      aria-pressed={zen}
+      title={zen ? "Bring the controls back (Esc)" : "Hide everything but the lamp"}
+      onClick={() => {
+        setZen((quiet) => !quiet);
+        setMenu(null);
+      }}
+    >
+      <ZenIcon open={!zen} />
+    </button>
+  );
+
   return (
     <div className="showcase" data-style={style}>
       <Canvas
@@ -317,29 +472,20 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
         }}
       >
         <color attach="background" args={["#0b0806"]} />
-        <RealisticShowcase compact={compact} lampOn={lampOn} ceilingOn={ceilingOn} />
+        <RealisticShowcase
+          compact={compact}
+          lampOn={lampOn}
+          ceilingOn={ceilingOn}
+          outside={outside}
+          onDrawn={() => setDrawn(true)}
+        />
       </Canvas>
+
+      {!hidden && <ShowcaseLoading progress={progress} stage={stage} done={ready} />}
 
       {/* the click-away for either menu: over the scene, under the chrome, so
           the next click anywhere closes it instead of orbiting the lamp */}
       {menu && <div className="showcase-backdrop" onClick={() => setMenu(null)} />}
-
-      {/* Zen leaves exactly one control on the page: the way out of it. Every
-          alternative — click anywhere, a hidden hot corner, Escape alone — is a
-          mode somebody can get into and not out of, on a phone, with no keyboard
-          and nothing on screen to press. */}
-      <button
-        type="button"
-        className={"showcase-zen" + (zen ? " on" : "")}
-        aria-pressed={zen}
-        title={zen ? "Bring the controls back (Esc)" : "Hide everything but the lamp"}
-        onClick={() => {
-          setZen((quiet) => !quiet);
-          setMenu(null);
-        }}
-      >
-        {zen ? "◇" : "◈"}
-      </button>
 
       {!zen && (
         <>
@@ -359,17 +505,6 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
             </div>
 
             <div className="showcase-slot showcase-slot-centre">
-              <LightSwitch
-                on={lampOn}
-                label="Lamp light"
-                onToggle={() => setLampOn((on) => !on)}
-              />
-              <LightSwitch
-                on={ceilingOn}
-                hanging
-                label="Ceiling light"
-                onToggle={() => setCeilingOn((on) => !on)}
-              />
               <div className="showcase-anchor">
                 <button
                   type="button"
@@ -406,6 +541,51 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
           </div>
 
           {error && <div className="showcase-error">{error}</div>}
+        </>
+      )}
+
+      {/* Zen: the one control that is on the page in both states.
+
+          It is the last of the four switches while there are four, and it walks
+          to the bottom corner on its own when it is the only one left — rather
+          than staying in the middle of an empty screen, which is not zen, it is
+          a button in the middle of an empty screen.
+
+          What it must never do is go away. Every alternative way back — click
+          anywhere, a hidden hot corner, Escape alone — is a mode somebody can
+          get into and not out of, on a phone, with no keyboard and nothing on
+          screen to press. */}
+      {zen && zenButton}
+
+      {!zen && (
+        /* The dock: the switches, and the sliders under them.
+
+           It sits with the lamp rather than up in the bar because it belongs to
+           the same act — this is the row you reach for while looking at the
+           lamp, and the bar is the row you reach for to go somewhere else. The
+           switches are above the sliders so a thumb on the readout does not
+           cover them. */
+        <div className="showcase-dock">
+          <div className="showcase-lights">
+            <LightSwitch on={lampOn} label="Lamp light" onToggle={() => setLampOn((on) => !on)} />
+            <LightSwitch
+              on={ceilingOn}
+              hanging
+              label="Ceiling light"
+              onToggle={() => setCeilingOn((on) => !on)}
+            />
+            <button
+              type="button"
+              className={"showcase-icon" + (outside === "none" ? "" : " on")}
+              data-outside={outside}
+              title={`${OUTSIDE_LABELS[outside]} — press for ${OUTSIDE_LABELS[nextOutside(outside)].toLowerCase()}`}
+              aria-label={OUTSIDE_LABELS[outside]}
+              onClick={() => setOutside(nextOutside)}
+            >
+              <OutsideIcon mode={outside} />
+            </button>
+            {zenButton}
+          </div>
 
           <div className="showcase-controls">
             {DIMENSIONS.map((dimension) => (
@@ -416,7 +596,7 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
               />
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

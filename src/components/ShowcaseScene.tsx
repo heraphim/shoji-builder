@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
+import { useFrame, useThree } from "@react-three/fiber";
+import { Bloom, EffectComposer, SMAA, Vignette } from "@react-three/postprocessing";
 import { ShowcaseLamp, useLampScene } from "./LampView";
-import { CEILING_FIXTURE, ShowcaseRoom } from "./ShowcaseRoom";
+import { CAMERA_BOUNDS, CEILING_FIXTURE, WINDOW, ShowcaseRoom } from "./ShowcaseRoom";
 import { useLampStore } from "../store/useLampStore";
-import { RicePaperMaterial, paperShellGeometry } from "../lib/ricePaper";
+import { RicePaperMaterial, paperShellGeometry, shellFloorGeometry } from "../lib/ricePaper";
+import type { OutsideLight } from "../lib/showcaseStyles";
 
 /**
  * The realistic showcase: a lamp lit from the inside, in a dark bedroom.
@@ -38,6 +39,14 @@ const VIEW_DIR = new THREE.Vector3(-0.26, 0.21, 1).normalize();
 const FOV = 34;
 
 /**
+ * Which way round the camera starts, as an OrbitControls azimuth.
+ *
+ * Derived from {@link VIEW_DIR} rather than written down twice: the swing limits
+ * are relative to it, and two numbers that have to agree eventually will not.
+ */
+const DEFAULT_AZIMUTH = Math.atan2(VIEW_DIR.x, VIEW_DIR.z);
+
+/**
  * How much of the frame's *height* the lamp takes up.
  *
  * Height rather than "the smaller of the two", which is what this was first
@@ -59,7 +68,13 @@ const BULB_REACH = 0.62;
  * Candela. See the note above about millimetres — at 250 mm this lights a table
  * top, and at 700 mm it is a quarter as bright on the wall behind.
  */
-const BULB_CANDELA = 110000;
+/**
+ * Raised when the shade got a floor. Closing the bottom took away every ray that
+ * had been lighting the table through it — which was the point, and which also
+ * removed a good deal of what was lighting the room, so the source has to give
+ * back what the board now stops.
+ */
+const BULB_CANDELA = 88000;
 
 /**
  * How much of the bulb is re-emitted by the paper, as a second light that casts
@@ -76,8 +91,28 @@ const BULB_CANDELA = 110000;
  * stands for the paper, and it casts nothing **on purpose** — a diffuser's whole
  * job is to have no sharp shadow, and passing through the timber is how a light
  * with no geometry behaves like one with a large area.
+ *
+ * **The ratio between the two is what shadow contrast means here.** Nearly all of
+ * a shoji lantern's output leaves through the paper and only a little escapes
+ * past the frame as a beam; a scene lit mostly by the filament has hard black
+ * shadows, which is what a bare bulb does and not what this object does. So the
+ * spill carries close to twice what the filament does, and the shadows are pale
+ * because most of the light was never blocked in the first place — widening the
+ * blur alone would have been a filter over the symptom.
  */
-const PAPER_SPILL = 0.72;
+const PAPER_SPILL = 1.9;
+
+/**
+ * How wide the shadow's penumbra is, in shadow-map texels.
+ *
+ * Only five taps go into it — three.js samples a point light's cube shadow with a
+ * five-point Vogel disk, rotated per pixel by interleaved-gradient noise. Past a
+ * certain radius that stops reading as blur and starts reading as noise, and the
+ * noise is what sets the ceiling here rather than taste. The per-pixel rotation
+ * is what makes it dither rather than band, which is why it can go as far as it
+ * does.
+ */
+const SHADOW_SOFTNESS = 15;
 
 /** Tungsten, and a touch further into the amber than tungsten really is. */
 const BULB_COLOR = "#ffb163";
@@ -90,6 +125,22 @@ const CEILING_CANDELA = 2_100_000;
 
 /** Warm white — a room light, not a bedside one. */
 const CEILING_COLOR = "#ffe0b8";
+
+/**
+ * The street lamp outside the window.
+ *
+ * A point light, because it is twenty feet away and falls off across the room.
+ * Sodium orange, dim, and below the window head, so what it draws on the ceiling
+ * is the window upside down. It casts, and the side wall casts with it \— without
+ * that there is no window, only a light that happens to be outside.
+ */
+const STREET = {
+  at: [4600, 1520, 1900] as const,
+  color: "#ffa74e",
+  candela: 7_000_000,
+  sky: 0.05,
+  skyColor: "#5c6b8c",
+};
 
 /**
  * How far back the camera has to be for the lamp to take up {@link LAMP_FILL}.
@@ -120,9 +171,11 @@ function frameDistance(half: THREE.Vector3, aspect: number): number {
  */
 function RicePaper({ box, lit }: { box: THREE.Box3; lit: boolean }) {
   const geometry = useMemo(() => paperShellGeometry(box), [box]);
+  const floor = useMemo(() => shellFloorGeometry(box), [box]);
   const material = useMemo(() => new RicePaperMaterial(), []);
 
   useEffect(() => () => geometry.dispose(), [geometry]);
+  useEffect(() => () => floor.dispose(), [floor]);
   useEffect(() => () => material.dispose(), [material]);
 
   // Switched off, the paper is just paper — a cream sheet for whatever else is
@@ -141,7 +194,16 @@ function RicePaper({ box, lit }: { box: THREE.Box3; lit: boolean }) {
     height * BULB_REACH
   );
 
-  return <mesh geometry={geometry} material={material} />;
+  return (
+    <>
+      <mesh geometry={geometry} material={material} />
+      {/* Casts, and is the only part of the shade that does. It is what makes
+          the underside of the lamp dark. */}
+      <mesh geometry={floor} castShadow>
+        <meshStandardMaterial color="#3a2a1a" roughness={0.85} metalness={0} side={THREE.DoubleSide} />
+      </mesh>
+    </>
+  );
 }
 
 /**
@@ -175,6 +237,63 @@ function StaticShadows({ token }: { token: string }) {
 }
 
 /**
+ * Keeps the camera inside the room.
+ *
+ * Angle limits cannot do this. Whether a given polar angle puts the camera
+ * through the ceiling depends on how far out it has dollied, and whether an
+ * azimuth puts it through the wall depends on the same — so a set of limits
+ * tight enough to be safe at arm's length is a straitjacket at every other
+ * distance, which is exactly what it turned into: no going over the bed, no
+ * getting near the wall, no dropping below the lamp.
+ *
+ * A position clamp has none of that. The angles are free, and the camera simply
+ * cannot be somewhere it should not be. It works *with* OrbitControls rather
+ * than against them because `update()` reads the object's current position and
+ * re-derives its spherical from it — so a clamp applied after the update is
+ * where the next one starts from, and nothing snaps back.
+ *
+ * The floor of the box is the nightstand's top rather than the room's floor.
+ * Below that the camera is inside the furniture, which is a worse view than any
+ * it was stopped from having.
+ */
+function KeepInRoom({ standY }: { standY: number }) {
+  const camera = useThree((state) => state.camera);
+
+  const bounds = useMemo(
+    () =>
+      new THREE.Box3(
+        new THREE.Vector3(CAMERA_BOUNDS.min[0], CAMERA_BOUNDS.min[1] + standY, CAMERA_BOUNDS.min[2]),
+        new THREE.Vector3(CAMERA_BOUNDS.max[0], CAMERA_BOUNDS.max[1] + standY, CAMERA_BOUNDS.max[2])
+      ),
+    [standY]
+  );
+
+  useFrame(() => {
+    camera.position.clamp(bounds.min, bounds.max);
+  });
+
+  return null;
+}
+
+/**
+ * Fires once, on the first frame the renderer actually draws.
+ *
+ * The last thing the loading screen is waiting for, and the one with no other
+ * signal: every asset can be in hand while the GPU is still compiling the
+ * shaders for them, and on a cold cache that is the longest single wait on this
+ * page. `useFrame` is the only place that knows it is over.
+ */
+function FirstFrame({ onDrawn }: { onDrawn: () => void }) {
+  const drawn = useRef(false);
+  useFrame(() => {
+    if (drawn.current) return;
+    drawn.current = true;
+    onDrawn();
+  });
+  return null;
+}
+
+/**
  * Everything in the realistic showcase.
  *
  * **The camera is framed once, on the lamp, and then left alone.** Not on the
@@ -188,10 +307,14 @@ export function RealisticShowcase({
   compact,
   lampOn,
   ceilingOn,
+  outside,
+  onDrawn,
 }: {
   compact: boolean;
   lampOn: boolean;
   ceilingOn: boolean;
+  outside: OutsideLight;
+  onDrawn: () => void;
 }) {
   const scene = useLampScene();
   const instances = useLampStore((state) => state.instances);
@@ -225,6 +348,11 @@ export function RealisticShowcase({
 
   const standY = lampBox.min.y;
 
+  // The street lamp is aimed at the window rather than at a number: move the
+  // opening and the light outside it follows, which is the only way the patch it
+  // throws stays a window shape.
+  void WINDOW;
+
   const aspectRef = useRef(1);
   aspectRef.current = size.width / Math.max(size.height, 1);
   const boxRef = useRef(lampBox);
@@ -254,20 +382,44 @@ export function RealisticShowcase({
   // What the shadow maps were drawn for. The placements move with the variables
   // and the instance list, and `scene` is rebuilt whenever either does.
   const token = useMemo(
-    () => [scene.placements.size, box.max.toArray().join(","), lampOn, ceilingOn].join("|"),
-    [scene, box, lampOn, ceilingOn]
+    () => [scene.placements.size, box.max.toArray().join(","), lampOn, ceilingOn, outside].join("|"),
+    [scene, box, lampOn, ceilingOn, outside]
   );
 
   return (
     <>
       <PerspectiveCamera makeDefault position={position} fov={FOV} near={5} far={12000} />
 
-      {/* Night, not black: a trace of cool light so that what neither lamp
-          reaches is a dark room rather than a hole in the screen. The ceiling
-          light adds to it rather than replacing it, because a lit room bounces
-          — a single point source with nothing coming back off the walls gives a
-          moon landing, not a bedroom. */}
-      <ambientLight intensity={ceilingOn ? 0.34 : 0.075} color={ceilingOn ? "#a99b86" : "#6d6355"} />
+      {/* The room's own bounce, from whichever sources are lit.
+       *
+       * A hemisphere and not an ambient. Ambient light is one number added to
+       * every fragment: it does not know which way a surface faces, so under it
+       * a bumped board and a flat one are the same board and every material in
+       * the room goes to paint. With the lamp off that was all there was, and
+       * the timber went dead flat - the grain relief, the plaster tooth and the
+       * weave were all still being computed and not one of them could show. A
+       * hemisphere costs the same and knows up from down, so a normal means
+       * something again.
+       *
+       * The ceiling light raises it rather than replacing it, because a lit room
+       * bounces: a single point source with nothing coming back off the walls
+       * gives a moon landing, not a bedroom. */}
+      <hemisphereLight
+        args={[
+          ceilingOn ? "#bfae94" : "#7d8296",
+          ceilingOn ? "#6b5a44" : "#3b3228",
+          ceilingOn ? 0.5 : 0.17,
+        ]}
+      />
+
+      {/* And the sheen. Neither ambient nor hemisphere light makes a specular
+          highlight - only a light with a direction can - so without this the
+          finish on the timber is a number with nothing to demonstrate it. Dim
+          enough to leave the lamp the brightest thing in the room by a long way,
+          and from the window, because that is where the rest of the world is. */}
+      <directionalLight position={[3200, 1400, 1600]} intensity={0.2} color="#c8d1e3" />
+
+      {outside === "street" && <ambientLight intensity={STREET.sky} color={STREET.skyColor} />}
 
       {lampOn && (
         <pointLight
@@ -275,6 +427,19 @@ export function RealisticShowcase({
           color="#ffcb92"
           intensity={BULB_CANDELA * PAPER_SPILL}
           decay={2}
+          // It casts, which reads as a contradiction with the note above and is
+          // not one. What it must not do is throw a *sharp* shadow, and that is
+          // the radius' job; what it must do is stop at the board in the bottom
+          // of the shade, because a diffuser lets light through and a piece of
+          // wood does not. The paper still casts nothing, so the sides are as
+          // open to it as ever — only the floor of the lantern is shut.
+          castShadow
+          shadow-mapSize={compact ? [512, 512] : [1024, 1024]}
+          shadow-camera-near={4}
+          shadow-camera-far={5000}
+          shadow-bias={-0.0006}
+          shadow-normalBias={26}
+          shadow-radius={SHADOW_SOFTNESS * 2.2}
         />
       )}
 
@@ -289,10 +454,28 @@ export function RealisticShowcase({
           shadow-camera-near={4}
           shadow-camera-far={5000}
           shadow-bias={-0.0006}
-          // in world units, and the world is millimetres: a hair over the
-          // thinnest section anything here is cut to, which is what stops a 7 mm
-          // kumiko bar shadowing itself
-          shadow-normalBias={1.4}
+          // World units, and the world is millimetres.
+          //
+          // This has to be read together with the radius below, and that is the
+          // whole of the reason it is 18 and not the 1.4 it started at. A wide
+          // sampling disk takes its samples up to a couple of centimetres away
+          // across the receiving surface, and on anything curved or steeply lit
+          // — a pillow, a duvet — the depth at that distance is far enough from
+          // the depth here that the surface shadows itself: not a soft edge, a
+          // field of black dots. The bias has to cover the reach of the blur.
+          //
+          // The cost is contact: an offset this big lifts the sample far enough
+          // off the surface that a shadow starts to detach from the thing making
+          // it. 18 is where the speckle has gone and the lamp's feet still sit on
+          // the table — checked, not guessed.
+          shadow-normalBias={34}
+          // The penumbra. A bare filament would throw a hard edge, but nothing
+          // in this room sees the filament — it sees a foot of glowing paper, and
+          // an area source that size a hand's width from the lattice casts a
+          // shadow with almost no edge left at all. three.js has no area shadow,
+          // so the radius stands in for one: it widens the Vogel disk the point
+          // shadow is already sampled with.
+          shadow-radius={SHADOW_SOFTNESS}
         />
       )}
 
@@ -307,7 +490,26 @@ export function RealisticShowcase({
           shadow-camera-near={20}
           shadow-camera-far={9000}
           shadow-bias={-0.0006}
-          shadow-normalBias={2}
+          shadow-normalBias={26}
+          // Softer still: it is a shade two metres up, and the further a source
+          // is the wider the penumbra it throws for the same size.
+          shadow-radius={SHADOW_SOFTNESS * 1.6}
+        />
+      )}
+
+      {outside === "street" && (
+        <pointLight
+          position={[STREET.at[0], STREET.at[1] + standY, STREET.at[2]]}
+          color={STREET.color}
+          intensity={STREET.candela}
+          decay={2}
+          castShadow
+          shadow-mapSize={compact ? [512, 512] : [1024, 1024]}
+          shadow-camera-near={40}
+          shadow-camera-far={12000}
+          shadow-bias={-0.0006}
+          shadow-normalBias={9}
+          shadow-radius={SHADOW_SOFTNESS * 0.5}
         />
       )}
 
@@ -316,6 +518,8 @@ export function RealisticShowcase({
       <ShowcaseLamp scene={scene} />
 
       <StaticShadows token={token} />
+      <FirstFrame onDrawn={onDrawn} />
+      <KeepInRoom standY={standY} />
 
       <OrbitControls
         makeDefault
@@ -325,12 +529,17 @@ export function RealisticShowcase({
         enableRotate
         enableDamping
         dampingFactor={0.08}
-        // never under the table and never over the top: both are views of the
-        // undersides of a room that was only ever built to be seen from here
-        minPolarAngle={Math.PI * 0.16}
-        maxPolarAngle={Math.PI * 0.5}
+        // Wide open, because the room is what stops the camera now rather than
+        // the angles — see {@link KeepInRoom}. What is left here is only what a
+        // box cannot express: not straight down the barrel from overhead, and
+        // not so far under the lamp that the shot is of the underside of the
+        // nightstand.
+        minAzimuthAngle={DEFAULT_AZIMUTH - 2.5}
+        maxAzimuthAngle={DEFAULT_AZIMUTH + 2.5}
+        minPolarAngle={Math.PI * 0.08}
+        maxPolarAngle={Math.PI * 0.62}
         minDistance={reach * 0.35}
-        maxDistance={reach * 3.5}
+        maxDistance={reach * 4}
         mouseButtons={{
           LEFT: THREE.MOUSE.ROTATE,
           MIDDLE: THREE.MOUSE.DOLLY,
@@ -338,13 +547,27 @@ export function RealisticShowcase({
         }}
       />
 
-      {/* The halo. A lamp this bright against a room this dark blooms in every
-          camera and in the eye, and without it the paper reads as a white card.
-          Kept low: what is wanted is the glow around the shade, not a soft
-          filter over the furniture. */}
-      <EffectComposer multisampling={compact ? 0 : 4}>
+      {/* The halo, and the edges.
+
+          Bloom is why the paper reads as lit rather than as a white card: a lamp
+          this bright against a room this dark blooms in every camera and in the
+          eye. Kept low — what is wanted is the glow around the shade, not a soft
+          filter over the furniture.
+
+          Anti-aliasing takes two passes because there are two kinds of jaggy
+          here and neither one catches the other. **Multisampling** is the one
+          that fixes geometry, and it is the only thing that can: a 7 mm kumiko
+          bar is a couple of pixels wide, and its edge is a hard step between two
+          triangles that no filter reading the finished image can undo. **SMAA**
+          is the one that fixes everything else — the specular sparkle along a
+          grain line, the stepped rim of a shadow, the diagonal of a fold — none
+          of which is a geometric edge at all, so multisampling never sees them.
+          Last in the chain, because it has to work on the picture as it will be
+          seen, bloom and vignette included. */}
+      <EffectComposer multisampling={compact ? 4 : 8}>
         <Bloom mipmapBlur intensity={0.85} luminanceThreshold={0.62} luminanceSmoothing={0.3} />
         <Vignette offset={0.28} darkness={0.62} />
+        <SMAA />
       </EffectComposer>
     </>
   );

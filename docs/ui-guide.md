@@ -18,17 +18,22 @@ Six controls, and they are the whole of it:
   keeps no design of its own, it shows the one that is loaded — so the lamp you
   are looking at is the lamp on the bench. On a first load with an empty bench it
   puts up the first lamp the library offers.
-- **Two bulbs, in the middle.** The plain one is the lamp; the one on a flex is
-  the pendant over the room. Either can be on or off, so one design can be looked
-  at glowing in the dark or standing on a nightstand in an ordinary lit room,
-  which are two different questions about a lamp.
-- **The style, beside them.** How the whole picture is drawn — the scene and the
+- **The style, top middle.** How the whole picture is drawn — the scene and the
   controls in front of it both. Only **Realistic** is built; the rest are on the
   menu, disabled, because the list is the plan.
 - **Editor, top right.** Through to the workbench, with that lamp on it. The tab
   strip there begins with **← Showcase**, which is the way back.
-- **Zen, in the corner.** Hides every control but itself. Press it again, or
-  Escape, to bring them back.
+- **Zen, last in the light row.** Hides every control but itself, and then moves
+  to the bottom corner so it is not a button alone in the middle of an empty
+  screen. It never disappears — press it again, or Escape, to bring the rest
+  back.
+- **Three lights, just above the sliders.** The plain bulb is the lamp; the one
+  on a flex is the pendant over the room; the third is what is going on outside
+  the window, and it cycles rather than toggling — dark, or a street lamp —
+  because those are answers to one question and no two can be true at once.
+  Between them one design can be looked at glowing in a black room, on a
+  nightstand in an ordinary lit one, or under sodium light at two in the morning.
+  The page opens with the lamp lit and the street lamp on.
 - **Width and Height, along the bottom.** `innerWidth` and `innerHeight` under
   the names somebody who is not building the lamp would use. Width carries the
   depth with it while the pair is collapsed, which is the default, so the
@@ -39,6 +44,23 @@ Six controls, and they are the whole of it:
 
 A part is shown in the texture its component names, and in flat colour when it
 names none — the same rule the benches follow.
+
+Everything else in the room is a **solid material**: timber with the grain
+standing proud of it, plaster a raking light finds, cotton with a weave and the
+sheen a fibre gives at a grazing angle. None of it is a downloaded texture and
+none of it needs a UV — see `lib/surfaces.ts`. The painting on the wall is the
+one exception, because it is a picture rather than a material.
+
+It opens on a **loading screen** that builds a lamp rather than filling a bar:
+plinth, feet, base rail, posts, cap, paper, kumiko, and last the light, one part
+per milestone as the variables, the library, the parts, the painting and the
+first drawn frame arrive. It lifts after twelve seconds whatever happens, because
+a loading screen that can get stuck is an app that is simply gone.
+
+**Drag to turn, wheel to come closer**, and the camera cannot leave the room —
+not through the ceiling, the plaster or the nightstand. That is a box it is kept
+inside rather than a set of angle limits, so the orbit itself is free: over the
+bed, round to the wall, and a little below the lamp.
 
 The page is built to be held. The bar wraps onto two rows on a phone, the sliders
 sit clear of the home indicator, and below 720 px the renderer drops its
