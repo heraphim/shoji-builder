@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { WoodMaterial } from "../lib/woodMaterial";
 import { woodPreset } from "../lib/wood";
@@ -6,6 +6,8 @@ import { ClothMaterial, PaperMaterial, PlasterMaterial } from "../lib/surfaces";
 import { ricePaperTexture } from "../lib/ricePaper";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { MeshReflectorMaterial } from "@react-three/drei";
+import type { MeshReflectorMaterial as ReflectorMaterial } from "@react-three/drei/materials/MeshReflectorMaterial";
+import { loadLibraryTexture, type TextureFile } from "../lib/textureFile";
 import { Prop, preloadProps, type PropFit } from "./ShowcaseProps";
 import { siteUrl } from "../lib/library";
 import type { ShowcaseLook } from "../lib/showcaseLook";
@@ -240,13 +242,82 @@ const BED: Omit<PropFit, "dress" | "fallback"> = {
 preloadProps([NIGHTSTAND.file, BED.file]);
 
 /**
+ * The timber the nightstand is made of, as a saved texture rather than a preset.
+ *
+ * Every other surface in this room is `woodPreset(species, finish)` nudged by
+ * {@link board} — a species picked out of a table and then talked into reading
+ * at room scale. This one is a file out of the library, and it is the right way
+ * round for exactly one piece of furniture: the Texture Generator judges a wood
+ * by standing it on *this* nightstand at *this* size (see `TextureGeneratorPage`
+ * and the note on {@link NIGHTSTAND}), so a texture saved there was authored on
+ * the object it is being used on. Its grain scale and its pith are already the
+ * ones somebody chose while looking at this table.
+ *
+ * Which is why `board`'s corrections are not applied to it. They exist to take a
+ * preset meant for an object a texture-unit across and stretch it onto half a
+ * metre of top; run over numbers that were already chosen at this size they
+ * would undo the choosing.
+ */
+const NIGHTSTAND_TIMBER = "pine-gloss-1218.texture.json";
+
+/**
+ * Fetched at module scope, with the props.
+ *
+ * A kilobyte of JSON, and the alternative is a nightstand that draws in one
+ * timber and changes into another a moment later — the swap is visible, and it
+ * happens under the one object the camera is framed on. Started with the page it
+ * lands long before the first frame; the fallback below is for the case where it
+ * does not.
+ */
+const nightstandTimber = loadLibraryTexture(NIGHTSTAND_TIMBER).catch((error: unknown) => {
+  console.warn(`Showcase: ${NIGHTSTAND_TIMBER} did not load; the nightstand falls back to oak.`, error);
+  return null;
+});
+
+/**
+ * That file as a material, at whatever figure the style allows.
+ *
+ * `detail` is the one thing from the room that does reach in. It is not a
+ * correction to the timber — it is how much of *any* fine pattern the style can
+ * draw at all, and a cel-shaded top with a full-contrast grain on it is a field
+ * of hard-edged specks. The same two multipliers every other board here takes.
+ */
+function useNightstandWood(detail: number): WoodMaterial | null {
+  const [file, setFile] = useState<TextureFile | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    void nightstandTimber.then((loaded) => {
+      if (alive) setFile(loaded);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const material = useMemo(() => {
+    if (!file) return null;
+    return new WoodMaterial({
+      ...file.params,
+      grainContrast: file.params.grainContrast * detail,
+      splotchIntensity: file.params.splotchIntensity * detail,
+      poreIntensity: file.params.poreIntensity * detail,
+    });
+  }, [file, detail]);
+
+  useEffect(() => () => material?.dispose(), [material]);
+
+  return material;
+}
+
+/**
  * The film of lacquer on the nightstand's top, and the lamp standing in it.
  *
  * A separate sheet a fraction of a millimetre above the timber rather than a
  * property of it, because that is what it is: the wood is one surface and the
  * varnish over it is another, and the second one is a mirror. Doing it this way
  * costs nothing from the wood shader — the top is drawn exactly as every other
- * board in the room is — and the reflection is added over it, which is also how
+ * board in the room is — and the reflection is laid over it, which is also how
  * the light actually arrives.
  *
  * It is a **real reflection**: drei renders the scene a second time from the
@@ -254,47 +325,135 @@ preloadProps([NIGHTSTAND.file, BED.file]);
  * the table and follow you as you orbit, which is the whole point — a painted-on
  * smudge is fixed to the wood and gives itself away the moment anything moves.
  *
- * Blurred hard and blended additively over a black base, so what lands on the
- * wood is a soft bright ghost and nothing else. A polished top is not a mirror
- * and a table with a sharp lamp in it looks like ice.
+ * ## Three things that had to be true before any of the numbers meant anything
+ *
+ * **The reflection has to survive the material.** drei ends its shader by
+ * *multiplying* the reflection into `diffuseColor`, and this film shipped with a
+ * black base colour — so the second render was happening every frame and then
+ * being scaled to nothing. What was on the top was the specular lobe off the two
+ * bulb lights and not the lamp at all. The colour is white here and the
+ * reflection is what you see.
+ *
+ * **It is light, not paint.** Folded into `diffuseColor` the reflection is then
+ * *lit* by the room, so the mirror image comes out scaled by whatever the bulb
+ * is putting on the table and dims a second time when the lamp is turned down.
+ * {@link DREI_MIX} moves it into the emissive term instead, which is what a
+ * reflection is: light that arrived and left again.
+ *
+ * **It is weighted by the timber under it.** `dst + src * dst` rather than a
+ * plain add — see the blending below. This is the difference between a finish
+ * and a sheet of glass laid on the table.
  */
+
+/**
+ * The line drei folds the reflection in with, and what it becomes.
+ *
+ * Matched verbatim so that a version of drei which has moved on says so rather
+ * than quietly going back to reflecting paint.
+ */
+const DREI_MIX =
+  "diffuseColor.rgb = diffuseColor.rgb * ((1.0 - min(1.0, mirror)) + newMerge.rgb * mixStrength);";
+
+const UNLIT_MIX = `totalEmissiveRadiance += newMerge.rgb * mixStrength * diffuse;
+   diffuseColor.rgb = vec3(0.0);`;
+
+/**
+ * The sheet, in millimetres. The nightstand's top measures exactly this once the
+ * model has been fitted to the room's table height — measured off the loaded
+ * geometry rather than assumed, and the film is the whole of it: at this
+ * sharpness a sheet a centimetre inside the edge reads as a pane of glass
+ * sitting on the table rather than as a finish on it.
+ */
+const FILM = { width: 1114, depth: 796, lift: 0.5 };
+
 function Lacquer() {
+  const material = useRef<ReflectorMaterial | null>(null);
+
+  // Checked against the material rather than run once, because drei rebuilds the
+  // material from scratch whenever one of its defines changes — and a fresh one
+  // arrives unpatched, which is a reflection that has silently gone back to
+  // being lit.
+  useLayoutEffect(() => {
+    const film = material.current;
+    if (!film || Object.prototype.hasOwnProperty.call(film, "onBeforeCompile")) return;
+
+    const drei = Object.getPrototypeOf(film).onBeforeCompile as (
+      this: ReflectorMaterial,
+      shader: THREE.WebGLProgramParametersWithUniforms
+    ) => void;
+
+    film.onBeforeCompile = function (
+      this: ReflectorMaterial,
+      shader: THREE.WebGLProgramParametersWithUniforms
+    ) {
+      drei.call(this, shader);
+      if (!shader.fragmentShader.includes(DREI_MIX)) {
+        console.warn("Lacquer: drei's mix line has moved; the reflection will be lit.");
+        return;
+      }
+      shader.fragmentShader = shader.fragmentShader.replace(DREI_MIX, UNLIT_MIX);
+    };
+    film.needsUpdate = true;
+  });
+
   return (
-    <mesh position={[NIGHTSTAND_X, TABLE_Y + 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-      {/* Sized to the loaded nightstand's top, which measures 1114 x 796 once it
-          has been fitted to the room's table height — a little inside it, so the
-          film stops at the edge rather than hanging over it. Measured from the
-          model in the running scene rather than assumed: it is a much wider
-          table than the box it replaced. */}
-      <planeGeometry args={[1090, 772]} />
+    <mesh position={[NIGHTSTAND_X, TABLE_Y + FILM.lift, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[FILM.width, FILM.depth]} />
       <MeshReflectorMaterial
-        // One extra pass. 512 across a 550 mm top is about a millimetre a texel,
-        // which is far more than enough to hold the shape of a lamp — the
-        // resolution was never what was missing.
-        resolution={512}
-        // The blur was, and by a mile: 420 texels of it on a 512-texel buffer is
-        // not a soft reflection, it is an average. Everything the lamp is made
-        // of — four bright panels divided by dark bars — smeared into one glow,
-        // which is exactly what a bright blob and no lamp looks like. Small
-        // enough now to keep the divisions, large enough that the top is still
-        // polished wood rather than a mirror.
-        blur={[60, 20]}
-        mixBlur={0.3}
-        mixStrength={1.3}
+        ref={material}
+        // The buffer is square and covers the whole mirrored *view* rather than
+        // the table, so it is coarser on the top than it sounds: 768 is about
+        // three millimetres a texel across a metre of nightstand. It is a full
+        // second render of the room every frame, which is what stops it going
+        // higher.
+        resolution={768}
+        // Wide, and in both directions equally. A reflection this soft is not a
+        // failure to be sharp — it is the lamp arriving as a *pool* of light in
+        // the timber rather than as a second lamp, and it is the only thing that
+        // survives being a foot of glowing paper reflected in a matte-ish
+        // finish. It also costs nothing to keep steady: a sharp reflection out
+        // of a buffer with no mipmaps crawls along the kumiko as you orbit.
+        blur={[80, 80]}
+        // Only a third of that blurred copy is used, over the sharp one. The
+        // mixture is what gives an edge to the bright panels while leaving the
+        // room around them soft — either alone is a lamp with no shape or a lamp
+        // drawn twice.
+        mixBlur={0.34}
+        mixStrength={2.45}
+        // A touch of contrast about mid grey, which pushes the dim reflected
+        // wall down and leaves the lamp where it is.
+        mixContrast={1.15}
         depthScale={0}
         minDepthThreshold={0.85}
         maxDepthThreshold={1}
+        // 1 on purpose, and read by the shader: the blurred copy is mixed in at
+        // `mixBlur * roughness`, so anything less would scale the blur behind
+        // its own back.
         roughness={1}
         metalness={0}
-        color="#000000"
+        // White, and it matters — this is the term the whole reflection is
+        // multiplied by. See the note above about what black did.
+        color="#ffffff"
         transparent
-        opacity={0.6}
-        // Additive, so the reflection can only ever brighten the timber — which
-        // is what a clear film over a dark surface does. It also means the lamp's
-        // frame reads as the *gaps* between the reflected panels rather than as
-        // dark bars of its own, and that only works if the panels have edges,
-        // which is the other half of why the blur came down.
-        blending={THREE.AdditiveBlending}
+        // `dst + src * dst`: the reflection multiplied by the timber it is lying
+        // on.
+        //
+        // A reflection added at one strength across the whole top veils the
+        // figure — the grain is still there and none of it can be seen, because
+        // as much light went onto the dark rings as onto the pale ones. Weighted
+        // by what is under it, the latewood takes less and the earlywood more,
+        // which is both what a photograph of a polished board looks like and
+        // what the timber is doing: latewood is the porous half, and a film over
+        // an open pore scatters where a film over a closed one mirrors.
+        //
+        // Fixed-function blending, so it costs nothing. The trade is that it
+        // cannot brighten a black pixel — in the far corner of the top, where
+        // the lamp reaches nothing, there is no reflection at all. Which is
+        // also, as it happens, true.
+        blending={THREE.CustomBlending}
+        blendEquation={THREE.AddEquation}
+        blendSrc={THREE.DstColorFactor}
+        blendDst={THREE.OneFactor}
         // it is a film, not a slab: it must not take part in the depth buffer or
         // it would shadow and z-fight the board a half-millimetre under it
         depthWrite={false}
@@ -723,6 +882,7 @@ export function ShowcaseRoom({
   look: ShowcaseLook;
 }) {
   const room = useRoom(look.detail);
+  const pine = useNightstandWood(look.detail);
   const g = room.geometry;
 
   // Held still across a render, because `Prop` keys its whole clone-fit-and-cut
@@ -732,7 +892,9 @@ export function ShowcaseRoom({
   // on every frame of a Glow drag.
   const fits = useMemo(
     () => ({
-      nightstand: { ...NIGHTSTAND, facet: look.facet, dress: {}, fallback: room.oak },
+      // The room's own oak until the library file arrives, which is a frame or
+      // two on a cold cache and never on a warm one.
+      nightstand: { ...NIGHTSTAND, facet: look.facet, dress: {}, fallback: pine ?? room.oak },
       bed: {
         ...BED,
         facet: look.facet,
@@ -746,7 +908,7 @@ export function ShowcaseRoom({
         fallback: room.walnut,
       },
     }),
-    [room, look.facet]
+    [room, pine, look.facet]
   );
 
   return (
