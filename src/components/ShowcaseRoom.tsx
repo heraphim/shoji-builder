@@ -74,13 +74,12 @@ export const WINDOW = {
 /**
  * Where the bed starts, in x.
  *
- * Far enough from the nightstand to walk between, which is not a detail: at
- * 190 mm the bedding was pressed against the lamp and filled the right-hand
- * third of the frame with an undifferentiated pale mass. A bed is a big object
- * and the only thing that keeps it from taking over a photograph of something
- * small is distance.
+ * The nightstand's top is 1,114 mm across and centred on the lamp, so its right
+ * edge is at 557 — and this is 50 mm past that, which is the gap between the two
+ * pieces of furniture. Written as the bed's position rather than as a gap because
+ * the nightstand's own place is fixed by the lamp standing on it.
  */
-const BED_X = 620;
+const BED_X = 607;
 
 /**
  * The pendant over the middle of the room, in room coordinates.
@@ -190,15 +189,16 @@ function rodAlongX(
 }
 
 /**
- * How far the nightstand stands to the right of the lamp.
+ * Where the nightstand stands, across the room.
  *
- * Pushed over until it is almost against the bed, which is where a nightstand
- * lives — there is nothing to reach it for from the other side. It leaves the
- * lamp about 70 mm off the middle of a 1,114 mm top, which is six per cent and
- * reads as a lamp somebody put down rather than as one that was measured into
- * place.
+ * Zero, and it has to be: the lamp is at the origin by construction — `mainBoxOf`
+ * centres the main box on x and z — so the only way to centre the lamp on the
+ * table is to centre the table on the lamp. Moving the nightstand and leaving the
+ * lamp where it is moves them apart, which is what 70 did.
+ *
+ * The gap to the bed is therefore set by where the *bed* starts. See {@link BED_X}.
  */
-const NIGHTSTAND_X = 70;
+const NIGHTSTAND_X = 0;
 
 /**
  * The nightstand: a side table, placed by its top rather than by its feet.
