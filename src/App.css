@@ -2146,6 +2146,33 @@ select.view-mode option:disabled {
   --sc-thumb-shadow: 0 0 0 2px #150d07;
 }
 
+/* Studio Ghibli.
+
+   The one light chrome on the page, and it is the scene that asks for it: this
+   style is paint on board rather than ink on cel, and the thing you would pin
+   to a painting is a paper label. So a warm cream card, soft corners, a sage
+   hairline and dark olive text — a piece of the same material the picture is
+   painted on rather than a piece of glass in front of it. */
+.showcase[data-style="ghibli"] {
+  --sc-page: #141610;
+  --sc-panel: rgba(246, 242, 220, 0.9);
+  --sc-panel-lit: #fdfaef;
+  --sc-border: rgba(106, 116, 82, 0.45);
+  --sc-border-lit: #6a7452;
+  --sc-text: #37402a;
+  --sc-text-dim: #6f7a58;
+  --sc-accent: #b3762c;
+  --sc-radius: 14px;
+  --sc-pill: 999px;
+  --sc-blur: blur(2px);
+  --sc-shadow: 0 6px 18px rgba(20, 24, 14, 0.35);
+  --sc-inset: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --sc-track: rgba(106, 116, 82, 0.28);
+  --sc-track-shadow: none;
+  --sc-thumb: #6a7452;
+  --sc-thumb-shadow: 0 1px 2px rgba(20, 24, 14, 0.4);
+}
+
 .showcase {
   position: absolute;
   inset: 0;

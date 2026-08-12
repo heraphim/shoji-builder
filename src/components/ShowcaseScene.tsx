@@ -494,8 +494,8 @@ export function Showcase({
        * gives a moon landing, not a bedroom. */}
       <hemisphereLight
         args={[
-          ceilingOn ? "#bfae94" : "#7d8296",
-          ceilingOn ? "#6b5a44" : "#3b3228",
+          look.ambientColor?.sky ?? (ceilingOn ? "#bfae94" : "#7d8296"),
+          look.ambientColor?.ground ?? (ceilingOn ? "#6b5a44" : "#3b3228"),
           (ceilingOn ? 0.5 : 0.17) * look.ambient,
         ]}
       />

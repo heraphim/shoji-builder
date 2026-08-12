@@ -69,7 +69,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     id: "ghibli",
     label: "Studio Ghibli",
     note: "Painted backgrounds, soft greens, hand-lit.",
-    built: false,
+    built: true,
   },
   {
     id: "watercolor",

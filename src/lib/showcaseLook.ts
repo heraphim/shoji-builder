@@ -36,6 +36,18 @@ export interface ShowcaseLook {
    */
   ambient: number;
   /**
+   * What colour that bounce is, if the style disagrees with the room about it.
+   *
+   * A separate lever from the fill, and the difference matters. The fill comes
+   * from where the viewer is and lands on every face turned towards them —
+   * colour it and the lamp's own paper goes that colour too, which is the one
+   * thing in the room that must stay the colour of a bulb. This is the light
+   * the *room* is full of, so it settles on the walls and the far side of
+   * everything and leaves the lit side alone, which is where a painter's green
+   * actually is.
+   */
+  ambientColor: { sky: string; ground: string } | null;
+  /**
    * A flat light from where the viewer is, which no lamp in the scene is
    * emitting.
    *
@@ -73,6 +85,7 @@ const REALISTIC: ShowcaseLook = {
   bloom: { intensity: 0.85, threshold: 0.62, smoothing: 0.3 },
   vignette: { offset: 0.28, darkness: 0.62 },
   ambient: 1,
+  ambientColor: null,
   fill: 0,
   fillColor: "#ffffff",
   bulb: 1,
@@ -117,6 +130,7 @@ const ANIME: ShowcaseLook = {
   bloom: { intensity: 1.1, threshold: 0.5, smoothing: 0.4 },
   vignette: { offset: 0.32, darkness: 0.52 },
   ambient: 2.1,
+  ambientColor: null,
   fill: 0.5,
   fillColor: "#ffd2a0",
   bulb: 1,
@@ -159,6 +173,7 @@ const CARTOON: ShowcaseLook = {
   bloom: { intensity: 0.8, threshold: 0.62, smoothing: 0.5 },
   vignette: { offset: 0.4, darkness: 0.34 },
   ambient: 2.9,
+  ambientColor: null,
   fill: 0.7,
   fillColor: "#ffcf9a",
   bulb: 1,
@@ -166,14 +181,70 @@ const CARTOON: ShowcaseLook = {
   facet: 0,
 };
 
+/**
+ * Studio Ghibli: painted backgrounds, soft greens, hand-lit.
+ *
+ * The one drawn style here that is not a *drawing*. A Ghibli interior is a
+ * painting — poster colour on board, with the brush visible in it — and the
+ * things that say so are the opposite of what says cel: many tones rather than
+ * few, boundaries that are soft rather than cut, a line that is a dark edge
+ * where the paint ran up against something rather than an ink contour, and
+ * shadows that are a colour rather than an absence.
+ *
+ * So `lift` is doing most of the work. Nothing in one of these rooms is black;
+ * the darks are a warm grey-green, and the moment they are allowed to reach
+ * zero the picture reads as a render again however soft everything else is.
+ *
+ * The green is in the room's *bounce* rather than in the tint or the fill, and
+ * that is the whole of why it works. A green filter over the frame turns the
+ * lamp green; a green fill from the camera turns the near face of everything
+ * green, paper panel included. Put in the ambient it settles where a painter
+ * puts it — on the walls and on the far side of things — and the lamp goes on
+ * being the colour of a bulb.
+ *
+ * Half the surface detail survives, which is the most of any drawn style: a
+ * painted background has texture in it, and with the tones this soft there is
+ * no banding for a grain to break up into.
+ */
+const GHIBLI: ShowcaseLook = {
+  background: "#141610",
+  paint: {
+    ...NO_PAINT,
+    exposure: 1.85,
+    bands: 8,
+    bandSoft: 0.75,
+    ink: 0.3,
+    inkColor: "#3d3a22",
+    inkWidth: 1.6,
+    inkFromDepth: 0.9,
+    inkFromLuma: 0.2,
+    paper: 0.19,
+    paperScale: 3.4,
+    paperColor: "#f6f2dc",
+    saturation: 1.38,
+    tint: "#fdf8e8",
+    lift: 0.07,
+    contrast: 1.1,
+  },
+  bloom: { intensity: 1.15, threshold: 0.45, smoothing: 0.6 },
+  vignette: { offset: 0.44, darkness: 0.22 },
+  ambient: 3.1,
+  ambientColor: { sky: "#93b57a", ground: "#55603f" },
+  fill: 0.28,
+  fillColor: "#e8dcc0",
+  bulb: 1,
+  detail: 0.5,
+  facet: 0,
+};
+
 export const SHOWCASE_LOOKS: Record<ShowcaseStyleId, ShowcaseLook> = {
   realistic: REALISTIC,
   anime: ANIME,
   cartoon: CARTOON,
+  ghibli: GHIBLI,
   // Not drawn yet — see `built` in `showcaseStyles.ts`, which is what stops the
   // menu offering them. Pointed at the photograph rather than left out so that
   // this stays a total record and nothing has to check for a hole in it.
-  ghibli: REALISTIC,
   watercolor: REALISTIC,
   inkWash: REALISTIC,
   minimalist: REALISTIC,
