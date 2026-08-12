@@ -10,6 +10,15 @@ import { useTextureStore } from "../store/useTextureStore";
 import { BEAMS } from "../lib/testBeams";
 import { buildTextureFile, sanitizeName, textureDisplayName } from "../lib/textureFile";
 import { canWriteToRepo, saveLibraryFile } from "../lib/library";
+import {
+  IDLE_MS,
+  flushRolls,
+  pendingRollNames,
+  recordRoll,
+  rollStatus,
+  subscribeRolls,
+  type Verdict,
+} from "../lib/rollJournal";
 import { FINISH_LABELS, SPECIES_LABELS } from "../lib/wood";
 import { freeName, randomWood, woodCandidateName, type WoodCandidate } from "../lib/woodRandom";
 
@@ -22,9 +31,14 @@ import { freeName, randomWood, woodCandidateName, type WoodCandidate } from "../
  * decisions and nobody has thirty opinions about the fortieth board. This tab
  * asks one question instead, over and over: **is this one worth keeping?**
  *
- * So there are two buttons and no sliders. Reject rolls another. Accept writes
- * the file and *then* rolls another, because stopping to admire it would break
- * the only rhythm this page has.
+ * So there are two buttons and no sliders. Both roll another immediately, and
+ * neither waits for a network: every roll goes into `lib/rollJournal.ts`, which
+ * lands the batch in one commit once you stop clicking. Stopping to admire a
+ * save would break the only rhythm this page has.
+ *
+ * **Both verdicts are written down**, the rejects to their own folder. The keeps
+ * alone say what you liked; only the pile you turned down says what you were
+ * choosing between.
  *
  * What is rolled is in `lib/woodRandom.ts`, and the short version is that it does
  * not roll a wood — it picks one of the ten species and walks away from it, which
@@ -205,56 +219,83 @@ export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
   const [saving, setSaving] = useState(false);
   const [connected] = useState(canWriteToRepo);
 
-  // Read for the name check below. Refreshed after every accept, because the
-  // second accept has to know about the first.
+  // What the journal is holding, mirrored into render state. Subscribed rather
+  // than polled, because the interesting transitions — a push starting, a push
+  // failing — happen on a timer this page does not own.
+  const [rolls, setRolls] = useState(rollStatus);
+  useEffect(() => subscribeRolls(() => setRolls(rollStatus())), []);
+
+  // Read for the name check below. Refreshed after every push, because the
+  // batch after this one has to know what the last one committed.
   useEffect(() => {
     void loadLibrary();
-  }, [loadLibrary]);
+  }, [loadLibrary, rolls.note]);
+
+  // Leaving the tab unmounts this page but not the journal, whose timer would go
+  // on ticking without it. Flushing on the way out is the more decisive thing:
+  // you have stopped rolling by definition.
+  useEffect(() => () => void flushRolls(), []);
+
+  // And a batch that outlived the last session — a crash, a closed tab, a push
+  // that failed — goes up as soon as there is a page to push it from.
+  useEffect(() => {
+    void flushRolls();
+  }, []);
 
   const roll = useCallback(() => setCandidate(randomWood()), []);
 
   // What the file would be called if it were kept. Shown before the press
   // rather than reported after it: the name is part of what is being accepted,
   // and a name you only see in a status line is a name you cannot object to.
+  //
+  // Checked against the buffer as well as the library: the first of two colliding
+  // rolls in one batch is not on the branch yet for the second to find.
   const names = useMemo(() => library.map(textureDisplayName), [library]);
   const name = useMemo(
-    () => freeName(sanitizeName(woodCandidateName(candidate)) ?? "wood", names),
-    [candidate, names]
+    () => freeName(sanitizeName(woodCandidateName(candidate)) ?? "wood", [
+      ...names,
+      ...pendingRollNames(),
+    ]),
+    // `rolls.pending` is not read here, but it is what makes the buffer's names
+    // change — without it a name computed before a save would outlive it.
+    [candidate, names, rolls.pending]
   );
 
-  // Guards a double press: the write is a round trip to GitHub, and the second
-  // click would otherwise roll a new candidate out from under the first save.
+  // Guards a double press on Edit, which is the one button here that still waits
+  // for a round trip.
   const busy = useRef(false);
 
   /**
-   * Write the candidate, and hand back the file that was written.
+   * Write the verdict down, and hand back the file it was written as.
    *
-   * Both buttons that keep a wood go through here, and both keep it *the same
-   * way* — the difference between them is only what happens next. Null means
-   * the write failed and the error is already on screen, so neither caller has
-   * to decide what a half-finished accept means.
+   * Both buttons go through here and both are instant: recording a roll is a
+   * push onto an array, and the commit it eventually causes is nothing the click
+   * has to wait for. That is what makes recording a *reject* possible at all —
+   * at a round trip each, nobody would press it twice.
+   *
+   * Without a token there is nowhere to record. A keep falls back to the
+   * download the page has always offered, which is what `saveLibraryFile` does
+   * on empty settings; a reject is let go, because a page that downloaded every
+   * wood you turned down is worse than one that forgets them.
    */
-  const save = async (): Promise<ReturnType<typeof buildTextureFile> | null> => {
-    if (busy.current) return null;
-    busy.current = true;
-    setSaving(true);
+  const judge = (verdict: Verdict) => {
+    const file = buildTextureFile(name, candidate.species, candidate.finish, candidate.params);
     setError(null);
-    try {
-      const file = buildTextureFile(name, candidate.species, candidate.finish, candidate.params);
-      setNote(await saveLibraryFile("textures", `${name}.texture.json`, file));
-      void loadLibrary();
-      return file;
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-      return null;
-    } finally {
-      busy.current = false;
-      setSaving(false);
+    setNote(null);
+    if (!recordRoll(verdict, name, file) && verdict === "keep") {
+      void saveLibraryFile("textures", `${name}.texture.json`, file)
+        .then((said) => {
+          setNote(said);
+          void loadLibrary();
+        })
+        .catch((e) => setError(e instanceof Error ? e.message : String(e)));
     }
+    return file;
   };
 
-  const accept = async () => {
-    if (await save()) roll();
+  const accept = () => {
+    judge("keep");
+    roll();
   };
 
   /**
@@ -270,19 +311,39 @@ export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
    * No fresh roll on the way out. Accept's roll is there because you are staying
    * to judge the next one; here you are leaving, and rolling on the way would
    * mean coming back to a wood you never saw.
+   *
+   * The one button that pushes rather than buffers, and for the same reason it
+   * saves at all: the bench is about to open a file, and a file that is still in
+   * a buffer is one the bench's Save would have to invent a name for.
    */
   const edit = async () => {
-    const file = await save();
-    if (!file) return;
-    openTexture(file, name);
-    onEdit();
+    if (busy.current) return;
+    busy.current = true;
+    setSaving(true);
+    try {
+      const file = judge("keep");
+      await flushRolls();
+      const failed = rollStatus().error;
+      if (failed) {
+        setError(failed);
+        return;
+      }
+      openTexture(file, name);
+      onEdit();
+    } finally {
+      busy.current = false;
+      setSaving(false);
+    }
   };
 
   const reject = () => {
-    setError(null);
-    setNote(null);
+    judge("reject");
     roll();
   };
+
+  // This page's own failure first — it is about the button you just pressed —
+  // then the journal's, which is about a push you did not ask for.
+  const wrong = error ?? rolls.error;
 
   return (
     <div className="generator-page">
@@ -310,14 +371,26 @@ export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
             workbench's "what did the last file action do", and this page does a
             file action every few seconds — it would be shouting over the other
             three tabs all afternoon. */}
+        {/* The buffer is the thing worth saying, and it is said in front of
+            everything except a failure: a page that writes nothing when you
+            press a button owes you a count of what it is holding. */}
         <div className="generator-note">
-          {error ? (
-            <span className="generator-error">{error}</span>
+          {wrong ? (
+            <span className="generator-error">{wrong}</span>
+          ) : rolls.pushing ? (
+            <span>Pushing {rolls.pending}…</span>
+          ) : rolls.pending > 0 ? (
+            <span className="generator-hint">
+              {rolls.pending} waiting — pushed {IDLE_MS / 1000}s after you stop
+            </span>
+          ) : rolls.note ? (
+            <span>{rolls.note}</span>
           ) : note ? (
             <span>{note}</span>
           ) : !connected ? (
             <span className="generator-hint">
-              No library token — Accept will download the file instead of committing it.
+              No library token — Accept will download the file instead of committing it, and
+              rejects are not recorded.
             </span>
           ) : null}
         </div>
@@ -326,7 +399,11 @@ export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
           <button
             type="button"
             className="generator-button reject"
-            title="Throw this one away and roll another"
+            title={
+              connected
+                ? `Turn ${name} down — recorded to textures-rejected, and roll another`
+                : "Throw this one away and roll another"
+            }
             onClick={reject}
             disabled={saving}
           >
@@ -348,8 +425,8 @@ export function TextureGeneratorPage({ onEdit }: { onEdit: () => void }) {
           <button
             type="button"
             className="generator-button accept"
-            title={connected ? `Save as ${name}, then roll another` : `Download ${name}, then roll another`}
-            onClick={() => void accept()}
+            title={connected ? `Keep as ${name}, then roll another` : `Download ${name}, then roll another`}
+            onClick={accept}
             disabled={saving}
           >
             {saving ? "Saving…" : "Accept"}

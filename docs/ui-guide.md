@@ -103,10 +103,24 @@ Two buttons and no sliders. It shows one wood at a time — on the showcase's
 nightstand, with the Textures tab's four test sticks lying on the near corner of
 it — and asks only whether to keep that one.
 
-- **Reject** throws it away and rolls another.
-- **Accept** writes it to the texture library and *then* rolls another, so the
-  rhythm never breaks. With no library token it writes to your downloads
-  instead, and says so.
+- **Reject** turns it down and rolls another.
+- **Accept** keeps it and rolls another.
+
+Neither waits for anything: both write the wood into a buffer and move on, and
+the buffer goes up as **one commit five seconds after you stop clicking**. The
+status line says how many are waiting. Leaving the tab, or hiding the browser
+tab, pushes what is held rather than making you come back for it — and if the
+browser dies mid-batch, the rolls are on disk and go up the next time you open
+the page.
+
+**Both verdicts are kept.** Accepts land in the texture library as before;
+rejects land in `public/models/textures-rejected`, which nothing in the app ever
+offers you. The keeps alone say what you liked, and only the pile you turned
+down says what you were choosing between — which is what makes it possible to
+work out afterwards what you actually want a wood to look like.
+
+With no library token, Accept writes to your downloads as it always has, and
+rejects are not recorded at all — there is nowhere to put them.
 
 The name is shown before you press anything, because the name is part of what is
 being accepted: **species-finish-seed**, as in `red-oak-matte-8326`. The seed is

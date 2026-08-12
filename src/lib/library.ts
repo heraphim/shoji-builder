@@ -111,13 +111,14 @@ export function siteUrl(path: string): string {
 const repoPath = (lib: Library, file?: string) =>
   `public/models/${lib}${file ? `/${encodeURIComponent(file)}` : ""}`;
 
-function contents(
+/** One request against this repository, `suffix` being everything after it. */
+function repoApi(
   config: RepoConfig,
-  path: string,
+  suffix: string,
   init?: RequestInit & { headers?: Record<string, string> }
 ): Promise<Response> {
   return fetch(
-    `https://api.github.com/repos/${config.owner}/${config.repo}/contents/${path}`,
+    `https://api.github.com/repos/${config.owner}/${config.repo}/${suffix}`,
     {
       ...init,
       // The API is the fresh side of the two; letting the browser answer from
@@ -132,6 +133,18 @@ function contents(
     }
   );
 }
+
+const contents = (
+  config: RepoConfig,
+  path: string,
+  init?: RequestInit & { headers?: Record<string, string> }
+) => repoApi(config, `contents/${path}`, init);
+
+const json = (body: unknown) => ({
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(body),
+});
 
 /** GitHub's own explanation of a failure, which is nearly always the useful one. */
 async function apiError(res: Response): Promise<string> {
@@ -333,4 +346,79 @@ export async function saveLibraryFile(
   });
   if (!res.ok) throw new Error(`Could not save ${file}: ${await apiError(res)}`);
   return `Saved ${file} to the library`;
+}
+
+/** A file as a commit wants it: where it goes, and what is in it. */
+export interface RepoFile {
+  /** Full path from the root of the repository. */
+  path: string;
+  text: string;
+}
+
+/**
+ * Write many files as **one** commit.
+ *
+ * {@link saveLibraryFile} is the right shape for a save: one file, one commit,
+ * named after what you saved. The generator is the wrong shape for it — it
+ * produces a file every few seconds, most of them rejects, and one commit each
+ * would be a history nobody can read and a round trip in the middle of the only
+ * rhythm that page has. So the journal buffers them and this lands the lot.
+ *
+ * Five requests whatever the batch size, because the tree API takes file
+ * *contents* inline rather than blob shas — the alternative is a blob upload per
+ * file, which is the per-file round trip this exists to avoid. Against the
+ * contents API the same batch would be two requests per file.
+ *
+ * No force, and no retry. If the branch moved under us the ref update fails and
+ * this throws with the whole batch unwritten, which is exactly what the caller
+ * wants: the journal has not dropped anything, so the next flush sends the same
+ * files against the new head. Forcing would take somebody else's commit off the
+ * branch to land a pile of rejects, which is the wrong trade in every case.
+ *
+ * @returns what happened, in the words the generator's status line shows.
+ * @throws when there is no token, or when any step of the write is refused.
+ */
+export async function commitFiles(files: RepoFile[], message: string): Promise<string> {
+  const config = readRepoConfig();
+  if (!config) throw new Error("Pushing needs a connected repository — see Library settings");
+  if (files.length === 0) return "Nothing to push";
+
+  // Slashes in a branch name are path separators here, so the ref is not
+  // encoded as one component — `heads/feature/x` is the ref `feature/x`.
+  const ref = `heads/${config.branch}`;
+
+  const head = await repoApi(config, `git/ref/${ref}`);
+  if (!head.ok) throw new Error(`Could not read ${config.branch}: ${await apiError(head)}`);
+  const parent = ((await head.json()) as { object: { sha: string } }).object.sha;
+
+  const parentCommit = await repoApi(config, `git/commits/${parent}`);
+  if (!parentCommit.ok) throw new Error(`Could not read the branch: ${await apiError(parentCommit)}`);
+  const baseTree = ((await parentCommit.json()) as { tree: { sha: string } }).tree.sha;
+
+  const tree = await repoApi(
+    config,
+    "git/trees",
+    json({
+      base_tree: baseTree,
+      tree: files.map((f) => ({ path: f.path, mode: "100644", type: "blob", content: f.text })),
+    })
+  );
+  if (!tree.ok) throw new Error(`Could not write the files: ${await apiError(tree)}`);
+  const treeSha = ((await tree.json()) as { sha: string }).sha;
+
+  const commit = await repoApi(
+    config,
+    "git/commits",
+    json({ message, tree: treeSha, parents: [parent] })
+  );
+  if (!commit.ok) throw new Error(`Could not commit: ${await apiError(commit)}`);
+  const commitSha = ((await commit.json()) as { sha: string }).sha;
+
+  const moved = await repoApi(config, `git/refs/${ref}`, {
+    ...json({ sha: commitSha }),
+    method: "PATCH",
+  });
+  if (!moved.ok) throw new Error(`Could not move ${config.branch}: ${await apiError(moved)}`);
+
+  return `Pushed ${files.length} file${files.length === 1 ? "" : "s"}`;
 }

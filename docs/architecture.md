@@ -39,7 +39,9 @@ calls the same loader that tab's own file menu calls.
 
 Everything under `src/lib` is pure and side-effect free apart from `library.ts`,
 which is nothing but I/O — it is where `fetch`, `localStorage` and the download
-anchor are allowed to live — and `componentFile.ts`, which reads the two stores.
+anchor are allowed to live — `rollJournal.ts`, which holds a buffer, a timer and
+two window listeners on purpose, because they have to outlive the page that
+fills them — and `componentFile.ts`, which reads the two stores.
 `lampFile.ts` reads no store: its format functions take what they need as
 arguments, so the lamp store can own the fetching without an import cycle. The
 stores hold state; the libraries hold the arithmetic.
@@ -56,7 +58,8 @@ stores hold state; the libraries hold the arithmetic.
 | `rectangles.ts` | Minimum partition of a rectilinear polygon (with holes) into axis-aligned rectangles. |
 | `assembly.ts` | CSG union of joined parts, face-topology extraction, outline recovery, solid retessellation, hidden-line splitting, parallel-edge lookup. |
 | `picking.ts` | Raycast-hit helpers (nearest vertex, world normal, world triangle), STL island splitting, bounding volumes, orthographic camera basis. |
-| `library.ts` | The one place that knows where the three libraries are read from and written to: the deployed site, or — when this browser has been given a token — the GitHub branch itself, where a save is a commit and a delete is a commit. Holds the settings and all the I/O. |
+| `library.ts` | The one place that knows where the three libraries are read from and written to: the deployed site, or — when this browser has been given a token — the GitHub branch itself, where a save is a commit and a delete is a commit. Holds the settings and all the I/O. `commitFiles` is the exception to one-file-one-commit: any number of files as a single commit, over the git data API. |
+| `rollJournal.ts` | Every roll the generator shows, kept or rejected, buffered to localStorage and pushed as one commit five seconds after the clicking stops. Module state rather than component state, so leaving the tab does not strand the batch. Rejects go to `public/models/textures-rejected`. |
 | `componentFile.ts` | Serialise the editor to `*.component.json` and load it back. Owns the file format. |
 | `lampFile.ts` | The same one level up: the `*.lamp.json` format — which components are on the lamp and how each is fixed on. Pure; the store does the fetching. |
 | `lamp.ts` | The assembly layer above the editor: the main box, cutting a saved component at the current variables, the outline of a union of boxes, projected construction edges, two-point alignment, clearance sweeps, feature-point picking. |
@@ -107,7 +110,7 @@ stores hold state; the libraries hold the arithmetic.
 | `ComponentEditorViews` | The editor's half of the grid: which scene each cell draws, the per-cell Select Face and rotate buttons, and wheel-zoom / drag-pan wired to the component-editor store. |
 | `TexturesPage` | The Textures tab: status strip + views + sidebar. |
 | `TextureViews` | Its four views and the test bench in them — see `lib/testBeams.ts` for the sticks. Not a sphere: the two questions being asked are whether the grain runs the length of a piece and whether its cut end agrees, and a sphere has neither a length nor an end. |
-| `TextureGeneratorPage` | The Texture Generator tab: a random wood on the showcase nightstand with the test sticks on it, and two buttons. Accept writes the library file and rolls again; Reject only rolls. One studio scene, mounted once, so the camera survives every roll. |
+| `TextureGeneratorPage` | The Texture Generator tab: a random wood on the showcase nightstand with the test sticks on it, and two buttons. Both verdicts go to `rollJournal.ts` and roll again — neither waits for a write. One studio scene, mounted once, so the camera survives every roll. |
 | `TextureSidebar` | Every generator control, grouped the way a timber is described rather than the way the shader is written: which tree, where in the log, the rings, how they wander, the figure, the finish. |
 | `PartSurface` | The two hooks that decide how a solid is painted, shared by all three tabs: `useWoodMaterial` (build once, write uniforms in place, so a slider drag does not recompile the program) and `usePartTexture` (resolve a texture *name* to parameters, overriding its grain axis with the part's). |
 | `PerspectiveView` | 3D cell: camera framing, lights, grid, `<UploadedMesh>`, OrbitControls. |
