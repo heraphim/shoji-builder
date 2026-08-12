@@ -2853,3 +2853,139 @@ select.view-mode option:disabled {
     transition: none;
   }
 }
+
+/* ===========================================================================
+   The Texture Generator
+
+   A studio rather than a bench, and the layout says so: one canvas filling the
+   page and one strip of controls along the bottom of it. There is no sidebar
+   because there is nothing to adjust — the whole tab is two buttons — and no
+   status bar across the top because the only status it has is what the last
+   Accept did, which belongs beside the button that did it.
+
+   The canvas is a neutral mid grey set in `TextureGeneratorPage`, not the
+   blueprint blue: this page is a colour judgement about timber and a blue
+   ground shifts every warm brown towards grey. The strip stays in the app's
+   palette, because the strip is chrome and chrome belongs to the workbench.
+   =========================================================================== */
+
+.generator-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--bp-bg);
+  color: var(--bp-text);
+}
+
+.generator-canvas {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  /* the orbit is a drag, and on a touch screen a drag is also a scroll unless
+     the element says otherwise */
+  touch-action: none;
+}
+
+.generator-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  border-top: 1px solid var(--bp-border);
+  background: var(--bp-bg-dark);
+}
+
+/* what is on screen, in the order you would say it out loud */
+.generator-what {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.generator-name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--bp-accent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.generator-detail {
+  font-size: 12px;
+  color: var(--bp-text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Takes the slack, so the buttons stay pinned to the right whatever the note
+   says and the note never pushes them about as it changes length. */
+.generator-note {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--bp-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.generator-error {
+  color: var(--bp-unknown);
+}
+
+.generator-hint {
+  color: var(--bp-implied);
+}
+
+.generator-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Big, because they are pressed hundreds of times in a sitting and a 28-pixel
+   menu item is not a button you can keep hitting without looking at it. */
+.generator-button {
+  padding: 10px 26px;
+  border: 1px solid var(--bp-border);
+  border-radius: 8px;
+  background: var(--bp-panel);
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.generator-button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+  border-color: var(--bp-accent);
+}
+
+.generator-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.generator-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Accept is the one that writes a file, so it is the one that looks like a
+   decision. Reject is deliberately quiet: it is the default answer, it costs
+   nothing, and a page whose two buttons shout equally is a page you have to
+   read before every press. */
+.generator-button.accept {
+  border-color: var(--bp-known);
+  color: var(--bp-known);
+}
+
+.generator-button.accept:hover:not(:disabled) {
+  background: rgba(74, 222, 128, 0.14);
+  border-color: var(--bp-known);
+}

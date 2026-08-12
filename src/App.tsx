@@ -4,27 +4,38 @@ import { ShowcasePage } from "./components/ShowcasePage";
 import { LampDesignPage } from "./components/LampDesignPage";
 import { ComponentEditorPage } from "./components/ComponentEditorPage";
 import { TexturesPage } from "./components/TexturesPage";
+import { TextureGeneratorPage } from "./components/TextureGeneratorPage";
 import { AssetsPage } from "./components/AssetsPage";
 import { FileMenu, type FileMenuTab } from "./components/FileMenu";
 import "./App.css";
 
-type Tab = FileMenuTab | "assets";
+type Tab = FileMenuTab | "textureGenerator" | "assets";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "lamp", label: "Lamp Design" },
   { id: "componentEditor", label: "Component Editor" },
   { id: "textures", label: "Textures" },
+  { id: "textureGenerator", label: "Texture Generator" },
   { id: "assets", label: "Assets" },
 ];
 
-/** Every tab but Assets, which has no file menu — it *is* the library. */
-const hasFileMenu = (id: Tab): id is FileMenuTab => id !== "assets";
+/**
+ * The two tabs with no file menu, and they have none for opposite reasons.
+ *
+ * **Assets** *is* the library — a menu of ways to reach the library, on the page
+ * that shows all of it, would be a door into the room you are standing in.
+ * **Texture Generator** keeps no document at all: nothing is on its bench to
+ * open, save or rename, and its one write is a button in the middle of the page
+ * rather than an item under a caret, because it is pressed every few seconds.
+ */
+const hasFileMenu = (id: Tab): id is FileMenuTab =>
+  id !== "assets" && id !== "textureGenerator";
 
 /** The showcase, or the four-tab workbench behind it. */
 type View = "showcase" | "workbench";
 
 /**
- * The showcase, and the four tabs behind it.
+ * The showcase, and the five tabs behind it.
  *
  * The app opens on the **showcase** — the lamp itself, in wood, with two
  * sliders. It is not a tab: the tab strip is the workbench's own furniture, and
@@ -34,7 +45,7 @@ type View = "showcase" | "workbench";
  * the same lamp on the bench either way — the showcase keeps no design of its
  * own, it shows the one that is loaded.
  *
- * ## The workbench: four tabs over one shared design
+ * ## The workbench: five tabs over one shared design
  *
  * **Lamp Design** is the assembly — the main box in 3D, the variables that size
  * it, and the components hung on it; **Component Editor** is the four-view
@@ -47,6 +58,13 @@ type View = "showcase" | "workbench";
  * The tabs are in the order the work runs down through the model: an assembly is
  * made of components, and a component is made of a material. Textures is last of
  * the three because it is the only one that changes nothing about the geometry.
+ *
+ * **Texture Generator** sits after Textures because it is the same subject
+ * approached from the other end. Textures is thirty sliders for designing one
+ * timber; the generator rolls whole timbers and asks only whether to keep each
+ * one, which is what filling a library actually needs. It shares the texture
+ * library and nothing else — not even the Textures bench, which it must not
+ * disturb.
  *
  * **Assets** is after all of them and is not a bench at all: it is every file the
  * three libraries hold, side by side, which is the one view of the project that
@@ -145,6 +163,8 @@ function App() {
             <ComponentEditorPage />
           ) : tab === "textures" ? (
             <TexturesPage />
+          ) : tab === "textureGenerator" ? (
+            <TextureGeneratorPage />
           ) : (
             <AssetsPage onOpen={setTab} />
           ))}

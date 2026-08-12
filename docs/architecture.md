@@ -6,7 +6,8 @@
                     ┌──────────────────────────────────────────┐
    React UI         │ App.tsx ─ Showcase (default)              │
                     │         └ tabs ─ Lamp Design / Component  │
-                    │                  Editor / Textures/Assets │
+                    │                  Editor / Textures /      │
+                    │                  Texture Generator/Assets │
                     └───────────────┬──────────────────────────┘
                                     │ hooks / actions
         ┌───────────────────────────▼──────────────────────────┐
@@ -27,9 +28,14 @@
 
 The first three tabs are the model's three levels: a lamp is made of components,
 a component is made of a material. Textures is the only one of them that changes
-no geometry at all. **Assets** is not a level but a cross-section — every file
-all three libraries hold — and owns no store: it reads the libraries, and loading
-anything from it calls the same loader that tab's own file menu calls.
+no geometry at all, and **Texture Generator** is that same level approached from
+the other end — whole woods rolled and kept or discarded, rather than one
+designed by hand. It owns no store: the candidate is page state, and the only
+thing it shares is the texture library it writes into.
+
+**Assets** is not a level but a cross-section — every file all three libraries
+hold — and owns no store: it reads the libraries, and loading anything from it
+calls the same loader that tab's own file menu calls.
 
 Everything under `src/lib` is pure and side-effect free apart from `library.ts`,
 which is nothing but I/O — it is where `fetch`, `localStorage` and the download
@@ -60,6 +66,8 @@ stores hold state; the libraries hold the arithmetic.
 | `showcaseStyles.ts` | The eight styles the showcase can be drawn in, and which of them are built. One id keys the scene, the chrome in front of it, and the look below. Deliberately shader-free: the menu imports it. |
 | `showcaseLook.ts` | What each style does to the room, as numbers — how much light the painter decided was in it, how much of the timber's grain survives being drawn, and which treatment goes over the top. |
 | `paint.ts` | The one post-process every drawn style is made of: a tone curve, a posteriser, an outline detector that reads the second difference of depth, a watercolour bleed and a sheet of paper. Seven styles, one shader, eighteen uniforms. |
+| `woodRandom.ts` | One wood the presets do not contain: picks a species and walks away from it inside bounds that are still timber, aims the finished lightness so a gloss on a dark species is dark rather than black, and names the result species-finish-seed. |
+| `testBeams.ts` | The four 200 mm sticks a texture is judged on — 5, 10, 20 and 40 mm section, parallel, cut from one log, with their positions baked in so each samples a different place in it. Shared by the Textures tab and the generator. |
 | `wood.ts` | What a wood texture *is*, as data: the parameter set, the ten species presets and four finishes taken verbatim from three.js's `WoodNodeMaterial`, and the seed. No three.js, no shader — just numbers, because the numbers are what gets saved. |
 | `woodMaterial.ts` | Those numbers as something the renderer can draw — including the grain's *relief* and the gloss difference between earlywood and latewood, both derived from the same ring field the colour comes from: the solid-texture GLSL, injected into a `MeshPhysicalMaterial` through `onBeforeCompile`, plus the object → texture-space matrix. The one file that would be replaced wholesale by `WoodNodeMaterial` if the app ever moved to `WebGPURenderer`. |
 | `textureFile.ts` | Serialise a texture to `*.texture.json` and read it back, field by field against the defaults. Owns that format. |
@@ -90,7 +98,7 @@ stores hold state; the libraries hold the arithmetic.
 | `ViewportGrid` | The view grid, shared by all three tabs: one to four cells over a single `<Canvas>`, the per-cell header (draw modes, minimise, drag-to-swap slots), the minimised strip, and each cell's measured pixel size. |
 | `ShowcasePage` | The page the app opens on, and the only one that is not a bench: the lamp in a room, with the lamp picker, the two light switches, the style menu, Editor, zen and the Width/Height sliders over it. Holds only the style and the switches; the lamp it shows is the lamp on the bench. Its own `<Canvas>` rather than a cell in `ViewportGrid` — an `EffectComposer` takes over the render loop, which is exactly what the scissored `<View>`s cannot survive. |
 | `ShowcaseScene` | The one scene every style is drawn from: the bulb inside the shade and the paper shell around it, the pendant, what comes through the window, the room, the bloom, and a camera framed on the lamp once rather than on every slider frame. Four switchable sources, and the notes on each say what its numbers mean — candela at millimetre scale runs to the millions, and the shadow bias has to be read together with the blur radius. What each style does to it is a block of numbers in `lib/showcaseLook.ts`, not a branch here. |
-| `ShowcaseProps` | Downloaded furniture: loads a `.glb` from `public/models/props/`, swaps its materials for the room's own, and fits it by size-and-anchor rather than by a written-down scale factor — so replacing the file re-fits it. The models bring geometry only; their texture sets are stripped in conversion, because the cloth and wood shaders here need no UVs and cost no bytes. |
+| `ShowcaseProps` | Downloaded furniture: loads a `.glb` from `public/models/props/`, swaps its materials for the room's own, and fits it by size-and-anchor rather than by a written-down scale factor — so replacing the file re-fits it. The fit is baked into the **vertices**, not the node, because every material in this room is a solid texture in millimetres and a node scale does not reach one. The models bring geometry only; their texture sets are stripped in conversion, because the cloth and wood shaders here need no UVs and cost no bytes. |
 | `ShowcaseRoom` | The bedroom, out of boxes and cylinders: walls, ceiling, pendant, a window in the side wall with a shoji screen slid across it, and the painting hanging behind the lamp. The nightstand and the bed are the two things in here that are not boxes — see `ShowcaseProps`. |
 | `LampDesignPage` | The Lamp tab: the status strip, the view grid, and the sidebar. |
 | `LampView` | The lamp scene — main box, every instance, the connect pick overlay, the symmetry preview overlay — and the two cameras that draw it: `LampScene3D` and `LampOrthographicView`. `ShowcaseLamp` is the same parts with no camera, light or floor of its own, for a showcase style to put in a room of its choosing. |
@@ -98,7 +106,8 @@ stores hold state; the libraries hold the arithmetic.
 | `ComponentEditorPage` | Status strip + views + sidebar. |
 | `ComponentEditorViews` | The editor's half of the grid: which scene each cell draws, the per-cell Select Face and rotate buttons, and wheel-zoom / drag-pan wired to the component-editor store. |
 | `TexturesPage` | The Textures tab: status strip + views + sidebar. |
-| `TextureViews` | Its four views and the test bench in them — four 200 mm beams at 5, 10, 20 and 40 mm section, all parallel, all cut from one log. Not a sphere: the two questions being asked are whether the grain runs the length of a piece and whether its cut end agrees, and a sphere has neither a length nor an end. |
+| `TextureViews` | Its four views and the test bench in them — see `lib/testBeams.ts` for the sticks. Not a sphere: the two questions being asked are whether the grain runs the length of a piece and whether its cut end agrees, and a sphere has neither a length nor an end. |
+| `TextureGeneratorPage` | The Texture Generator tab: a random wood on the showcase nightstand with the test sticks on it, and two buttons. Accept writes the library file and rolls again; Reject only rolls. One studio scene, mounted once, so the camera survives every roll. |
 | `TextureSidebar` | Every generator control, grouped the way a timber is described rather than the way the shader is written: which tree, where in the log, the rings, how they wander, the figure, the finish. |
 | `PartSurface` | The two hooks that decide how a solid is painted, shared by all three tabs: `useWoodMaterial` (build once, write uniforms in place, so a slider drag does not recompile the program) and `usePartTexture` (resolve a texture *name* to parameters, overriding its grain axis with the part's). |
 | `PerspectiveView` | 3D cell: camera framing, lights, grid, `<UploadedMesh>`, OrbitControls. |

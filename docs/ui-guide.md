@@ -70,7 +70,7 @@ multisampling and halves its shadow map.
 
 ## Tabs
 
-Four folder tabs at the top left. The first three each have a **▾** that opens
+Five folder tabs at the top left. The first three each have a **▾** that opens
 that tab's file menu, and they run down through the model: an assembly is made of
 components, and a component is made of a material.
 
@@ -83,8 +83,11 @@ measured into a component.
 **Textures** — where a wood is designed, on four test beams. The only tab that
 changes no geometry at all.
 
+**Texture Generator** — the same subject from the other end: whole woods rolled
+one at a time, to be kept or thrown away. See below.
+
 **Assets** — everything the three libraries hold, side by side. Not a bench, and
-so the one tab with no file menu of its own.
+so one of the two tabs with no file menu of its own.
 
 Pressing the tab switches to it; pressing its caret switches *and* opens the
 menu — a menu that acted on a tab you were not looking at would be acting on a
@@ -93,6 +96,40 @@ bench you cannot see.
 Variables are shared. Editing one on the Lamp tab immediately re-cuts every block
 in the editor, even though the editor is not mounted — the store subscribes, not
 a component.
+
+## The Texture Generator
+
+Two buttons and no sliders. It shows one wood at a time — on the showcase's
+nightstand, with the Textures tab's four test sticks lying on the near corner of
+it — and asks only whether to keep that one.
+
+- **Reject** throws it away and rolls another.
+- **Accept** writes it to the texture library and *then* rolls another, so the
+  rhythm never breaks. With no library token it writes to your downloads
+  instead, and says so.
+
+The name is shown before you press anything, because the name is part of what is
+being accepted: **species-finish-seed**, as in `red-oak-matte-8326`. The seed is
+not decoration — the parameters and the seed *are* the board — and a suffix is
+added if that name is already in the library.
+
+Under the name is what it came from and the ring pitch it works out at in
+millimetres, which is the one number that decides whether a texture will survive
+being cut to 5 mm.
+
+**The camera stays where you put it.** Orbit round to the end grain, zoom in on
+the sticks, and every roll after that arrives at the same viewpoint — otherwise
+the only way to compare two woods would be to re-aim the camera between them.
+
+It shares nothing with the Textures tab but the library: rolling here never
+disturbs whatever is on that bench. What is rolled is not thirty random numbers
+— it picks one of the ten species and walks away from it — and the finish is
+chosen before the colour, so a gloss on a dark timber comes out as dark polished
+walnut rather than as tar.
+
+Nothing here is drawn on the blueprint blue. The studio is a neutral mid grey,
+because this is the one page in the app that is a colour judgement, and a blue
+ground pulls every warm brown towards it.
 
 ## The file menu
 

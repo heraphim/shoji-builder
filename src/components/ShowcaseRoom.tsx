@@ -208,8 +208,13 @@ const NIGHTSTAND_X = 0;
  * whole room whose position actually matters — the lamp stands on it, the room
  * is laid out around it, and `TABLE_Y` is defined as it. Placing furniture by
  * its base and hoping the height comes out right is how a lamp ends up floating.
+ *
+ * Exported because the Texture Generator stands the same nightstand in an empty
+ * studio to judge a wood on. A copy of these four numbers over there would be a
+ * second nightstand that was the same size by coincidence, and the point of it
+ * is that it is *this* one — the piece the timber will actually be seen on.
  */
-const NIGHTSTAND: Omit<PropFit, "dress" | "fallback"> = {
+export const NIGHTSTAND: Omit<PropFit, "dress" | "fallback"> = {
   file: "nightstand.glb",
   height: TABLE_Y - FLOOR_Y,
   anchor: [0.5, 1, 0.5],
