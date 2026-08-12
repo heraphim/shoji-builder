@@ -1,0 +1,344 @@
+{
+  "id": "frame",
+  "type": "component",
+  "format": 5,
+  "units": "mm",
+  "variables": {
+    "frameHeight": "#frameWidth",
+    "frameWidth": "7",
+    "innerWidth": "200"
+  },
+  "blocks": [
+    {
+      "id": "035fdc52-1caa-41eb-ae2e-42d4bc7c9359",
+      "name": "frame.stl (1)",
+      "size": {
+        "x": "#frameWidth",
+        "y": "#frameHeight",
+        "z": "1/2*#frameWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        0,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "48b37deb-670b-438e-ae6b-a36c826a7573",
+      "name": "frame.stl (2)",
+      "size": {
+        "x": "-(#frameWidth) + (#innerWidth) - (#frameWidth)",
+        "y": "#frameHeight",
+        "z": "(1/2*#frameWidth) + (1/2*#frameWidth)"
+      },
+      "sizeSource": {
+        "x": "implied",
+        "y": "set",
+        "z": "implied"
+      },
+      "origin": [
+        7,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "f490810c-57ee-4156-8dba-006732421880",
+      "name": "frame.stl (3)",
+      "size": {
+        "x": "#frameWidth",
+        "y": "#frameHeight",
+        "z": "1/2*#frameWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        193,
+        0,
+        3.5
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "469776bc-d372-4fb4-bfad-32b66303692b",
+      "a": {
+        "block": "f490810c-57ee-4156-8dba-006732421880",
+        "anchor": [
+          0,
+          1,
+          1
+        ]
+      },
+      "b": {
+        "block": "48b37deb-670b-438e-ae6b-a36c826a7573",
+        "anchor": [
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "30c6a175-fa0b-4348-94ad-7a5e882f71d2",
+      "a": {
+        "block": "035fdc52-1caa-41eb-ae2e-42d4bc7c9359",
+        "anchor": [
+          1,
+          1,
+          1
+        ]
+      },
+      "b": {
+        "block": "48b37deb-670b-438e-ae6b-a36c826a7573",
+        "anchor": [
+          0,
+          1,
+          1
+        ]
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "id": "b14bf7d7-0015-439e-93da-9054b0ee7fa4",
+      "formula": "1/2*#frameWidth",
+      "edges": [
+        {
+          "start": [
+            193,
+            0,
+            0
+          ],
+          "end": [
+            193,
+            0,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            7,
+            0,
+            0
+          ],
+          "end": [
+            7,
+            0,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            193,
+            7,
+            0
+          ],
+          "end": [
+            193,
+            7,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            7,
+            7,
+            0
+          ],
+          "end": [
+            7,
+            7,
+            3.5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dfdf52b2-e5b8-4222-85eb-c6f01adff6da",
+      "formula": "#innerWidth",
+      "edges": [
+        {
+          "start": [
+            0,
+            0,
+            7
+          ],
+          "end": [
+            200,
+            0,
+            7
+          ]
+        },
+        {
+          "start": [
+            0,
+            7,
+            7
+          ],
+          "end": [
+            200,
+            7,
+            7
+          ]
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "solidColor": "#1e4179",
+    "texture": "kumiko-pale.texture.json",
+    "grainAxis": "x"
+  },
+  "preview": {
+    "variables": {
+      "innerWidth": 200,
+      "innerDepth": 200,
+      "innerHeight": 370,
+      "legThickness": 20,
+      "legExtraTop": 20,
+      "legExtraBottom": 40,
+      "beamHeight": 15,
+      "beamDepth": 10,
+      "beamExtra": 20,
+      "frameWidth": 7,
+      "frameHeight": 7
+    },
+    "solids": [
+      {
+        "vertices": [
+          0,
+          0,
+          7,
+          0,
+          7,
+          7,
+          0,
+          7,
+          3.5,
+          0,
+          0,
+          3.5,
+          200,
+          7,
+          7,
+          200,
+          7,
+          3.5,
+          7,
+          7,
+          3.5,
+          193,
+          7,
+          3.5,
+          193,
+          7,
+          0,
+          7,
+          7,
+          0,
+          7,
+          0,
+          3.5,
+          7,
+          0,
+          0,
+          193,
+          0,
+          0,
+          193,
+          0,
+          3.5,
+          200,
+          0,
+          3.5,
+          200,
+          0,
+          7
+        ],
+        "triangles": [
+          0,
+          1,
+          2,
+          0,
+          2,
+          3,
+          1,
+          4,
+          5,
+          1,
+          5,
+          2,
+          6,
+          7,
+          8,
+          6,
+          8,
+          9,
+          2,
+          6,
+          10,
+          2,
+          10,
+          3,
+          11,
+          12,
+          13,
+          11,
+          13,
+          10,
+          3,
+          14,
+          15,
+          3,
+          15,
+          0,
+          0,
+          15,
+          4,
+          0,
+          4,
+          1,
+          12,
+          8,
+          7,
+          12,
+          7,
+          13,
+          10,
+          6,
+          9,
+          10,
+          9,
+          11,
+          9,
+          8,
+          12,
+          9,
+          12,
+          11,
+          14,
+          5,
+          4,
+          14,
+          4,
+          15,
+          7,
+          5,
+          14,
+          7,
+          14,
+          13
+        ]
+      }
+    ]
+  }
+}
