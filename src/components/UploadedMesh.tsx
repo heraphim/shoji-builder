@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { useThree, type ThreeEvent } from "@react-three/fiber";
 import {
@@ -30,6 +30,8 @@ import {
   triangleEdges,
 } from "../lib/assembly";
 import type { GeometryMode, MaterialMode } from "../store/useViewportStore";
+import { useLookStore } from "../store/useLookStore";
+import { FAINT_OUTLINE_OPACITY, SHADE_LAYER } from "./SceneLights";
 import { lineRaycast } from "../lib/measure";
 import {
   buildEdgeClassifier,
@@ -533,6 +535,7 @@ function GroupView({
   // for a reason the user cannot observe.
   const edgePicking = useEdgePicking(edgesGeometry, geometries, material !== "none");
   const classifier = useEdgeClassifier();
+  const faintOutline = useLookStore((state) => state.faintOutline);
   useStatusColors(edgesGeometry, classifier);
 
   const connectPicking = pickMode === "connectA" || pickMode === "connectB";
@@ -577,7 +580,28 @@ function GroupView({
 
   const drawFaces = material !== "none";
   const drawOutline = geometryMode !== "none";
+  // The Options panel's stand-in for the arrises: quiet enough that the drawing
+  // still reads as faces, present enough that two parts meeting in one plane are
+  // still two parts. See `FAINT_OUTLINE_OPACITY`.
+  const faint = !drawOutline && faintOutline;
+  // The status colouring is a measurement drawing, and the faint outline is the
+  // opposite of one — asked for by somebody who wanted no lines at all.
+  const status = drawOutline && classifier.active;
   const faceMaterial = drawFaces ? wood : null;
+
+  // Only the *drawn* solid casts into the pool of shade. The same mesh stays in
+  // the scene with no material as the body a face or vertex pick lands on, and
+  // through a depth material an invisible pick body is as solid as a rail — so
+  // this has to clear the layer as well as set it, which a plain ref callback
+  // shared between the two states could not.
+  const shadeRef = useCallback(
+    (mesh: THREE.Mesh | null) => {
+      if (!mesh) return;
+      if (drawFaces) mesh.layers.enable(SHADE_LAYER);
+      else mesh.layers.disable(SHADE_LAYER);
+    },
+    [drawFaces]
+  );
   // With no material, the solid is still in the scene whenever a pick needs it —
   // a face pick has nothing else to hit, and a vertex pick snaps to the corner
   // of the triangle under the cursor. It writes neither colour nor depth, so it
@@ -589,6 +613,7 @@ function GroupView({
     <group>
       {faceBody && (
         <mesh
+          ref={shadeRef}
           geometry={group.geometry}
           onClick={handleMeshClick}
           onPointerMove={handleMeshMove}
@@ -632,11 +657,11 @@ function GroupView({
             program on needsUpdate. White, because the material colour multiplies
             the vertex colour. */}
         <lineBasicMaterial
-          key={drawOutline ? (classifier.active ? "status" : "plain") : "hidden"}
-          color={drawOutline && !classifier.active ? BLUEPRINT.line : "#ffffff"}
-          vertexColors={drawOutline && classifier.active}
+          key={status ? "status" : "plain"}
+          color={status ? "#ffffff" : BLUEPRINT.line}
+          vertexColors={status}
           transparent={!drawOutline}
-          opacity={drawOutline ? 1 : 0}
+          opacity={drawOutline ? 1 : faint ? FAINT_OUTLINE_OPACITY : 0}
           depthWrite={drawOutline}
         />
       </lineSegments>

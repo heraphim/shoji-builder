@@ -6,8 +6,10 @@ import { TextSprite } from "./TextSprite";
 import { BlueprintGrid } from "./OrthographicView";
 import { ViewportGrid, type CellSize } from "./ViewportGrid";
 import { BLUEPRINT } from "./UploadedMesh";
+import { ContactShade, SceneLights, castsShade } from "./SceneLights";
 import { useWoodMaterial } from "./PartSurface";
 import { useTextureStore } from "../store/useTextureStore";
+import { useLookStore } from "../store/useLookStore";
 import {
   useTextureViewports,
   type MaterialMode,
@@ -118,9 +120,15 @@ function TextureBench({ material }: { material: MaterialMode }) {
     <group>
       {BEAMS.map((beam) =>
         wood ? (
-          <mesh key={beam.section} geometry={beam.geometry} material={wood} raycast={() => null} />
+          <mesh
+            key={beam.section}
+            ref={castsShade}
+            geometry={beam.geometry}
+            material={wood}
+            raycast={() => null}
+          />
         ) : (
-          <mesh key={beam.section} geometry={beam.geometry} raycast={() => null}>
+          <mesh key={beam.section} ref={castsShade} geometry={beam.geometry} raycast={() => null}>
             <meshStandardMaterial color={BLUEPRINT.solid} flatShading />
           </mesh>
         )
@@ -147,6 +155,7 @@ const FOV = 45;
 
 function TexturePerspectiveView({ cellSize }: { cellSize: CellSize }) {
   const modes = useTextureViewports((state) => state.modes["3d"]);
+  const contactShadows = useLookStore((state) => state.contactShadows);
 
   // The bench never changes shape, so this frames once and then leaves the
   // camera to OrbitControls — there is nothing that could make it want to refit,
@@ -173,12 +182,13 @@ function TexturePerspectiveView({ cellSize }: { cellSize: CellSize }) {
   return (
     <>
       <PerspectiveCamera makeDefault position={initial.current.position} fov={FOV} near={1} far={5000} />
-      {/* A little more directional than the editor's lighting. Wood is judged on
-          how the figure reads across a face, and flat ambient light hides
-          exactly the sheen difference the finish control exists to set. */}
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[220, 320, 180]} intensity={1.1} />
-      <directionalLight position={[-260, 120, -200]} intensity={0.35} />
+      {/* The shared rig, whose defaults are this bench's old triple: wood is
+          judged on how the figure reads across a face, flat ambient light hides
+          exactly the sheen the finish control exists to set, and that was the
+          best-argued lighting in the app when the three sets were merged into
+          one. See `useLookStore`. */}
+      <SceneLights />
+      {contactShadows && <ContactShade box={BENCH_BOX} floorY={BENCH_BOX.min.y} />}
       <TextureBench material={modes.material} />
       <OrbitControls
         makeDefault
@@ -291,8 +301,7 @@ function TextureOrthographicView({ viewId, cellSize }: { viewId: ViewId; cellSiz
       />
       {/* the projections are lit too: an unlit fill would show the colours but
           not the sheen, and half of what a finish changes is the sheen */}
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[200, 300, 150]} intensity={0.9} />
+      <SceneLights />
       <TextureBench material={modes.material} />
       <AxisTriad position={triad.position} length={triad.length} />
     </>

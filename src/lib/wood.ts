@@ -336,3 +336,63 @@ export function sanitizeWoodParams(params: WoodParams): WoodParams {
     seed: Math.round(finite(params.seed, 1)),
   };
 }
+
+/**
+ * The one colour a piece of this timber collapses to, seen from far enough away
+ * that the rings no longer resolve.
+ *
+ * Not an approximation of the shader — it is the shader's own limit. `woodRings`
+ * returns `mix(1 - contrast, 1, soft)`, and past about one ring per pixel it
+ * forces `soft` to 0.5 outright rather than draw moire (see the `perPixel` fade
+ * in `woodMaterial.ts`), so the ring term settles at `1 - contrast/2` and the
+ * colour settles at that mix of the two grain colours. The finish's darkening is
+ * a flat multiply and comes along unchanged; the pore and splotch passes are
+ * soft light against a mid blend, which is close enough to identity on average
+ * to leave out.
+ *
+ * What it is for: colouring something that is *about* the part rather than part
+ * of it — an outline, a swatch, a row in a list — in the timber it is made of,
+ * without anybody having to nominate a second colour by hand.
+ */
+export function averageWoodColor(params: WoodParams): string {
+  const t = 1 - clamp01(params.grainContrast) / 2;
+  const dark = fromHex(params.darkGrainColor);
+  const light = fromHex(params.lightGrainColor);
+  return toHex(dark.map((d, i) => (d + (light[i] - d) * t) * params.clearcoatDarken));
+}
+
+/**
+ * A colour to draw a line in against a face of the given colour.
+ *
+ * A third of the fill, which is very close to what the lamp's arris colour was
+ * as a constant: `#4a2f16` against the default timber `#c08f56` is a scale of
+ * 0.39 / 0.33 / 0.26 per channel. So a part that names no colour of its own
+ * still looks exactly as it did.
+ *
+ * In sRGB rather than linear because a third of a *number* is the thing anybody
+ * reading this can predict, and the arris is a graphic device rather than a
+ * measurement. It only darkens: on a timber dark enough that a third of it is
+ * near black the line goes as quiet as the fixed colour already did there, which
+ * is the same amount of nothing, not a new problem.
+ */
+export function outlineColorFor(fill: string): string {
+  return toHex(fromHex(fill).map((c) => c * OUTLINE_DARKEN));
+}
+
+const OUTLINE_DARKEN = 1 / 3;
+
+const clamp01 = (v: number) => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0);
+
+function fromHex(hex: string): number[] {
+  const n = Number.parseInt(hex.replace("#", ""), 16);
+  return Number.isFinite(n) ? [(n >> 16) & 255, (n >> 8) & 255, n & 255] : [0, 0, 0];
+}
+
+function toHex(rgb: number[]): string {
+  return (
+    "#" +
+    rgb
+      .map((v) => Math.round(Math.min(255, Math.max(0, v))).toString(16).padStart(2, "0"))
+      .join("")
+  );
+}

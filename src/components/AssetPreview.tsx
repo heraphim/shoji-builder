@@ -4,6 +4,7 @@ import { PerspectiveCamera, View } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { usePartTexture, useWoodMaterial } from "./PartSurface";
 import { BLUEPRINT } from "./UploadedMesh";
+import { SceneLights } from "./SceneLights";
 import {
   TEXTURE_BEAM,
   centreForSpin,
@@ -146,11 +147,11 @@ function PreviewScene({ asset }: { asset: Asset }) {
         far={built.distance * 10}
         onUpdate={(camera) => camera.lookAt(0, 0, 0)}
       />
-      {/* the Textures tab's lighting: directional enough that the figure on a
-          face and the sheen the finish sets both read */}
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[220, 320, 180]} intensity={1.1} />
-      <directionalLight position={[-260, 120, -200]} intensity={0.35} />
+      {/* The shared rig, like every other lit cell. The Assets tab has no
+          Options panel of its own — it is a library, not an editor — so the
+          cards are lit however the tab you came from was left. That is the point
+          of one rig: a part browsed here looks like the part on the bench. */}
+      <SceneLights />
       <Spin>
         {asset.kind === "component" ? (
           <ComponentSolid

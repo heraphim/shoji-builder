@@ -5,6 +5,8 @@ import * as THREE from "three";
 import { UploadedMesh, BLUEPRINT, GRID_CELL_MM } from "./UploadedMesh";
 import { useComponentEditorStore } from "../store/useComponentEditorStore";
 import { useEditorViewports } from "../store/useViewportStore";
+import { useLookStore } from "../store/useLookStore";
+import { ContactShade, SceneLights } from "./SceneLights";
 import { combinedBoundingBox } from "../lib/picking";
 import type { CellSize } from "./ViewportGrid";
 
@@ -56,6 +58,13 @@ export function PerspectiveView({ cellSize }: { cellSize: CellSize }) {
   const modelRotation = useComponentEditorStore((state) => state.modelRotation);
   const modes = useEditorViewports((state) => state.modes["3d"]);
   const setOrbit = useEditorViewports((state) => state.setOrbit);
+  const contactShadows = useLookStore((state) => state.contactShadows);
+
+  // Kept out of the framing memo below on purpose: that one is deliberately deaf
+  // to a re-cut, because refitting the camera on every slider frame would yank
+  // the view around — but the shade has to follow the part it pools under, and
+  // a variable edit is exactly what changes its size.
+  const modelBox = useMemo(() => combinedBoundingBox(meshes), [meshes]);
 
   // The fit needs the cell's aspect, but a resize must not re-frame: the user's
   // orbit is theirs to keep. Read through a ref so the size of the moment is
@@ -109,8 +118,7 @@ export function PerspectiveView({ cellSize }: { cellSize: CellSize }) {
   return (
     <>
       <PerspectiveCamera makeDefault position={position} fov={FOV} />
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[200, 300, 150]} intensity={0.8} />
+      <SceneLights />
       {/* the app works in mm: cells are 0.5 mm with a heavier line every 10th
           (5 mm) so the fine grid still reads as a scale when zoomed out */}
       <Grid
@@ -125,6 +133,11 @@ export function PerspectiveView({ cellSize }: { cellSize: CellSize }) {
         fadeDistance={1500}
         fadeStrength={1.5}
       />
+      {/* On the grid, not under the part: the editor hangs its grid well below
+          whatever is on the bench, as a horizon rather than a bench top, and a
+          pool of shade floating at the part's own feet with the floor a metre
+          under it reads as a card hanging in mid-air. */}
+      {contactShadows && modelBox && <ContactShade box={modelBox} floorY={gridY} />}
       <UploadedMesh material={modes.material} geometry={modes.geometry} />
       {/* drag rotates, wheel zooms, wheel-button (middle) drag pans */}
       <OrbitControls

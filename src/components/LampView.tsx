@@ -13,8 +13,16 @@ import { AxisTriad } from "./AxisTriad";
 import { BlueprintGrid } from "./OrthographicView";
 import { BLUEPRINT } from "./UploadedMesh";
 import { usePartTexture, useWoodMaterial } from "./PartSurface";
+import { averageWoodColor, outlineColorFor } from "../lib/wood";
 import type { CellSize } from "./ViewportGrid";
 import { useLampViewports, type ViewportModes } from "../store/useViewportStore";
+import { useLookStore } from "../store/useLookStore";
+import {
+  ContactShade,
+  FAINT_OUTLINE_OPACITY,
+  SceneLights,
+  castsShade,
+} from "./SceneLights";
 import {
   computeScene,
   identityPlacement,
@@ -60,6 +68,12 @@ import {
 const LAMP = {
   /** Warm timber, so the shoji parts read as wood against the dark bench. */
   part: "#c08f56",
+  /**
+   * No longer drawn: an arris is `outlineColorFor` of whatever the part is
+   * actually made of, and a third of `part` above lands within a few counts of
+   * this. Kept as the record of what that used to be, and of what the derived
+   * colour has to keep reproducing for a part that names no colour of its own.
+   */
   edge: "#4a2f16",
   /** Construction lines: where the encasing box is, not where material is. */
   projected: "#e6c49a",
@@ -427,6 +441,7 @@ function Instance({
 }) {
   const highlightedId = useLampStore((state) => state.highlightedId);
   const draft = useLampStore((state) => state.draft);
+  const faintOutline = useLookStore((state) => state.faintOutline);
   const solid = useSolid(shape);
 
   const boxes = useMemo(() => pickBoxes(shape), [shape]);
@@ -443,14 +458,13 @@ function Instance({
   // editor's job — it only honours it, so that the one view where the whole
   // assembly is visible is also the one that can show what it will look like.
   const appearance = instance.def.appearance;
-  const wood = useWoodMaterial(
-    usePartTexture(
-      // a highlighted part must read as highlighted, and the surest way to lose
-      // that is to paint it in a wood at the same moment
-      modes.material === "texture" && !lit ? (appearance?.texture ?? null) : null,
-      appearance?.grainAxis
-    )
+  const woodParams = usePartTexture(
+    // a highlighted part must read as highlighted, and the surest way to lose
+    // that is to paint it in a wood at the same moment
+    modes.material === "texture" && !lit ? (appearance?.texture ?? null) : null,
+    appearance?.grainAxis
   );
+  const wood = useWoodMaterial(woodParams);
   // The editor's default colour is the blueprint fill, which is what a solid
   // means *there*. Read here as "nobody chose one", so the lamp keeps its own
   // warm timber — otherwise every component saved since format 5 would drag the
@@ -460,16 +474,38 @@ function Instance({
       ? appearance.solidColor
       : LAMP.part;
 
+  // The arris, in the part's own timber rather than in one brown for everybody.
+  //
+  // A fixed dark brown is right for exactly one colour of wood and wrong for the
+  // rest of them — on maple it reads as a drawn line laid over the part rather
+  // than as the edge of it, and on a painted or blueprint-coloured component it
+  // is simply a foreign colour. Taken from the timber it belongs to, the line is
+  // the part's own shadow.
+  //
+  // Whichever colour is actually on the face, so it follows a highlight too: a
+  // lit part is drawn in yellow and gets a dark yellow arris, which is the same
+  // relationship the rest of the lamp has. The wood's average is the shader's
+  // own far-field colour — see `averageWoodColor`.
+  const edgeColor = useMemo(
+    () =>
+      outlineColorFor(
+        woodParams ? averageWoodColor(woodParams) : lit ? LAMP.highlight : chosenColor
+      ),
+    [woodParams, lit, chosenColor]
+  );
+
   return (
     <group
       position={placement.position.toArray()}
       quaternion={placement.quaternion.toArray() as [number, number, number, number]}
     >
+      {/* `castsShade` is the whole of what puts a part into the contact shadow;
+          everything else in the scene is overlay and stays out of it. */}
       {modes.material !== "none" &&
         (wood ? (
-          <mesh geometry={solid.geometry} material={wood} />
+          <mesh ref={castsShade} geometry={solid.geometry} material={wood} />
         ) : (
-          <mesh geometry={solid.geometry}>
+          <mesh ref={castsShade} geometry={solid.geometry}>
             {/* the polygon offset pushes the surface back a hair so the arris
                 overlay drawn on it does not z-fight */}
             <meshStandardMaterial
@@ -491,9 +527,18 @@ function Instance({
         </lineSegments>
       )}
 
-      {modes.geometry !== "none" && (
+      {/* The arrises. In "No lines" they are still what says where one part ends
+          and the next begins — two touching parts whose faces are coplanar have
+          the same normal and the same colour, so no light reaches them
+          differently and nothing but a line can separate them — so the Options
+          panel can keep them, quietly, rather than only all or nothing. */}
+      {(modes.geometry !== "none" || faintOutline) && (
         <lineSegments geometry={solid.outline}>
-          <lineBasicMaterial color={LAMP.edge} />
+          <lineBasicMaterial
+            color={edgeColor}
+            transparent={modes.geometry === "none"}
+            opacity={modes.geometry === "none" ? FAINT_OUTLINE_OPACITY : 1}
+          />
         </lineSegments>
       )}
 
@@ -694,6 +739,7 @@ export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
   const scene = useLampScene();
   const modes = useLampViewports((state) => state.modes["3d"]);
   const setOrbit = useLampViewports((state) => state.setOrbit);
+  const contactShadows = useLookStore((state) => state.contactShadows);
 
   const overall = useMemo(() => overallBox(scene), [scene]);
 
@@ -738,9 +784,7 @@ export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
   return (
     <>
       <PerspectiveCamera makeDefault position={position} fov={FOV} near={1} far={20000} />
-      <ambientLight intensity={0.75} />
-      <directionalLight position={[400, 600, 300]} intensity={0.9} />
-      <directionalLight position={[-300, 200, -400]} intensity={0.35} />
+      <SceneLights />
 
       {/* 10 mm cells with a heavier line every 100 mm, so the floor reads as a
           scale for a part measured in tens of millimetres */}
@@ -755,6 +799,10 @@ export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
         fadeDistance={6000}
         fadeStrength={1.2}
       />
+
+      {/* The lamp stands on the grid, so its own floor is the bench — give or
+          take the millimetre the sample lamp's feet hang below it. */}
+      {contactShadows && <ContactShade box={overall} floorY={overall.min.y} />}
 
       <LampSceneContents scene={scene} modes={modes} />
 
@@ -917,9 +965,14 @@ export function LampOrthographicView({
         far={100000}
         onUpdate={(camera) => camera.lookAt(target)}
       />
-      {/* flat, not lit: an orthographic view with directional shading on it
-          reads as a 3D view that has gone wrong rather than as a projection */}
-      <ambientLight intensity={1.1} />
+      {/* The same rig as every other cell. This used to be a flat ambient 1.1
+          and nothing else, on the argument that an orthographic view with
+          directional shading reads as a 3D view that has gone wrong — but the
+          flat version is also the one where a solid has nothing in it but a
+          silhouette, which is the whole of why the Options panel exists. The
+          drawing is still one setting away: key and fill at 0 with ambient up
+          is exactly what was here before. */}
+      <SceneLights />
       <BlueprintGrid
         target={target}
         right={basis.right}

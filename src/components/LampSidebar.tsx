@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { VariablesList } from "./VariablesList";
+import { LookOptions } from "./LookOptions";
 import { CollapsiblePanel } from "./CollapsiblePanel";
 import { DocumentPanel } from "./DocumentPanel";
 import { mainBoxOf } from "../lib/lamp";
@@ -320,6 +321,15 @@ export function LampSidebar() {
         onName={setLampName}
         onDescription={setDescription}
       />
+
+      {/* Folded to start with, unlike every other newly added panel: it sits
+          above Variables so that it is quick to reach when the view has gone
+          unreadable, and a panel that is both above the working panel and open
+          by default has pushed the working panel down for everyone who never
+          needed it. */}
+      <CollapsiblePanel id="lamp.options" title="Options" collapsedByDefault>
+        <LookOptions />
+      </CollapsiblePanel>
 
       <CollapsiblePanel id="lamp.variables" title="Variables (mm)">
         <VariablesList sliders />

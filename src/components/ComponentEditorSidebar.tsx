@@ -15,6 +15,7 @@ import {
 import { GRAIN_AXIS_LABELS, type GrainAxis } from "../lib/wood";
 import { resolveVariables } from "../lib/formula";
 import { CollapsiblePanel } from "./CollapsiblePanel";
+import { LookOptions } from "./LookOptions";
 import { DocumentPanel } from "./DocumentPanel";
 import { useMergedGroups } from "./UploadedMesh";
 import {
@@ -503,6 +504,13 @@ export function ComponentEditorSidebar() {
         onName={setDocumentName}
         onDescription={setDescription}
       />
+
+      {/* The same panel as the other two tabs, driving the same one set of
+          settings — see `useLookStore`. Only which panels are folded is per
+          sidebar, which is why the id is not the lamp's. */}
+      <CollapsiblePanel id="editor.options" title="Options" collapsedByDefault>
+        <LookOptions />
+      </CollapsiblePanel>
 
       <CollapsiblePanel
         id="editor.connections"

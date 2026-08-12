@@ -1519,15 +1519,22 @@ select.view-mode option:disabled {
 /* ---- texture controls (Textures tab, and the editor's two panels) ---- */
 
 .texture-panel,
-.appearance-panel {
+.appearance-panel,
+.option-panel {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
 
 /* One control per line: label on the left at a fixed width so every row's
-   controls line up down the panel, then whatever the control is. */
-.texture-row {
+   controls line up down the panel, then whatever the control is.
+
+   The lamp's Options panel is styled off the same rules rather than its own set:
+   it is the same kind of thing — a column of sliders with their numbers beside
+   them — and two panels of sliders that do not quite line up with each other is
+   worse than a class name that outlived the tab it was written for. */
+.texture-row,
+.option-row {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1537,7 +1544,8 @@ select.view-mode option:disabled {
    rather than left to `auto` so the sliders line up down the panel — a column of
    controls that each start somewhere different is much harder to compare than
    one that reads as a column. */
-.texture-label {
+.texture-label,
+.option-label {
   flex: 0 0 88px;
   min-width: 0;
   font-size: 11px;
@@ -1563,7 +1571,8 @@ select.view-mode option:disabled {
 /* The slider is the control; the box beside it is the readout. So the slider
    takes every pixel the row can spare and never drops below a width worth
    dragging. */
-.texture-range {
+.texture-range,
+.option-range {
   flex: 1 1 auto;
   min-width: 96px;
   accent-color: var(--bp-accent);
@@ -1577,7 +1586,8 @@ select.view-mode option:disabled {
    intrinsic ~20-character width. Left at `auto` it overrides the flex basis
    outright — which is what once made these boxes 139px wide and left the
    sliders 27px of the row. */
-.texture-number {
+.texture-number,
+.option-number {
   flex: 0 0 54px;
   width: 54px;
   min-width: 0;
@@ -1593,13 +1603,16 @@ select.view-mode option:disabled {
 
 /* The spinners are ~15px of a 54px box, and everything they do the slider
    beside them does better. Arrow keys still step the value. */
-.texture-number[type="number"] {
+.texture-number[type="number"],
+.option-number[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
 
 .texture-number::-webkit-outer-spin-button,
-.texture-number::-webkit-inner-spin-button {
+.texture-number::-webkit-inner-spin-button,
+.option-number::-webkit-outer-spin-button,
+.option-number::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
 }
@@ -1629,6 +1642,57 @@ select.view-mode option:disabled {
   border: 1px solid var(--bp-border);
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* ---- the lamp's Options panel (what the texture rules above do not cover) ---- */
+
+/* A toggle has no value to line up in a second column, so its label runs on from
+   the box at whatever width it needs rather than sitting in the 88px gutter the
+   sliders share — a checkbox marooned 88px from the left of its own label reads
+   as belonging to the row above it. */
+.option-toggle {
+  cursor: pointer;
+}
+
+.option-checkbox {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--bp-accent);
+  cursor: pointer;
+}
+
+.option-toggle-label {
+  font-size: 11px;
+  color: var(--bp-text-dim);
+}
+
+/* Right-aligned and small: it undoes the panel rather than doing anything, so it
+   should be findable without being the thing the eye lands on first. */
+.option-reset {
+  align-self: flex-end;
+  margin-top: 1px;
+  padding: 3px 10px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 4px;
+  color: var(--bp-text);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.option-reset:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+/* Disabled rather than hidden: a button that comes and goes moves everything
+   under it, and "nothing to reset" is worth being able to see. */
+.option-reset:disabled {
+  color: var(--bp-text-dim);
+  opacity: 0.5;
+  cursor: default;
 }
 
 .texture-seed {

@@ -108,14 +108,84 @@ first save asks for a name.
 of `frameVertical`, `frameVertical2` cannot say which one takes the shoji panel,
 and a name long enough to say it is not a name any more.
 
+### Options
+
+The second panel on all three editing tabs, folded by default, and about how the
+model is *drawn* rather than what it is. It is the **same panel** everywhere —
+one set of values, shared across the whole app — so lighting set on the Lamp tab
+is the lighting the Component Editor and the Textures tab use, and the Assets
+tab's cards with them. Only which panels you have folded is per sidebar.
+
+| Control | Effect |
+| --- | --- |
+| **Ambient** | Uniform light, 0–2. The flattener: it lifts every face by the same amount, so the lower it is the more the shading says about which way a face points. |
+| **Key light** | The main light, above and to the front-right, 0–3. Contrast between faces comes from this one. |
+| **Fill light** | The weaker light from behind and to the left, 0–3, so the side the key misses does not fall to flat ambient. |
+| **Contact shadows** | A soft pool of shade under whatever is on the bench, so it stands on the floor rather than floating over it. |
+| **Draw solid outline** | Keeps a faint outline on every part when a view is set to **No lines**, in the part's own timber — see [below](#the-colour-an-arris-is-drawn-in). |
+| **Reset** | Back to 0.55 / 1.1 / 0.35 with both toggles off. Disabled while nothing has moved. |
+
+The three lights reach **every lit cell**, projections included. The shadow is
+the 3D cells only: a pool of shade on the floor of a Top view is a shadow looked
+at straight down the barrel. The outline reaches all four.
+
+Two things used to be true and are not any more, both worth knowing if a view
+looks different from how you remember it. Each tab used to keep its own
+hand-tuned lighting; they now share one rig, whose defaults are the Textures
+tab's old numbers — the most directional of the three, on the argument that wood
+is judged on how the figure reads across a face. And the projections' solid fill
+used to be flat and unlit, on the argument that a projection is a drawing. It is
+now shaded like everything else, because a flat fill is one colour with nothing
+in it, which is exactly the case this panel exists for. **Key and fill at 0**
+gives back the flat drawing.
+
+### What the panel can and cannot fix
+
+**No lines** is hardest to read in a projection, and that is why: a flat fill has
+nothing in it but a silhouette. Even in 3D the old lighting had little to say —
+ambient was about 45% of the total, which left a face turned away from both
+lights at roughly 70% the brightness of one facing the key. At the shared
+defaults ambient is 33% and that floor drops to about 61%.
+
+What no lighting can fix is two touching parts whose faces are coplanar: same
+direction, same colour, therefore the same pixel. Only a line, a different
+colour, or occlusion separates those — which is what **Draw solid outline** is
+for. The shadow does not help there either; it darkens the floor under the
+parts, not the joints between them.
+
+### The colour an arris is drawn in
+
+On the Lamp tab an arris is **a third of whatever the part is made of**, worked
+out per part rather than fixed. A textured part uses the timber's average — the
+colour a board collapses to once the rings are too fine to resolve, which the
+shader already computes for itself rather than something approximated on top of
+it — and a plain one uses its solid colour. A part that names no colour keeps the
+brown it always had, because a third of the default timber lands within ten
+counts of the old constant.
+
+A fixed brown is right for one colour of wood and wrong for the rest: on maple it
+reads as a line laid *over* the part rather than as the edge of it. Taken from
+the timber, the line is the part's own shadow, and the ten shipped species give
+ten distinguishable arris colours. The limit is a dark timber under a gloss
+finish — gloss darkens the average to about a fifth — where a third of it is
+nearly black; the line is still darker than the face but not by much.
+
+The Component Editor is deliberately not this. Its lines are a blueprint: light
+on a dark fill, the inverse convention, and they carry the measurement status
+colours. Deriving those from the timber would break both.
+
+Nothing here is saved. Like the draw modes and the view layout, it is a way of
+looking at the model right now, and it starts from the same place each session.
+
 # Lamp Design
 
 ```
 ┌───────────────┬───────────────┬───────────────────────┐
 │      3D       │      Top      │ ▾ Name & description  │
-├───────────────┼───────────────┤ ▾ Variables (mm)      │
-│     Side      │     Front     │ ▾ Components          │
+├───────────────┼───────────────┤ ▸ Options             │
+│     Side      │     Front     │ ▾ Variables (mm)      │
 └───────────────┴───────────────┴───────────────────────┘
+                                  ▾ Components
 ```
 
 The same view grid as the Component Editor — see [The views](#the-views) for
@@ -626,8 +696,8 @@ what is on the bench, not a file action.
 ```
 ┌───────────────┬───────────────┬───────────────────────┐
 │      3D       │      Top      │ ▾ Name & description  │
-├───────────────┼───────────────┤ ▾ Timber              │
-│     Side      │     Front     │ ▾ In the log, Rings…  │
+├───────────────┼───────────────┤ ▸ Options             │
+│     Side      │     Front     │ ▾ Timber, In the log… │
 └───────────────┴───────────────┴───────────────────────┘
 ```
 

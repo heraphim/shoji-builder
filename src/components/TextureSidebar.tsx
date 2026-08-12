@@ -1,5 +1,6 @@
 import { CollapsiblePanel } from "./CollapsiblePanel";
 import { DocumentPanel } from "./DocumentPanel";
+import { LookOptions } from "./LookOptions";
 import { useTextureStore } from "../store/useTextureStore";
 import {
   FINISH_LABELS,
@@ -157,6 +158,13 @@ export function TextureSidebar() {
         onName={setDocumentName}
         onDescription={setDescription}
       />
+
+      {/* The same panel as the other two tabs, driving the same one set of
+          settings — see `useLookStore`. Its defaults are this tab's old
+          lighting, so the bench looks as it always did until something moves. */}
+      <CollapsiblePanel id="textures.options" title="Options" collapsedByDefault>
+        <LookOptions />
+      </CollapsiblePanel>
 
       <CollapsiblePanel id="textures.species" title="Timber">
         <div className="texture-panel">

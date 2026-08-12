@@ -14,6 +14,8 @@ import {
 } from "../store/useComponentEditorStore";
 import { useVariablesStore } from "../store/useVariablesStore";
 import { useEditorViewports, type GeometryMode, type MaterialMode } from "../store/useViewportStore";
+import { useLookStore } from "../store/useLookStore";
+import { FAINT_OUTLINE_OPACITY, SceneLights, castsShade } from "./SceneLights";
 import { viewCameraBasis, combinedBoundingBox } from "../lib/picking";
 import { splitVisibleHidden, buildOutlineEdges, parallelEdges, triangleEdges } from "../lib/assembly";
 import { resolveVariables } from "../lib/formula";
@@ -167,11 +169,22 @@ function ProjectionLines({
   viewDir,
   radius,
   mode,
+  faint = false,
 }: {
   groups: Group[];
   viewDir: THREE.Vector3;
   radius: number;
   mode: Exclude<GeometryMode, "none">;
+  /**
+   * Standing in for the drawing in "No lines", at the Options panel's asking.
+   *
+   * Only the visible arrises, quietly, and none of the rest: what the hidden
+   * dashes and the status colours are for is measuring, and this is the drawing
+   * somebody switched off. The hidden-line pass still runs — it is the only way
+   * to get an outline that does not have the far side of the part drawn through
+   * the near side — so this is the one setting here that is not free.
+   */
+  faint?: boolean;
 }) {
   const classifier = useEdgeClassifier();
   const {
@@ -242,6 +255,8 @@ function ProjectionLines({
   useStatusColors(visibleGeometry, classifier, visibleSource);
   useStatusColors(hiddenGeometry, classifier, hiddenSource);
 
+  const status = !faint && classifier.active;
+
   // both line geometries are rendered, and both are rebuilt whenever a part
   // moves or the model is turned
   useEffect(
@@ -269,13 +284,15 @@ function ProjectionLines({
               goes: `vertexColors` is a shader define. White, because the
               material colour multiplies the vertex colour. */}
           <lineBasicMaterial
-            key={classifier.active ? "status" : "plain"}
-            color={classifier.active ? "#ffffff" : BLUEPRINT.line}
-            vertexColors={classifier.active}
+            key={status ? "status" : "plain"}
+            color={status ? "#ffffff" : BLUEPRINT.line}
+            vertexColors={status}
+            transparent={faint}
+            opacity={faint ? FAINT_OUTLINE_OPACITY : 1}
           />
         </lineSegments>
       )}
-      {hiddenGeometry && (
+      {!faint && hiddenGeometry && (
         <lineSegments
           geometry={hiddenGeometry}
           raycast={() => null}
@@ -313,31 +330,34 @@ function ProjectionFill({ groups, material }: { groups: Group[]; material: Mater
   const { appearance, wood } = useComponentAppearance(material);
   if (material === "none") return null;
 
-  // Unlit for the flat fill — a projection is a drawing, and shading a
-  // hidden-line elevation only makes the lines harder to read. The texture is
-  // the exception and is lit, because half of what a Texture view is for is
-  // seeing that the grain runs the way the part says it does, and an unlit
-  // wood is a wood with no depth to its figure at all.
+  // Lit, on the same rig as every other cell.
+  //
+  // This fill used to be a flat unlit colour, on the argument that a projection
+  // is a drawing and shading a hidden-line elevation only makes the lines harder
+  // to read. What that argument misses is the case with no lines in it: a flat
+  // fill is one colour with nothing in it at all, so a crowded assembly comes
+  // back as a single silhouette and the setting meant to make shapes readable
+  // was doing nothing here. The drawing is still one setting away — key and fill
+  // at 0 is exactly the flat colour this used to be.
   return (
     <>
-      {/* The projections have no lights of their own — everything else in them
-          is unlit by design. A lit material dropped into an unlit scene renders
-          black, so the texture brings its own. */}
-      {wood && (
-        <>
-          <ambientLight intensity={0.7} />
-          <directionalLight position={[200, 300, 150]} intensity={0.9} />
-        </>
-      )}
+      <SceneLights />
       {groups.map((group, i) =>
         wood ? (
-          <mesh key={i} geometry={group.geometry} material={wood} raycast={() => null} />
+          <mesh
+            key={i}
+            ref={castsShade}
+            geometry={group.geometry}
+            material={wood}
+            raycast={() => null}
+          />
         ) : (
-          <mesh key={i} geometry={group.geometry} raycast={() => null}>
+          <mesh key={i} ref={castsShade} geometry={group.geometry} raycast={() => null}>
             {/* the polygon offset pushes the surface back a hair so the lines
                 drawn on it do not z-fight */}
-            <meshBasicMaterial
+            <meshStandardMaterial
               color={appearance.solidColor}
+              flatShading
               polygonOffset
               polygonOffsetFactor={1}
               polygonOffsetUnits={1}
@@ -806,6 +826,7 @@ export function OrthographicView({ viewId, cellSize }: { viewId: ViewId; cellSiz
   const pan = useComponentEditorStore((state) => state.viewPans[viewId]);
   const modelRotation = useComponentEditorStore((state) => state.modelRotation);
   const modes = useEditorViewports((state) => state.modes[viewId]);
+  const faintOutline = useLookStore((state) => state.faintOutline);
   const groups = useMergedGroups();
   const geometries = useMemo(() => groups.map((group) => group.geometry), [groups]);
   const size = cellSize;
@@ -949,13 +970,16 @@ export function OrthographicView({ viewId, cellSize }: { viewId: ViewId; cellSiz
       )}
       {/* "no lines" skips the hidden-line pass entirely rather than drawing its
           result invisibly — it is the expensive part of a projection, and the
-          pickable copy of the outline below is a separate body anyway */}
-      {meshes.length > 0 && modes.geometry !== "none" && (
+          pickable copy of the outline below is a separate body anyway. Unless
+          the Options panel asked for the faint outline, which is the one thing
+          that needs the pass back. */}
+      {meshes.length > 0 && (modes.geometry !== "none" || faintOutline) && (
         <ProjectionLines
           groups={groups}
           viewDir={basis.direction}
           radius={radius}
-          mode={modes.geometry}
+          mode={modes.geometry === "none" ? "materialEdges" : modes.geometry}
+          faint={modes.geometry === "none"}
         />
       )}
       {meshes.length > 0 && <MeasurementLabels radius={radius} />}
