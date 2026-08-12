@@ -63,7 +63,7 @@ export const SHOWCASE_STYLES: readonly ShowcaseStyle[] = [
     note: "One lamp, one dark room, and nothing lit that the bulb did not light.",
     built: true,
   },
-  { id: "anime", label: "Anime", note: "Warm cels, hard light, drawn edges.", built: false },
+  { id: "anime", label: "Anime", note: "Warm cels, hard light, drawn edges.", built: true },
   { id: "cartoon", label: "Cartoon", note: "Flat colour under a heavy ink line.", built: false },
   {
     id: "ghibli",

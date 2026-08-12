@@ -57,6 +57,51 @@ export interface PropFit {
   dress: Record<string, THREE.Material>;
   /** The fallback for any material name not in `dress`. */
   fallback: THREE.Material;
+  /**
+   * How coarsely to facet the prop, in millimetres of the room. 0 leaves it as
+   * the file drew it. See {@link facetGeometry}.
+   */
+  facet?: number;
+}
+
+/**
+ * A model chopped down to flat faces a given size.
+ *
+ * The low-poly style is the one style that cannot be done to the picture after
+ * the fact: faceting is a property of the *surface*, and no filter reading a
+ * finished frame can tell a curved thing from a many-sided one. Everything else
+ * in this room is already boxes and cylinders and looks low-poly the moment the
+ * shading flattens; the bed and the nightstand arrive smooth and have to be
+ * cut.
+ *
+ * Two operations, and both are needed. **Snapping** each vertex to a lattice is
+ * what removes the detail — several neighbouring vertices land on the same
+ * point, the triangles between them collapse to nothing, and what is left is a
+ * coarse hull with visible corners. **Flat normals** are what make it read:
+ * a faceted mesh still shaded smoothly is a lumpy smooth mesh, because the
+ * normals are still the original surface's and it is the normals you can see.
+ *
+ * Non-indexed first, so that each triangle owns its three vertices and
+ * `computeVertexNormals` gives every one of them the face's own normal rather
+ * than an average over whatever else used to share it.
+ */
+function facetGeometry(source: THREE.BufferGeometry, grid: number): THREE.BufferGeometry {
+  const geometry = source.index ? source.toNonIndexed() : source.clone();
+  const position = geometry.attributes.position as THREE.BufferAttribute;
+  const array = position.array as Float32Array;
+  for (let i = 0; i < array.length; i++) array[i] = Math.round(array[i] / grid) * grid;
+  position.needsUpdate = true;
+
+  // Everything else the file brought — UVs it had, tangents, a second set of
+  // normals — is either about to be wrong or was never read here. Only the
+  // positions survive, and the normals are rebuilt from them.
+  for (const name of Object.keys(geometry.attributes)) {
+    if (name !== "position") geometry.deleteAttribute(name);
+  }
+  geometry.computeVertexNormals();
+  geometry.computeBoundingBox();
+  geometry.computeBoundingSphere();
+  return geometry;
 }
 
 /**
@@ -95,6 +140,20 @@ export function Prop({ fit }: { fit: PropFit }) {
         ? fit.height / Math.max(size.y, 1e-6)
         : (fit.length ?? 1000) / Math.max(size.x, size.z, 1e-6);
 
+    // Faceted after the scale is known and before it is applied: the lattice is
+    // given in millimetres of the *room*, and the geometry is still in whatever
+    // units its author used. Measuring first also means the prop keeps the size
+    // it was fitted to rather than the slightly smaller one snapping leaves.
+    const cut: THREE.BufferGeometry[] = [];
+    if (fit.facet) {
+      const grid = fit.facet / scale;
+      root.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        object.geometry = facetGeometry(object.geometry, grid);
+        cut.push(object.geometry);
+      });
+    }
+
     const corner = new THREE.Vector3(
       box.min.x + size.x * fit.anchor[0],
       box.min.y + size.y * fit.anchor[1],
@@ -105,20 +164,26 @@ export function Prop({ fit }: { fit: PropFit }) {
     group.add(root);
     root.scale.setScalar(scale);
     group.position.set(fit.at[0] - corner.x, fit.at[1] - corner.y, fit.at[2] - corner.z);
-    return group;
+    return { group, cut };
   }, [scene, fit]);
 
   // The clone owns nodes, not geometry or materials — both of those belong to
   // the cache and to the room respectively, and disposing either from here would
   // pull them out from under whoever else is using them.
+  //
+  // The one exception is geometry this clone *cut* for itself. That is not the
+  // cache's and nobody else holds it, and a style change makes a fresh set — so
+  // without this, orbiting through the eight styles would leave eight beds'
+  // worth of vertex buffers on the card.
   useEffect(
     () => () => {
-      model.clear();
+      model.group.clear();
+      for (const geometry of model.cut) geometry.dispose();
     },
     [model]
   );
 
-  return <primitive object={model} />;
+  return <primitive object={model.group} />;
 }
 
 /**

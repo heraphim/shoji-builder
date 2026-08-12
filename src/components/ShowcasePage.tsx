@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
-import { RealisticShowcase } from "./ShowcaseScene";
+import { Showcase } from "./ShowcaseScene";
+import { showcaseLook } from "../lib/showcaseLook";
 import { LOADING_STAGES, ShowcaseLoading } from "./ShowcaseLoading";
 import { useLampStore } from "../store/useLampStore";
 import { useResolvedVariables, useVariablesStore } from "../store/useVariablesStore";
@@ -490,8 +491,9 @@ export function ShowcasePage({ onOpenEditor }: { onOpenEditor: () => void }) {
           toneMappingExposure: 1.05,
         }}
       >
-        <color attach="background" args={["#0b0806"]} />
-        <RealisticShowcase
+        <color attach="background" args={[showcaseLook(style).background]} />
+        <Showcase
+          style={style}
           compact={compact}
           lampOn={lampOn}
           ceilingOn={ceilingOn}

@@ -8,6 +8,7 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 import { MeshReflectorMaterial } from "@react-three/drei";
 import { Prop, preloadProps, type PropFit } from "./ShowcaseProps";
 import { siteUrl } from "../lib/library";
+import type { ShowcaseLook } from "../lib/showcaseLook";
 
 /**
  * The room the lamp is shown in: a wall, a nightstand, the corner of a bed, and
@@ -506,7 +507,7 @@ function paintingTexture(): THREE.Texture {
  * nightstand with real grain in it is most of why the lamp's own grain reads as
  * grain rather than as a pattern.
  */
-function useRoom() {
+function useRoom(detail: number) {
   const room = useMemo(() => {
     // The nightstand is the lighter of the two on purpose: it is the surface the
     // lamp's spill actually lands on, and dark walnut swallowed the pool of
@@ -518,7 +519,10 @@ function useRoom() {
     // is a few pixels with your nose against the nightstand — resolved, not
     // aliased, and simply too many dark specks to read as a finished top. Real
     // oak has them; real oak also has them filled and polished over.
-    const pores = { poreIntensity: 0.12 };
+    const pores = { poreIntensity: 0.12 * detail };
+
+    /** How much of a fold survives. See the cloth below. */
+    const fold = 0.4 + 0.6 * detail;
 
     /** How far the boards were cut from the heart of the tree, in mm. */
     const PITH_MM = 1600;
@@ -538,6 +542,16 @@ function useRoom() {
       ...pores,
       grainScale,
       roughness,
+      // How much figure the timber keeps, at the style's asking.
+      //
+      // A drawn style turns the tone of every surface into a handful of flat
+      // values, and a fine high-contrast pattern put through that does not come
+      // out as fine — it comes out as a field of hard-edged specks that crawl
+      // when the camera moves. The species is still the species and the ring
+      // pitch is still the ring pitch; what comes down is how far apart the
+      // light and dark of them are, which is the one thing banding amplifies.
+      grainContrast: woodPreset(species, finish).grainContrast * detail,
+      splotchIntensity: woodPreset(species, finish).splotchIntensity * detail,
       pith: [PITH_MM / grainScale, (PITH_MM * 0.24) / grainScale] as [number, number],
       // Drawn out along the length of the board.
       //
@@ -576,17 +590,20 @@ function useRoom() {
       oak,
       walnut,
       ebony,
-      paper: new PaperMaterial(paintingTexture()),
-      plaster: new PlasterMaterial("#b6a892"),
-      ceiling: new PlasterMaterial("#c2b6a2", 0.6),
-      floor: new PlasterMaterial("#4c3a2a", 0.4),
+      paper: new PaperMaterial(paintingTexture(), detail),
+      plaster: new PlasterMaterial("#b6a892", detail),
+      ceiling: new PlasterMaterial("#c2b6a2", 0.6 * detail),
+      floor: new PlasterMaterial("#4c3a2a", 0.4 * detail),
       // The mattress is a tight ticking, the sheet finer and slacker over it,
       // the pillow the loosest of the three — a cover with something soft in it
       // creases at a much bigger scale than a sheet pulled over a slab.
-      ticking: new ClothMaterial({ color: "#a99f8e", weave: 2.6, weaveDepth: 0.08, fold: 70, foldDepth: 0.12 }),
-      sheet: new ClothMaterial({ color: "#bdb5a5", weave: 2.8, weaveDepth: 0.08, fold: 60, foldDepth: 0.3 }),
-      duvet: new ClothMaterial({ color: "#a0968a", weave: 4.2, weaveDepth: 0.1, fold: 150, foldDepth: 0.24, sheen: 0.4 }),
-      pillow: new ClothMaterial({ color: "#bab1a1", weave: 3.0, weaveDepth: 0.08, fold: 90, foldDepth: 0.2 }),
+      // The weave is the first thing a drawn style loses and the folds are the
+      // last: a cel painter does not draw the threads in a sheet and does draw
+      // the shape it has fallen into, so the two scale by different amounts.
+      ticking: new ClothMaterial({ color: "#a99f8e", weave: 2.6, weaveDepth: 0.08 * detail, fold: 70, foldDepth: 0.12 * fold }),
+      sheet: new ClothMaterial({ color: "#bdb5a5", weave: 2.8, weaveDepth: 0.08 * detail, fold: 60, foldDepth: 0.3 * fold }),
+      duvet: new ClothMaterial({ color: "#a0968a", weave: 4.2, weaveDepth: 0.1 * detail, fold: 150, foldDepth: 0.24 * fold, sheen: 0.4 }),
+      pillow: new ClothMaterial({ color: "#bab1a1", weave: 3.0, weaveDepth: 0.08 * detail, fold: 90, foldDepth: 0.2 * fold }),
       // The same washi the lamp is papered with, and not glowing: a screen is
       // lit from whichever side the light is on, which here is outside.
       screen: new THREE.MeshStandardMaterial({
@@ -649,7 +666,10 @@ function useRoom() {
         pillow: pillowGeometry(560, 380, 190),
       },
     };
-  }, []);
+    // Rebuilt when the style changes, and only then. Every surface in the room
+    // is a shader with the style's detail baked into its uniforms, and there is
+    // no cheaper way in: they are constructor arguments, not settings.
+  }, [detail]);
 
   useEffect(
     () => () => {
@@ -671,9 +691,41 @@ function useRoom() {
   return room;
 }
 
-export function ShowcaseRoom({ standY, ceilingOn }: { standY: number; ceilingOn: boolean }) {
-  const room = useRoom();
+export function ShowcaseRoom({
+  standY,
+  ceilingOn,
+  look,
+}: {
+  standY: number;
+  ceilingOn: boolean;
+  look: ShowcaseLook;
+}) {
+  const room = useRoom(look.detail);
   const g = room.geometry;
+
+  // Held still across a render, because `Prop` keys its whole clone-fit-and-cut
+  // on the fit object's identity. Written inline it was a fresh object every
+  // time the page drew, which was invisible while the work was a clone of a few
+  // nodes and is not once the low-poly style has it re-cutting a bed's geometry
+  // on every frame of a Glow drag.
+  const fits = useMemo(
+    () => ({
+      nightstand: { ...NIGHTSTAND, facet: look.facet, dress: {}, fallback: room.oak },
+      bed: {
+        ...BED,
+        facet: look.facet,
+        dress: {
+          Bed_frame: room.walnut,
+          Legs: room.walnut,
+          Pillows: room.pillow,
+          Blanket: room.duvet,
+          Sheets: room.sheet,
+        },
+        fallback: room.walnut,
+      },
+    }),
+    [room, look.facet]
+  );
 
   return (
     <group position={[0, standY, 0]}>
@@ -732,20 +784,8 @@ export function ShowcaseRoom({ standY, ceilingOn }: { standY: number; ceilingOn:
        *
        * Suspended rather than awaited, so the room draws while they arrive. */}
       <Suspense fallback={null}>
-        <Prop fit={{ ...NIGHTSTAND, dress: {}, fallback: room.oak }} />
-        <Prop
-          fit={{
-            ...BED,
-            dress: {
-              Bed_frame: room.walnut,
-              Legs: room.walnut,
-              Pillows: room.pillow,
-              Blanket: room.duvet,
-              Sheets: room.sheet,
-            },
-            fallback: room.walnut,
-          }}
-        />
+        <Prop fit={fits.nightstand} />
+        <Prop fit={fits.bed} />
       </Suspense>
 
       <HangingScroll paper={room.paper} rods={room.ebony} wrap={room.screen} />

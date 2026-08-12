@@ -7,10 +7,20 @@ import { ShowcaseLamp, useLampScene } from "./LampView";
 import { CAMERA_BOUNDS, CEILING_FIXTURE, WINDOW, ShowcaseRoom } from "./ShowcaseRoom";
 import { useLampStore } from "../store/useLampStore";
 import { RicePaperMaterial, paperShellGeometry, shellFloorGeometry } from "../lib/ricePaper";
-import type { OutsideLight } from "../lib/showcaseStyles";
+import { PaintEffect, type PaintParams } from "../lib/paint";
+import { showcaseLook } from "../lib/showcaseLook";
+import type { OutsideLight, ShowcaseStyleId } from "../lib/showcaseStyles";
 
 /**
- * The realistic showcase: a lamp lit from the inside, in a dark bedroom.
+ * The showcase: a lamp lit from the inside, in a bedroom, drawn whichever way
+ * the visitor asked for.
+ *
+ * The room and the lighting below are the *realistic* answer, and every other
+ * style is that same room with the painter's decisions laid over it — see
+ * `lib/showcaseLook.ts` for what those are and `lib/paint.ts` for how the
+ * picture is drawn. Nothing here branches on the style by name; it reads the
+ * look's numbers, which is what keeps an eighth style from being an eighth
+ * copy of the scene.
  *
  * One light. Everything you can see in this scene is there because the bulb
  * inside the shade put it there, which is the whole reason the picture works —
@@ -341,7 +351,24 @@ function FirstFrame({ onDrawn }: { onDrawn: () => void }) {
 }
 
 /**
- * Everything in the realistic showcase.
+ * The drawn styles' one shader, as a thing the composer can hold.
+ *
+ * The effect instance outlives every style change: switching from anime to
+ * watercolour writes eighteen uniforms and compiles nothing, which is the
+ * difference between the menu closing on a drawn frame and closing on a stall.
+ * Written on render rather than in an effect because the composer may draw
+ * before a `useEffect` has run, and one frame of the wrong style is one frame
+ * the visitor sees.
+ */
+function Paint({ params }: { params: PaintParams }) {
+  const effect = useMemo(() => new PaintEffect(params), [params]);
+  useEffect(() => () => effect.dispose(), [effect]);
+  effect.apply(params);
+  return <primitive object={effect} dispose={null} />;
+}
+
+/**
+ * Everything in the showcase.
  *
  * **The camera is framed once, on the lamp, and then left alone.** Not on the
  * variables: a Width or Height drag is somebody watching *this* lamp change
@@ -349,8 +376,14 @@ function FirstFrame({ onDrawn }: { onDrawn: () => void }) {
  * be showing them nothing changing. Not on the window either — the user's orbit
  * is theirs to keep. So the box and the aspect are both read through refs, and
  * the only thing that re-frames is a different lamp arriving.
+ *
+ * The style is not on that list either. Changing how the room is drawn is not a
+ * reason to move the camera — you have just asked to see the same picture in a
+ * different hand, and the first thing you would check is whether it is the same
+ * picture.
  */
-export function RealisticShowcase({
+export function Showcase({
+  style,
   compact,
   lampOn,
   ceilingOn,
@@ -358,6 +391,7 @@ export function RealisticShowcase({
   glow,
   onDrawn,
 }: {
+  style: ShowcaseStyleId;
   compact: boolean;
   lampOn: boolean;
   ceilingOn: boolean;
@@ -366,6 +400,7 @@ export function RealisticShowcase({
   glow: number;
   onDrawn: () => void;
 }) {
+  const look = showcaseLook(style);
   const scene = useLampScene();
   const instances = useLampStore((state) => state.instances);
   const box = scene.mainBox;
@@ -461,9 +496,26 @@ export function RealisticShowcase({
         args={[
           ceilingOn ? "#bfae94" : "#7d8296",
           ceilingOn ? "#6b5a44" : "#3b3228",
-          ceilingOn ? 0.5 : 0.17,
+          (ceilingOn ? 0.5 : 0.17) * look.ambient,
         ]}
       />
+
+      {/* And the painter's own light, from where the viewer is.
+       *
+       * Zero in the realistic style, because there is nothing there. In every
+       * drawn style there is: an illustrator lights a night interior enough to
+       * draw it, and the near face of the nightstand — turned away from the
+       * bulb, the ceiling and the window all three — is a readable brown in
+       * every one of the references and would be black under this room's real
+       * lighting. It casts nothing, which is what makes it a decision about the
+       * drawing rather than a fifth lamp. */}
+      {look.fill > 0 && (
+        <directionalLight
+          position={[-900, 1400, 3200]}
+          intensity={look.fill}
+          color={look.fillColor}
+        />
+      )}
 
       {/* And the sheen. Neither ambient nor hemisphere light makes a specular
           highlight - only a light with a direction can - so without this the
@@ -478,7 +530,7 @@ export function RealisticShowcase({
         <pointLight
           position={bulb.toArray()}
           color="#ffcb92"
-          intensity={BULB_CANDELA * PAPER_SPILL * glow}
+          intensity={BULB_CANDELA * PAPER_SPILL * glow * look.bulb}
           decay={2}
           // It casts, which reads as a contradiction with the note above and is
           // not one. What it must not do is throw a *sharp* shadow, and that is
@@ -500,7 +552,7 @@ export function RealisticShowcase({
         <pointLight
           position={bulb.toArray()}
           color={BULB_COLOR}
-          intensity={BULB_CANDELA * glow}
+          intensity={BULB_CANDELA * glow * look.bulb}
           decay={2}
           castShadow
           shadow-mapSize={compact ? [512, 512] : [1024, 1024]}
@@ -566,7 +618,7 @@ export function RealisticShowcase({
         />
       )}
 
-      <ShowcaseRoom standY={standY} ceilingOn={ceilingOn} />
+      <ShowcaseRoom standY={standY} ceilingOn={ceilingOn} look={look} />
       <RicePaper box={box} lit={lampOn} glow={glow} />
       <ShowcaseLamp scene={scene} />
 
@@ -622,10 +674,26 @@ export function RealisticShowcase({
           grain line, the stepped rim of a shadow, the diagonal of a fold — none
           of which is a geometric edge at all, so multisampling never sees them.
           Last in the chain, because it has to work on the picture as it will be
-          seen, bloom and vignette included. */}
+          seen, bloom and vignette included.
+
+          The paint goes between the two halves of that and not at either end.
+          After the bloom, because the halo is part of what is being drawn — a
+          cel painter paints the glow, they do not glow the painting. Before the
+          anti-aliasing, because an ink line one pixel wide laid over a smoothed
+          picture is a jagged ink line, and it is the last thing added. */}
       <EffectComposer multisampling={compact ? 4 : 8}>
-        <Bloom mipmapBlur intensity={0.85} luminanceThreshold={0.62} luminanceSmoothing={0.3} />
-        <Vignette offset={0.28} darkness={0.62} />
+        {look.bloom && (
+          <Bloom
+            mipmapBlur
+            intensity={look.bloom.intensity}
+            luminanceThreshold={look.bloom.threshold}
+            luminanceSmoothing={look.bloom.smoothing}
+          />
+        )}
+        {look.paint && <Paint params={look.paint} />}
+        {look.vignette && (
+          <Vignette offset={look.vignette.offset} darkness={look.vignette.darkness} />
+        )}
         <SMAA />
       </EffectComposer>
     </>

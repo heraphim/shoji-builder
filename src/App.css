@@ -2064,10 +2064,10 @@ select.view-mode option:disabled {
    front of a watercolour. So a style brings its own chrome, and adding one is
    one block of custom properties rather than a second copy of the layout.
 
-   Only `realistic` exists so far. The layout rules underneath it are shared,
-   and a style that wants a different *shape* of control can still override
-   them — but it starts from the same skeleton, and that skeleton is what makes
-   the page work on a phone.
+   The layout rules underneath the token blocks are shared, and a style that
+   wants a different *shape* of control can still override them — but it starts
+   from the same skeleton, and that skeleton is what makes the page work on a
+   phone.
    =========================================================================== */
 
 .showcase[data-style="realistic"] {
@@ -2087,6 +2087,34 @@ select.view-mode option:disabled {
   --sc-track-shadow: none;
   --sc-thumb: #f0c491;
   --sc-thumb-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+/* Anime.
+
+   Smoked glass is a photograph's idea of a control, and this picture is not a
+   photograph — it is drawn, and the things on top of it have to be drawn too.
+   So: flat panels rather than gradients, no blur behind them, and a hard
+   dark-brown line all the way round, which is the same line the scene has round
+   everything in it. The corners come in a little because a cel is inked with a
+   brush and not a compass. */
+.showcase[data-style="anime"] {
+  --sc-page: #1a1109;
+  --sc-panel: rgba(48, 30, 18, 0.82);
+  --sc-panel-lit: rgba(78, 49, 28, 0.92);
+  --sc-border: rgba(59, 36, 21, 0.9);
+  --sc-border-lit: #ffb45c;
+  --sc-text: #ffeed6;
+  --sc-text-dim: #c9a077;
+  --sc-accent: #ffb45c;
+  --sc-radius: 10px;
+  --sc-pill: 8px;
+  --sc-blur: none;
+  --sc-shadow: 0 3px 0 rgba(46, 27, 15, 0.75);
+  --sc-inset: none;
+  --sc-track: rgba(59, 36, 21, 0.8);
+  --sc-track-shadow: none;
+  --sc-thumb: #ffd9a2;
+  --sc-thumb-shadow: 0 0 0 2px rgba(59, 36, 21, 0.9);
 }
 
 .showcase {
@@ -2166,7 +2194,10 @@ select.view-mode option:disabled {
   max-width: 100%;
   padding: 9px 16px;
   border: 1px solid var(--sc-border);
-  border-radius: 999px;
+  /* A pill by default, because a photograph's chrome is a lozenge of glass. A
+     drawn style sets it square-ish instead: a brush does not draw a pill, and
+     the button has to look like it came off the same board as the picture. */
+  border-radius: var(--sc-pill, 999px);
   background: var(--sc-panel);
   -webkit-backdrop-filter: var(--sc-blur);
   backdrop-filter: var(--sc-blur);
