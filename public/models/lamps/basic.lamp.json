@@ -1,7 +1,7 @@
 {
-  "id": "lamp",
+  "id": "basic",
   "type": "lamp",
-  "format": 1,
+  "format": 2,
   "units": "mm",
   "variables": {
     "beamDepth": "10",
@@ -579,6 +579,750 @@
             }
           ]
         }
+      }
+    },
+    {
+      "id": "e4e1844a-8613-4026-8408-624d2b973c24",
+      "label": "frameHorizontal",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6f035b53-0bfe-4faa-9097-a4a66682766c",
+      "label": "frameHorizontal (2)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "405f326a-e168-485f-bb01-1379fb9cd017",
+      "label": "frameHorizontal (3)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "c8ecac99-40f8-4f6b-a2ae-0b8bab687e18",
+      "label": "frameHorizontal (4)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "eb9d10f9-1842-4091-970f-7dcccc98bd05",
+      "label": "frameHorizontal (5)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "7ea90931-0e60-412e-899a-3d9579cd7596",
+      "label": "frameHorizontal (6)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "3b99e997-cf89-43cd-9b15-31fdab899fa6",
+      "label": "frameHorizontal (7)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "0de7c5fa-8218-4762-9c70-2036e610fff4",
+      "label": "frameHorizontal (8)",
+      "component": "frameHorizontal.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "636ba818-1f68-4f80-8f46-8c256d36a73d",
+      "label": "frameVertical",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "52099405-782b-4044-b532-722502a663b5",
+      "label": "frameVertical (2)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "de2c1309-93f2-4ccf-a3f5-752a3ffd3366",
+      "label": "frameVertical (3)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dc3b7281-9c99-479f-a8d8-20a2a8b59ccb",
+      "label": "frameVertical (4)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "c1816567-c41e-4bd4-b3c0-4fa3c43c5b6e",
+      "label": "frameVertical (5)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "693d34ed-b9f7-4fbf-ab10-f4d4a9b92052",
+      "label": "frameVertical (6)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "270814f6-90a0-4c32-83eb-92f4bd898a87",
+      "label": "frameVertical (7)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "88152364-03d5-4bb1-ac8d-1d8d97270ce7",
+      "label": "frameVertical (8)",
+      "component": "frameVertical.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": "f490810c-57ee-4156-8dba-006732421880"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
       }
     }
   ]
