@@ -245,7 +245,7 @@
   "appearance": {
     "solidColor": "#1e4179",
     "texture": "basic-cherry.texture.json",
-    "grainAxis": "x"
+    "grainAxis": "y"
   },
   "preview": {
     "variables": {
