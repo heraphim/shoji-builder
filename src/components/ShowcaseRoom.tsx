@@ -555,9 +555,22 @@ function useRoom() {
     // slow-grown hardwood and about what a photograph of a walnut top shows.
     // It started at 700 — a ring every 21 mm — and looked like a board enlarged
     // eight times, which is exactly what it was.
+    //
+    // 45 on the knobs was below what the screen can draw at all. The room is
+    // rendered at about 1.9 pixels per millimetre, so a 1.4 mm ring spanned
+    // under three of them — past the point where the moire guard in `woodRings`
+    // starts folding the pattern flat, and it was taking 40% of the contrast
+    // with it. 85 puts a ring across five pixels, which is not enough for a soft
+    // boundary (see below) but is enough for the ring to survive as a ring.
+    //
+    // Note what this does *not* fix. Walnut's latewood is a tenth of a ring
+    // wide, so a boundary that reads as a gradient rather than a step needs
+    // about thirty pixels per ring; at this distance that would mean a 19 mm
+    // pitch, which is the enlarged-board look above. On these two the edge stays
+    // hard, and the lever is `ringBias`, not the grain scale.
     const oak = new WoodMaterial(board("red_oak", "semigloss", 90, 0.74));
     const walnut = new WoodMaterial(board("walnut", "matte", 120, 0.86));
-    const ebony = new WoodMaterial(board("walnut", "gloss", 45, 0.6));
+    const ebony = new WoodMaterial(board("walnut", "gloss", 85, 0.6));
 
     return {
       oak,

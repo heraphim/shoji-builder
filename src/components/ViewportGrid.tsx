@@ -374,7 +374,18 @@ export function ViewportGrid({
           />
         ))}
       </div>
-      <Canvas className="views-canvas" eventSource={containerRef} dpr={[1, 2]}>
+      {/*
+        Supersampled, with a floor above 1 — the same call `ShowcasePage` makes,
+        for the same reason and with more to gain.
+
+        `dpr` is a *clamp* on the display's own ratio, so `[1, 2]` left an
+        ordinary 1x monitor rendering one sample per screen pixel. The wood is a
+        function evaluated per fragment rather than an image, so the number of
+        fragments is the only thing deciding how much grain survives, and a ring
+        eight pixels across cannot hold an edge and a gradient both. A floor of 2
+        doubles the pixels per ring in every projection.
+      */}
+      <Canvas className="views-canvas" eventSource={containerRef} dpr={[2, 2]}>
         <View.Port />
       </Canvas>
     </div>

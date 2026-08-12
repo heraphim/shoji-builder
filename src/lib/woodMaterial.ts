@@ -125,6 +125,17 @@ varying vec3 vWoodObjectPosition;
 const float WOOD_TAU = 6.283185307179586;
 
 /**
+ * The narrowest a ring boundary may be, as a fraction of a ring.
+ *
+ * See {@link woodRings}. 0.2 puts the finished edge at 28% of a ring, which is
+ * about what the earlywood-to-latewood transition looks like on real timber —
+ * a gradient, not a line. Raising it softens the grain at close range without
+ * touching how it reads across a room; lowering it back to 0 restores the
+ * one-pixel edge this constant exists to prevent.
+ */
+const float RING_SOFTNESS = 0.2;
+
+/**
  * The surface, as one number, left behind by the last call to woodColor().
  *
  * 1 is earlywood — the pale, open, spring growth, which stands slightly proud
@@ -280,8 +291,42 @@ float woodRings(float radius, float ringFreq, float ringBias, float ringSizeVari
   // rings crossed per pixel, and from it how wide the profile's own ramp is on
   // screen — that width is the smoothstep's blur radius
   float perPixel = fwidth(coord);
-  float ramp = perPixel * barkThickness / max(ringBias, 1e-3);
-  float blur = clamp(ramp * 0.7, 0.02, 1.0);
+
+  /**
+   * The edge is never allowed to be as thin as a pixel.
+   *
+   * With the ramp taken straight off perPixel, the blur scaled with the pixel
+   * and the barkThickness / ringBias factor cancelled against the profile's own
+   * slope, so the finished edge came out 1.4 *pixels* wide for every species at
+   * every zoom. That is a hard edge by definition, and a hard edge lying nearly
+   * along the pixel rows — which a ring on a flat-sawn face does — is a
+   * staircase. It was the one artefact that got worse the closer you looked,
+   * because everything around it resolved while the edge stayed one pixel.
+   *
+   * Flooring the pixel term instead pins the edge to a fraction of a *ring*, so
+   * it widens as the ring does. It engages when perPixel drops under 0.2, which
+   * is when a ring spans more than five pixels; below that the measured term is
+   * larger and takes over on its own, so the anti-aliasing that keeps a distant
+   * beam from crawling is untouched.
+   *
+   * How wide the edge actually gets is then capped by the profile, not by this
+   * constant: the transition happens on the rising limb, which is only
+   * ringBias / barkThickness of a ring wide. On a species whose latewood is a
+   * tenth of a ring — walnut, teak, cedar — that limb is narrow enough that a
+   * two-pixel edge needs upwards of thirty pixels per ring, which no viewing
+   * distance in this app supplies. Those stay hard, and the lever for them is
+   * ringBias rather than anything here.
+   */
+  float ramp = max(perPixel, RING_SOFTNESS) * barkThickness / max(ringBias, 1e-3);
+  // The ceiling is 0.4, not the 1.0 this was written with.
+  //
+  // blur is the half-width of a smoothstep centred on sharp - 0.5, and sharp
+  // runs 0 to 1, so the input only ever spans +/-0.5. Any blur past that cannot
+  // reach either end and the ring comes back grey: at 1.0 the narrow-latewood
+  // species — walnut, teak, cedar, whose ringBias is under a tenth — kept only
+  // about two thirds of their black-to-white range. 0.4 is the widest blur that
+  // still resolves the whole of it, so it is a ceiling with nothing behind it.
+  float blur = clamp(ramp * 0.7, 0.02, 0.4);
   float soft = smoothstep(-blur, blur, sharp - 0.5);
 
   // past roughly one ring per pixel there is nothing left to resolve, and
