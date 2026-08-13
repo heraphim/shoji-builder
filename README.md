@@ -6,6 +6,12 @@ elsewhere (SketchUp → STL), imported here, joined into components, and
 variable and every part written against it is re-cut and the assembly re-laid
 out.
 
+**It exists to plan a lamp in order to build it** — a real object, cut and joined
+by hand. That is what decides whether a feature is worth having: the showcase is
+here to judge a design rather than to be the product, and a design that looks
+right on screen but cannot be glued together is wrong. What that means in
+practice is [docs/joinery-rules.md](docs/joinery-rules.md).
+
 The unit throughout is the **millimetre**.
 
 ## Quick start
@@ -99,6 +105,7 @@ component instead of the old one at the old size. See
 | [docs/algorithms/rectangle-partition.md](docs/algorithms/rectangle-partition.md) | Minimum rectilinear rectangle partition |
 | [docs/algorithms/projection-and-dimensions.md](docs/algorithms/projection-and-dimensions.md) | Hidden-line removal, dimension chain layout, framing |
 | [docs/algorithms/wood-texture.md](docs/algorithms/wood-texture.md) | Solid (3-D) wood texturing: noise, rings, warp, pores |
+| [docs/joinery-rules.md](docs/joinery-rules.md) | What makes an assembly buildable: the paper's frame, lapped ends, filled mortises |
 | [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v6, save and load |
 | [docs/lamp-file-format.md](docs/lamp-file-format.md) | `*.lamp.json` schema v2 — which components are on the lamp, and how |
 | [docs/texture-file-format.md](docs/texture-file-format.md) | `*.texture.json` schema v2 — the wood as parameters, never an image |

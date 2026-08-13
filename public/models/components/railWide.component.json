@@ -1,0 +1,514 @@
+{
+  "id": "railWide",
+  "description": "Structural rail spanning the width, half-lapped a rail's depth from each end where it crosses its neighbours, and running on past them as a horn. The laps keep the lower half; the rails that cross it keep the upper.",
+  "type": "component",
+  "format": 6,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamExtra": "20",
+    "beamHeight": "15",
+    "innerDepth": "200",
+    "innerWidth": "200",
+    "legThickness": "20"
+  },
+  "blocks": [
+    {
+      "id": "railWide-1-horn",
+      "name": "horn",
+      "size": {
+        "x": "#beamExtra",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "railWide-2-lap",
+      "name": "lap",
+      "size": {
+        "x": "#beamDepth",
+        "y": "1/2*#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        20,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "railWide-3-middle",
+      "name": "middle",
+      "size": {
+        "x": "#innerWidth",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        30,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "railWide-4-lap",
+      "name": "lap",
+      "size": {
+        "x": "#beamDepth",
+        "y": "1/2*#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        230,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "railWide-5-horn",
+      "name": "horn",
+      "size": {
+        "x": "#beamExtra",
+        "y": "#beamHeight",
+        "z": "#beamDepth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        240,
+        0,
+        0
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "railWide-joint-1",
+      "a": {
+        "block": "railWide-1-horn",
+        "anchor": [
+          1,
+          0,
+          0
+        ]
+      },
+      "b": {
+        "block": "railWide-2-lap",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "railWide-joint-2",
+      "a": {
+        "block": "railWide-2-lap",
+        "anchor": [
+          1,
+          0,
+          0
+        ]
+      },
+      "b": {
+        "block": "railWide-3-middle",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "railWide-joint-3",
+      "a": {
+        "block": "railWide-3-middle",
+        "anchor": [
+          1,
+          0,
+          0
+        ]
+      },
+      "b": {
+        "block": "railWide-4-lap",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "id": "railWide-joint-4",
+      "a": {
+        "block": "railWide-4-lap",
+        "anchor": [
+          1,
+          0,
+          0
+        ]
+      },
+      "b": {
+        "block": "railWide-5-horn",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "measurements": [],
+  "appearance": {
+    "solidColor": "#1e4179",
+    "texture": "basic-pine.texture.json",
+    "grainAxis": "x"
+  },
+  "preview": {
+    "variables": {
+      "beamDepth": 10,
+      "beamExtra": 20,
+      "beamHeight": 15,
+      "innerDepth": 200,
+      "innerWidth": 200,
+      "legThickness": 20
+    },
+    "solids": [
+      {
+        "vertices": [
+          0,
+          0,
+          0,
+          20,
+          0,
+          0,
+          20,
+          15,
+          0,
+          0,
+          15,
+          0,
+          0,
+          0,
+          10,
+          20,
+          0,
+          10,
+          20,
+          15,
+          10,
+          0,
+          15,
+          10,
+          20,
+          0,
+          0,
+          30,
+          0,
+          0,
+          30,
+          7.5,
+          0,
+          20,
+          7.5,
+          0,
+          20,
+          0,
+          10,
+          30,
+          0,
+          10,
+          30,
+          7.5,
+          10,
+          20,
+          7.5,
+          10,
+          30,
+          0,
+          0,
+          230,
+          0,
+          0,
+          230,
+          15,
+          0,
+          30,
+          15,
+          0,
+          30,
+          0,
+          10,
+          230,
+          0,
+          10,
+          230,
+          15,
+          10,
+          30,
+          15,
+          10,
+          230,
+          0,
+          0,
+          240,
+          0,
+          0,
+          240,
+          7.5,
+          0,
+          230,
+          7.5,
+          0,
+          230,
+          0,
+          10,
+          240,
+          0,
+          10,
+          240,
+          7.5,
+          10,
+          230,
+          7.5,
+          10,
+          240,
+          0,
+          0,
+          260,
+          0,
+          0,
+          260,
+          15,
+          0,
+          240,
+          15,
+          0,
+          240,
+          0,
+          10,
+          260,
+          0,
+          10,
+          260,
+          15,
+          10,
+          240,
+          15,
+          10
+        ],
+        "triangles": [
+          4,
+          5,
+          6,
+          4,
+          6,
+          7,
+          1,
+          0,
+          3,
+          1,
+          3,
+          2,
+          5,
+          1,
+          2,
+          5,
+          2,
+          6,
+          0,
+          4,
+          7,
+          0,
+          7,
+          3,
+          3,
+          7,
+          6,
+          3,
+          6,
+          2,
+          0,
+          1,
+          5,
+          0,
+          5,
+          4,
+          12,
+          13,
+          14,
+          12,
+          14,
+          15,
+          9,
+          8,
+          11,
+          9,
+          11,
+          10,
+          13,
+          9,
+          10,
+          13,
+          10,
+          14,
+          8,
+          12,
+          15,
+          8,
+          15,
+          11,
+          11,
+          15,
+          14,
+          11,
+          14,
+          10,
+          8,
+          9,
+          13,
+          8,
+          13,
+          12,
+          20,
+          21,
+          22,
+          20,
+          22,
+          23,
+          17,
+          16,
+          19,
+          17,
+          19,
+          18,
+          21,
+          17,
+          18,
+          21,
+          18,
+          22,
+          16,
+          20,
+          23,
+          16,
+          23,
+          19,
+          19,
+          23,
+          22,
+          19,
+          22,
+          18,
+          16,
+          17,
+          21,
+          16,
+          21,
+          20,
+          28,
+          29,
+          30,
+          28,
+          30,
+          31,
+          25,
+          24,
+          27,
+          25,
+          27,
+          26,
+          29,
+          25,
+          26,
+          29,
+          26,
+          30,
+          24,
+          28,
+          31,
+          24,
+          31,
+          27,
+          27,
+          31,
+          30,
+          27,
+          30,
+          26,
+          24,
+          25,
+          29,
+          24,
+          29,
+          28,
+          36,
+          37,
+          38,
+          36,
+          38,
+          39,
+          33,
+          32,
+          35,
+          33,
+          35,
+          34,
+          37,
+          33,
+          34,
+          37,
+          34,
+          38,
+          32,
+          36,
+          39,
+          32,
+          39,
+          35,
+          35,
+          39,
+          38,
+          35,
+          38,
+          34,
+          32,
+          33,
+          37,
+          32,
+          37,
+          36
+        ]
+      }
+    ]
+  }
+}

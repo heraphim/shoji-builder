@@ -1,8 +1,8 @@
 import { LampScene3D, LampOrthographicView } from "./LampView";
 import { LampSidebar } from "./LampSidebar";
 import { FileStatusBar } from "./FileStatusBar";
+import { LampNavigator } from "./LampNavigator";
 import { ViewportGrid, type CellSize } from "./ViewportGrid";
-import { useLampStore } from "../store/useLampStore";
 import { useLampViewports, type ViewportId } from "../store/useViewportStore";
 
 /**
@@ -32,11 +32,15 @@ function renderView(id: ViewportId, size: CellSize) {
 export function LampDesignPage() {
   const zoomViewport = useLampViewports((state) => state.zoomViewport);
   const panViewport = useLampViewports((state) => state.panViewport);
-  const lampName = useLampStore((state) => state.lampName);
 
   return (
     <div className="lamp-page">
-      <FileStatusBar lead={lampName} />
+      {/* The lamp's name is inside the navigator rather than beside it: "what is
+          on the bench" and "where you are in the library" are one fact, and
+          printing it twice on one strip says the second one is something else. */}
+      <FileStatusBar>
+        <LampNavigator />
+      </FileStatusBar>
       <div className="lamp-body">
         <div className="lamp-canvas">
           <ViewportGrid

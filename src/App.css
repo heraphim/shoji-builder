@@ -826,6 +826,59 @@ select.upload-button:disabled:hover {
   font-family: ui-monospace, monospace;
 }
 
+/* Stepping through the lamp library, at the right-hand end of the strip — see
+   LampNavigator. `margin-left: auto` rather than a spacer, so the report and
+   the error keep the left and the steps keep the right however long either is. */
+.file-status-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.lamp-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lamp-nav-step {
+  min-width: 28px;
+  padding: 3px 6px;
+  background: var(--bp-panel);
+  border: 1px solid var(--bp-border);
+  border-radius: 3px;
+  color: var(--bp-text);
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.lamp-nav-step:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.lamp-nav-step:disabled {
+  color: var(--bp-text-dim);
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Wide enough that stepping does not shuffle the buttons under the cursor. */
+.lamp-nav-name {
+  min-width: 14ch;
+  padding: 0 8px;
+  text-align: center;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--bp-text);
+}
+
+.lamp-nav-name.unnamed {
+  color: var(--bp-text-dim);
+  font-style: italic;
+}
+
 .load-report {
   font-size: 12px;
   color: #8fd3a0;

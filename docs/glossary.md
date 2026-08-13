@@ -52,6 +52,13 @@ What `deriveBlocks` returns: a block's three size formulas plus the `spanKey` of
 each extent, so a later rebuild can find which measurement referred to which
 extent.
 
+### butt joint
+Two sticks meeting on **one** plane — an end against a face, or two ends against
+each other. In a stick frame that is end grain over a small area and it holds
+nothing, so it is a fault wherever an end joint is meant to be structural. The
+answer is a lap or a housing. See
+[joinery-rules.md](joinery-rules.md).
+
 ### chord
 In the rectangle partition: a segment joining two concave corners along a grid
 line, staying inside the material for its whole length. Choosing a maximum set of
@@ -89,15 +96,43 @@ actually be judged by. `wood.ts`.
 A connected component of the mesh/connection graph — i.e. a **subcomponent**.
 Meshes in one group move as a rigid body. `meshGroups`, `subcomponentCount`.
 
+### horn
+The length a structural rail runs on past the post it crosses, `beamExtra`. It is
+decoration and it is also what fills the far side of a through mortise, which is
+why a rail with its horn cut short opens a hole. The alternatives are a **flush**
+rail, which stops at the post's outer face, and a **stub** rail, which stops at
+the crossing and needs a post mortised only that far.
+
+### housing
+A rectangular pocket cut into a part so another part sits *in* it rather than
+against it. What makes an end joint interlock: the two touch on two or three
+plane orientations instead of one. A post is housed where a pair of rails cross
+it, and the rails' own half lap sits inside that housing, so the joint is buried
+and nothing shows from outside.
+
 ### implied value
 A dimension nobody typed that nevertheless follows from ones they did, derived by
 the span solver as the shortest chain of measured spans between the two
 coordinates. Drawn bracketed as a reference dimension; also listed in the
 sidebar's *Implied* panel.
 
+### inner frame
+The light frame, one per face, that the shoji paper is actually glued to. The
+posts and the structural rails sit *outside* the paper's rectangle and meet it
+only along an edge — no area, so no glue. The frame is the only thing with
+material in the paper's plane and inside its rectangle. Made up and papered flat
+on the bench, then dropped into the carcass, which is what makes the paper
+renewable without taking the lamp apart.
+
 ### island
 One connected piece of an STL triangle soup. One STL file often contains several;
 each becomes its own `SubMesh`. `splitIntoIslands`.
+
+### lap (half lap)
+Half the thickness taken out of each of two sticks where they cross, so the two
+together fill one thickness. Three plane orientations of contact and the faces
+cannot pull straight apart. The frame's corners are half laps, and so is every
+place two structural rails cross.
 
 ### link
 One segment of a dimension chain: the distance between two adjacent stations, or
@@ -110,6 +145,12 @@ edges cover, not the edges themselves.
 ### mesh / SubMesh
 One part in the editor: an id, a name, a geometry in its own local frame, an
 `offset` that places it, and optionally a `block`.
+
+### mortise
+Here, any pocket cut to receive another part — used interchangeably with
+**housing**. A mortise that nothing fills is a fault in its own right: the wood
+was removed for something, and if that something does not reach, what is left is
+a slot open to the air and a joint with half its glue.
 
 ### offset
 The translation a mesh's connections gave it. **Derived**, never authored:

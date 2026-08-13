@@ -1,0 +1,2263 @@
+{
+  "id": "andon-tower",
+  "description": "A floor lamp: 640 mm of opening split by a structural middle ring, with a separate framed panel above and below it. At this height the middle ring is doing real work, so the panel is divided by the carcass rather than by the frame.",
+  "type": "lamp",
+  "format": 2,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamExtra": "20",
+    "beamHeight": "15",
+    "frameHeight": "#frameWidth",
+    "frameWidth": "7",
+    "innerDepth": "#innerWidth",
+    "innerHeight": "640",
+    "innerWidth": "200",
+    "legExtraBottom": "40",
+    "legExtraTop": "20",
+    "legThickness": "20"
+  },
+  "paired": {
+    "innerWidth": true,
+    "frameWidth": true
+  },
+  "stashed": {
+    "innerDepth": "200",
+    "frameHeight": "7"
+  },
+  "instances": [
+    {
+      "id": "post1",
+      "label": "post — back right",
+      "component": "postBMT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "post2",
+      "label": "post — back left",
+      "component": "postBMT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 90
+      }
+    },
+    {
+      "id": "post3",
+      "label": "post — front left",
+      "component": "postBMT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "post4",
+      "label": "post — front right",
+      "component": "postBMT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBMT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 270
+      }
+    },
+    {
+      "id": "r01",
+      "label": "bottom rail — right",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railDeep-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r02",
+      "label": "bottom rail — left",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railDeep-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r03",
+      "label": "bottom rail — back",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r04",
+      "label": "bottom rail — front",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r11",
+      "label": "middle rail — right",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0.5,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "railDeep-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0.5,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0.5,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r12",
+      "label": "middle rail — left",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0.5,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "railDeep-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0.5,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0.5,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r13",
+      "label": "middle rail — back",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0.5,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0.5,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0.5,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r14",
+      "label": "middle rail — front",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0.5,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0.5,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0.5,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r21",
+      "label": "top rail — right",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r22",
+      "label": "top rail — left",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r23",
+      "label": "top rail — back",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r24",
+      "label": "top rail — front",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0 lowers1",
+      "label": "frame stile — right lower 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0 lowers2",
+      "label": "frame stile — right lower 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0 lowerr1",
+      "label": "frame rail — right lower bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f0 lowerr2",
+      "label": "frame rail — right lower top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post1",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": "postBMT-3-shaft-1"
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f0 uppers1",
+      "label": "frame stile — right upper 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0 uppers2",
+      "label": "frame stile — right upper 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0 upperr1",
+      "label": "frame rail — right upper bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post1",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "postBMT-5-shaft-2"
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f0 upperr2",
+      "label": "frame rail — right upper top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f1 lowers1",
+      "label": "frame stile — left lower 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 lowers2",
+      "label": "frame stile — left lower 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 lowerr1",
+      "label": "frame rail — left lower bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 lowerr2",
+      "label": "frame rail — left lower top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post2",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 uppers1",
+      "label": "frame stile — left upper 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 uppers2",
+      "label": "frame stile — left upper 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 upperr1",
+      "label": "frame rail — left upper bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post2",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1 upperr2",
+      "label": "frame rail — left upper top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 lowers1",
+      "label": "frame stile — back lower 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 lowers2",
+      "label": "frame stile — back lower 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 lowerr1",
+      "label": "frame rail — back lower bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 lowerr2",
+      "label": "frame rail — back lower top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post1",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 uppers1",
+      "label": "frame stile — back upper 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 uppers2",
+      "label": "frame stile — back upper 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 upperr1",
+      "label": "frame rail — back upper bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post1",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2 upperr2",
+      "label": "frame rail — back upper top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3 lowers1",
+      "label": "frame stile — front lower 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3 lowers2",
+      "label": "frame stile — front lower 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStileHalf-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3 lowerr1",
+      "label": "frame rail — front lower bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f3 lowerr2",
+      "label": "frame rail — front lower top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post3",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": "postBMT-3-shaft-1"
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f3 uppers1",
+      "label": "frame stile — front upper 1",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3 uppers2",
+      "label": "frame stile — front upper 2",
+      "component": "frameStileHalf.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "frameStileHalf-3-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3 upperr1",
+      "label": "frame rail — front upper bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "post3",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": "postBMT-5-shaft-2"
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f3 upperr2",
+      "label": "frame rail — front upper top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    }
+  ]
+}

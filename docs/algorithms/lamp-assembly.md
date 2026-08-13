@@ -6,6 +6,12 @@ The Lamp Design tab hangs saved components on one central reference box. This is
 the assembly layer *above* the component editor: the editor decides what a part
 is, this decides where it goes.
 
+What it does **not** decide is whether the result can be built. Every algorithm
+here is happy to place a part that no joiner could glue on, and the app refuses
+nothing but a connection that would close a loop — so the rules a buildable
+assembly has to satisfy are written down separately, in
+[joinery-rules.md](../joinery-rules.md), and checked outside the app.
+
 ## The premise, again
 
 The same rule that makes a component file a recipe rather than a snapshot holds
