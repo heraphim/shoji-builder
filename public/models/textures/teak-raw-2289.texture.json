@@ -1,0 +1,42 @@
+{
+  "id": "teak-raw-2289",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "teak",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 160.502925,
+    "pith": [
+      0.816706,
+      -0.082996
+    ],
+    "seed": 2289,
+    "centerSize": 0.960358,
+    "largeWarpScale": 0.293271,
+    "largeGrainStretch": 0.25709,
+    "smallWarpStrength": 0.068208,
+    "smallWarpScale": 1.578556,
+    "fineWarpStrength": 0.003858,
+    "fineWarpScale": 38,
+    "ringThickness": 0.03772,
+    "ringBias": 0.020805,
+    "ringSizeVariance": 0.023327,
+    "ringVarianceScale": 4.94975,
+    "barkThickness": 0.277072,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.514978,
+    "cellScale": 1055.354393,
+    "cellSize": 0.11879,
+    "darkGrainColor": "#080403",
+    "lightGrainColor": "#846855",
+    "grainContrast": 0.504243,
+    "poreIntensity": 0,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

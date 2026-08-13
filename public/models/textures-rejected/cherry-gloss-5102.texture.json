@@ -1,0 +1,42 @@
+{
+  "id": "cherry-gloss-5102",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cherry",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 188.154234,
+    "pith": [
+      0.559015,
+      -0.041482
+    ],
+    "seed": 5102,
+    "centerSize": 1.198442,
+    "largeWarpScale": 0.120276,
+    "largeGrainStretch": 0.423941,
+    "smallWarpStrength": 0.021208,
+    "smallWarpScale": 2.301192,
+    "fineWarpStrength": 0.007884,
+    "fineWarpScale": 13.219365,
+    "ringThickness": 0.029322,
+    "ringBias": 0.025054,
+    "ringSizeVariance": 0.04255,
+    "ringVarianceScale": 8.257786,
+    "barkThickness": 0.077249,
+    "splotchScale": 0.989915,
+    "splotchIntensity": 1.18043,
+    "cellScale": 1261.763865,
+    "cellSize": 0.146475,
+    "darkGrainColor": "#da714c",
+    "lightGrainColor": "#e3a68c",
+    "grainContrast": 0.629189,
+    "poreIntensity": 0,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "white-oak-matte-9080",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "white_oak",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 180.072129,
+    "pith": [
+      1.018325,
+      -0.00237
+    ],
+    "seed": 9080,
+    "centerSize": 1.189163,
+    "largeWarpScale": 0.149444,
+    "largeGrainStretch": 0.182599,
+    "smallWarpStrength": 0.028395,
+    "smallWarpScale": 3.010382,
+    "fineWarpStrength": 0.013047,
+    "fineWarpScale": 17.933048,
+    "ringThickness": 0.019709,
+    "ringBias": 0.98,
+    "ringSizeVariance": 0.193948,
+    "ringVarianceScale": 1.601949,
+    "barkThickness": 0.651539,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.331964,
+    "cellScale": 764.399876,
+    "cellSize": 0.26,
+    "darkGrainColor": "#7e361a",
+    "lightGrainColor": "#cd7245",
+    "grainContrast": 0.565348,
+    "poreIntensity": 0.251263,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}
