@@ -1,0 +1,42 @@
+{
+  "id": "walnut-raw-1295",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "walnut",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 151.482615,
+    "pith": [
+      0.933466,
+      -0.444813
+    ],
+    "seed": 1295,
+    "centerSize": 1.121532,
+    "largeWarpScale": 0.307654,
+    "largeGrainStretch": 0.339621,
+    "smallWarpStrength": 0.018673,
+    "smallWarpScale": 7.312247,
+    "fineWarpStrength": 0.025419,
+    "fineWarpScale": 9.59332,
+    "ringThickness": 0.030975,
+    "ringBias": 0.07224,
+    "ringSizeVariance": 0.03267,
+    "ringVarianceScale": 7.295393,
+    "barkThickness": 1.217557,
+    "splotchScale": 0.918844,
+    "splotchIntensity": 0.501541,
+    "cellScale": 816.443501,
+    "cellSize": 0.26,
+    "darkGrainColor": "#6d3d22",
+    "lightGrainColor": "#965635",
+    "grainContrast": 0.686646,
+    "poreIntensity": 0.227675,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

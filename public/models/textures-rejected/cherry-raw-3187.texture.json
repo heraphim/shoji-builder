@@ -1,0 +1,42 @@
+{
+  "id": "cherry-raw-3187",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cherry",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 137.79162,
+    "pith": [
+      0.985691,
+      0.376002
+    ],
+    "seed": 3187,
+    "centerSize": 1.370496,
+    "largeWarpScale": 0.102896,
+    "largeGrainStretch": 0.300935,
+    "smallWarpStrength": 0.028394,
+    "smallWarpScale": 1.959715,
+    "fineWarpStrength": 0.012878,
+    "fineWarpScale": 11.392805,
+    "ringThickness": 0.028662,
+    "ringBias": 0.024582,
+    "ringSizeVariance": 0.022915,
+    "ringVarianceScale": 6.682415,
+    "barkThickness": 0.07683,
+    "splotchScale": 0.972309,
+    "splotchIntensity": 0.513083,
+    "cellScale": 1268.997142,
+    "cellSize": 0.121245,
+    "darkGrainColor": "#622a20",
+    "lightGrainColor": "#8d4534",
+    "grainContrast": 0.367669,
+    "poreIntensity": 0,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

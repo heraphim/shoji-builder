@@ -1,0 +1,42 @@
+{
+  "id": "red-oak-gloss-7390",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "red_oak",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 148.030093,
+    "pith": [
+      0.38378,
+      0.120159
+    ],
+    "seed": 7390,
+    "centerSize": 1.249162,
+    "largeWarpScale": 0.29242,
+    "largeGrainStretch": 0.314137,
+    "smallWarpStrength": 0.057573,
+    "smallWarpScale": 3.225,
+    "fineWarpStrength": 0.013294,
+    "fineWarpScale": 15.339084,
+    "ringThickness": 0.038337,
+    "ringBias": 0.531577,
+    "ringSizeVariance": 0.018277,
+    "ringVarianceScale": 4.208977,
+    "barkThickness": 1.209918,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.776174,
+    "cellScale": 972.665975,
+    "cellSize": 0.26,
+    "darkGrainColor": "#b46737",
+    "lightGrainColor": "#e2a573",
+    "grainContrast": 0.621257,
+    "poreIntensity": 0.088953,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

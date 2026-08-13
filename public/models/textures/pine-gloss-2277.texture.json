@@ -1,0 +1,42 @@
+{
+  "id": "pine-gloss-2277",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "pine",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 136.621661,
+    "pith": [
+      0.903059,
+      -0.000674
+    ],
+    "seed": 2277,
+    "centerSize": 1.437107,
+    "largeWarpScale": 0.249719,
+    "largeGrainStretch": 0.224513,
+    "smallWarpStrength": 0.041424,
+    "smallWarpScale": 2.977747,
+    "fineWarpStrength": 0.006293,
+    "fineWarpScale": 20.4447,
+    "ringThickness": 0.051517,
+    "ringBias": 0.05518,
+    "ringSizeVariance": 0.045652,
+    "ringVarianceScale": 3.863234,
+    "barkThickness": 0.378604,
+    "splotchScale": 0.45,
+    "splotchIntensity": 1.590305,
+    "cellScale": 1544.861242,
+    "cellSize": 0.071097,
+    "darkGrainColor": "#d4a97d",
+    "lightGrainColor": "#e0c28f",
+    "grainContrast": 0.587016,
+    "poreIntensity": 0.270303,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

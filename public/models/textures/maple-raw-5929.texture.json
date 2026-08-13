@@ -1,0 +1,42 @@
+{
+  "id": "maple-raw-5929",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "maple",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 203.402539,
+    "pith": [
+      1.175431,
+      0.023783
+    ],
+    "seed": 5929,
+    "centerSize": 1.556346,
+    "largeWarpScale": 0.491081,
+    "largeGrainStretch": 0.313303,
+    "smallWarpStrength": 0.071589,
+    "smallWarpScale": 2.948067,
+    "fineWarpStrength": 0.004615,
+    "fineWarpScale": 38,
+    "ringThickness": 0.038183,
+    "ringBias": 0.097246,
+    "ringSizeVariance": 0.073605,
+    "ringVarianceScale": 5.214978,
+    "barkThickness": 0.491475,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.473779,
+    "cellScale": 965.091228,
+    "cellSize": 0.027944,
+    "darkGrainColor": "#906d3e",
+    "lightGrainColor": "#a38045",
+    "grainContrast": 0.521642,
+    "poreIntensity": 0.108247,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

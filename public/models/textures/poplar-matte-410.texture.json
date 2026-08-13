@@ -1,0 +1,42 @@
+{
+  "id": "poplar-matte-410",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "poplar",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 164.873546,
+    "pith": [
+      0.473504,
+      0.024125
+    ],
+    "seed": 410,
+    "centerSize": 1.689495,
+    "largeWarpScale": 0.401478,
+    "largeGrainStretch": 0.156878,
+    "smallWarpStrength": 0.052127,
+    "smallWarpScale": 5.457196,
+    "fineWarpStrength": 0.002728,
+    "fineWarpScale": 25.563369,
+    "ringThickness": 0.022859,
+    "ringBias": 0.05302,
+    "ringSizeVariance": 0.029935,
+    "ringVarianceScale": 4.658467,
+    "barkThickness": 0.346293,
+    "splotchScale": 0.993846,
+    "splotchIntensity": 0.49233,
+    "cellScale": 1018.665389,
+    "cellSize": 0.03435,
+    "darkGrainColor": "#a0946b",
+    "lightGrainColor": "#bbb59b",
+    "grainContrast": 0.579064,
+    "poreIntensity": 0,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}

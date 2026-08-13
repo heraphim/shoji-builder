@@ -1,0 +1,42 @@
+{
+  "id": "poplar-raw-8777",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "poplar",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 219.545332,
+    "pith": [
+      0.704737,
+      0.209334
+    ],
+    "seed": 8777,
+    "centerSize": 1.37617,
+    "largeWarpScale": 0.374015,
+    "largeGrainStretch": 0.184663,
+    "smallWarpStrength": 0.037102,
+    "smallWarpScale": 3.994815,
+    "fineWarpStrength": 0.00551,
+    "fineWarpScale": 38,
+    "ringThickness": 0.021785,
+    "ringBias": 0.082027,
+    "ringSizeVariance": 0.015621,
+    "ringVarianceScale": 3.071466,
+    "barkThickness": 0.379288,
+    "splotchScale": 0.994663,
+    "splotchIntensity": 0.30888,
+    "cellScale": 629.489681,
+    "cellSize": 0.024628,
+    "darkGrainColor": "#63583f",
+    "lightGrainColor": "#867b5c",
+    "grainContrast": 0.324154,
+    "poreIntensity": 0,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}
