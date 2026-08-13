@@ -285,9 +285,57 @@ export function downloadLibraryFile(lib: Library, file: string, data: unknown): 
   return `Saved ${file} to your downloads — drop it into public/models/${lib} to have it listed`;
 }
 
+/**
+ * Take something out of the app that is not a design.
+ *
+ * The blueprint export is the first thing here that leaves as bytes rather than
+ * as JSON, and that is the whole of the difference — it is still the download
+ * anchor, still in the one module allowed to touch the DOM for I/O, and still
+ * the way out that needs no token.
+ *
+ * @returns what happened, in the words the file menu shows.
+ */
+export function downloadBytes(file: string, bytes: Uint8Array, type: string): string {
+  download(file, new Blob([bytes as BlobPart], { type }));
+  return `Saved ${file} to your downloads`;
+}
+
+/**
+ * Show something in a tab of its own instead of filing it away.
+ *
+ * The right way out for a document that is *looked at* rather than kept: the
+ * browser already has a PDF viewer, and a drawing you have to go and find in a
+ * downloads folder — once per attempt, while you are still deciding what should
+ * be on the sheet — is a worse way to look at a drawing than a tab you can
+ * refresh. Saving it is still one click away, in the viewer's own toolbar.
+ *
+ * Falls back to a download if the tab is refused. A popup blocker will do that
+ * to anything not obviously coming from a click, and silently producing nothing
+ * is the one outcome worth ruling out.
+ *
+ * The object URL is deliberately **not** revoked straight away, the way the
+ * download path revokes its own: the tab is still reading from it. A minute is
+ * long enough for it to have loaded and short enough not to be a leak.
+ *
+ * @returns what happened, in the words the file menu shows.
+ */
+export function openBytes(file: string, bytes: Uint8Array, type: string): string {
+  const url = URL.createObjectURL(new Blob([bytes as BlobPart], { type }));
+  const tab = window.open(url, "_blank", "noopener");
+  if (!tab) {
+    URL.revokeObjectURL(url);
+    download(file, new Blob([bytes as BlobPart], { type }));
+    return `Your browser blocked the new tab, so ${file} went to your downloads instead`;
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  return `Opened ${file} in a new tab`;
+}
+
 /** Hand the file to the browser to put in the user's downloads. */
-function download(file: string, text: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+function download(file: string, body: string | Blob): void {
+  const blob =
+    typeof body === "string" ? new Blob([body], { type: "application/json" }) : body;
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = file;

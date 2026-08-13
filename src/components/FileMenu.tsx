@@ -16,6 +16,7 @@ import {
 import { loadLibraryTexture, textureDisplayName } from "../lib/textureFile";
 import { canWriteToRepo, downloadLibraryFile, saveLibraryFile } from "../lib/library";
 import { LibrarySettings } from "./LibrarySettings";
+import { ExportBlueprintDialog } from "./ExportBlueprintDialog";
 
 /**
  * The file menu, hung off whichever tab it belongs to.
@@ -322,6 +323,7 @@ function LampFileMenu({ close }: { close: () => void }) {
 
   const [listing, setListing] = useState(false);
   const [prompting, setPrompting] = useState(false);
+  const [exporting, setExporting] = useState(false);
   // read once per opening of the menu — it cannot change while this is mounted,
   // because reaching the settings unmounts it
   const [connected] = useState(canWriteToRepo);
@@ -409,6 +411,21 @@ function LampFileMenu({ close }: { close: () => void }) {
     );
   }
 
+  // The dialog owns the menu while it is up — the render it may be waiting on
+  // is mounted inside it, and a menu that closed out from under that would take
+  // the canvas with it before the frame it is waiting for had been drawn.
+  if (exporting) {
+    return (
+      <ExportBlueprintDialog
+        onClose={(message) => {
+          setExporting(false);
+          if (message) setNote(message);
+          close();
+        }}
+      />
+    );
+  }
+
   if (listing) {
     return (
       <LibraryList
@@ -440,6 +457,21 @@ function LampFileMenu({ close }: { close: () => void }) {
         onOverwrite={() => save()}
         onCopy={() => setPrompting(true)}
         onDownload={downloadIt}
+      />
+      <div className="file-menu-rule" />
+      {/* Not one of the three ways out: those write the *recipe*, which is what
+          the app opens again. This writes what the recipe currently comes out
+          as — a set of drawings at one setting of the variables, which is the
+          thing you take to a workshop and cannot open back into the app. */}
+      <MenuItem
+        label="Export blueprint (PDF)…"
+        disabled={empty}
+        title={
+          empty
+            ? "Nothing to draw yet"
+            : "Every piece drawn and dimensioned, with a cut list, at the current variables"
+        }
+        onClick={() => setExporting(true)}
       />
     </>
   );

@@ -758,6 +758,34 @@ function overallBox(scene: LampScene): THREE.Box3 {
   return box;
 }
 
+/**
+ * Where a camera has to stand to have the whole lamp in shot, in the 3/4 view.
+ *
+ * The 3D cell's own framing with the saved orbit left out, which is exactly what
+ * a picture for the blueprint's title sheet wants: the lamp, rather than
+ * wherever the user happened to leave the camera. Framing is on the reference
+ * box as well as the parts, so a design that is mostly empty box is still drawn
+ * at the size it will be built.
+ */
+export function lampCameraFit(
+  scene: LampScene,
+  aspect: number
+): { position: [number, number, number]; target: THREE.Vector3; fov: number } {
+  const box = overallBox(scene);
+  const centre = box.getCenter(new THREE.Vector3());
+  const half = box.getSize(new THREE.Vector3()).multiplyScalar(0.5);
+  const distance = fitDistance(half, aspect);
+  return {
+    position: [
+      centre.x + VIEW_DIR.x * distance,
+      centre.y + VIEW_DIR.y * distance,
+      centre.z + VIEW_DIR.z * distance,
+    ],
+    target: centre,
+    fov: FOV,
+  };
+}
+
 /** The lamp in 3/4 view — the cell the lamp is usually looked at in. */
 export function LampScene3D({ cellSize }: { cellSize: CellSize }) {
   const instances = useLampStore((state) => state.instances);

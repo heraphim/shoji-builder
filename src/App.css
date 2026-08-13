@@ -274,6 +274,61 @@
   color: var(--bp-text-dim);
 }
 
+/* a short closed set — paper sizes — as a row of buttons rather than a select,
+   because all of them fit and the choice is quicker to make than to open */
+.file-dialog-choices {
+  display: flex;
+  gap: 6px;
+}
+
+.file-dialog-choices button {
+  flex: 1;
+  padding: 6px 0;
+  background: var(--bp-bg);
+  border: 1px solid var(--bp-border);
+  border-radius: 5px;
+  color: var(--bp-text-dim);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.file-dialog-choices button:hover:not(:disabled) {
+  background: var(--bp-panel-lit);
+}
+
+.file-dialog-choices button.chosen {
+  border-color: var(--bp-accent);
+  color: var(--bp-accent);
+}
+
+.file-dialog-choices button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.file-dialog-check {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--bp-text-dim);
+  cursor: pointer;
+}
+
+.file-dialog-check input {
+  flex: none;
+  margin-top: 2px;
+  accent-color: var(--bp-accent);
+}
+
+/* the qualification on a setting, rather than a second setting */
+.file-dialog-check em {
+  font-style: normal;
+  color: var(--bp-accent);
+}
+
 .file-dialog input[type="text"],
 .file-dialog input[type="password"] {
   width: 100%;

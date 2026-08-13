@@ -1,6 +1,7 @@
 # Projections, dimension chains and framing
 
-`src/components/OrthographicView.tsx`, with `splitVisibleHidden` from `src/lib/assembly.ts`
+`src/components/OrthographicView.tsx`, with `splitVisibleHidden` from
+`src/lib/assembly.ts` and the chain layout from `src/lib/dimensions.ts`
 
 Each of the three orthographic cells draws a blueprint: graph-paper backdrop,
 solid lines for visible edges and dashed for hidden ones, drafting-style
@@ -70,7 +71,19 @@ is by far the most expensive thing in the cell.
 
 ## Dimension chains
 
-This is the drafting logic, in `Dimensions`.
+This is the drafting logic. It lives in `lib/dimensions.ts` as `planDimensions`,
+which is pure and two-dimensional — everything below is in the view's own plane,
+in `(u, v)`, and `Dimensions` maps the result back to scene geometry.
+
+It is a module rather than part of this component because it has a second caller
+with nothing else in common: the blueprint export draws the same plan on paper at
+a **scale** instead of in a cell at a **zoom**. Both hand in world units for the
+text height and the gaps — pixels ÷ zoom here, paper millimetres ÷ scale there —
+and the two things that genuinely differ are injected: what counts as solid, and
+what a link is worth. Everything in this section is the same either way; only the
+table below, which is the editor's answer to `valueFor`, belongs to this side.
+
+→ [blueprint-export.md](blueprint-export.md)
 
 ### Where the numbers come from
 

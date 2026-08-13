@@ -69,6 +69,11 @@ The stores hold state; the libraries hold the arithmetic.
 | `formula.ts` | The variable expression language: tokenize → parse → evaluate, plus dependency-ordered resolution of a whole variable dictionary. |
 | `blocks.ts` | Everything about a part *being a box*: is this geometry a box, build a box, convert a point ⇄ a fractional anchor on a box. |
 | `measure.ts` | Spans (an axis + two coordinates), the span solver that derives unmeasured values, stations (where the solid has faces), runs (where the solid has material), and a raycast helper. |
+| `dimensions.ts` | The drafting logic of a dimension chain, as arithmetic: stations → links, the two margins, extension lines, arrowheads, and largest-first label placement with clash dropping. Pure and two-dimensional. It has two callers with nothing else in common — a projection cell at a zoom and a drawing sheet at a scale — so what counts as solid and what a link is *worth* are injected rather than assumed. |
+| `pdf.ts` | A PDF writer cut down to what a drawing sheet is made of: lines, dashes, filled rectangles, text and one embedded JPEG. Courier only, so nothing is embedded and centring is exact arithmetic rather than a widths table; coordinates in millimetres, converted at the one place bytes are written. |
+| `blueprint.ts` | One drawing on paper: project a design's boxes into a view, remove hidden lines by slab test against the boxes themselves — touching a part is not being behind it, and a raycaster cannot tell the difference — pick the largest **standard ratio** it and its dimensions fit at, and ink it. Also the two palettes — dark ink on white, which is what prints, and the negative, for reading on screen. |
+| `blueprintDoc.ts` | Which sheets a lamp becomes: title and variables, general arrangement, bill of materials, a sheet per component, then every piece in three views. Owns the sheet furniture — border, grid, title block — and the tables, which report what they could not fit rather than running off the bottom. |
+| `cutlist.ts` | The lamp counted, twice: by component, which is how it goes together, and by piece size with orientation normalised away, which is how it gets made. A group-by over the scene — nothing is stored, because `computeScene` already has the boxes. |
 | `edgeStatus.ts` | How well each edge of the model is pinned down — **known** (a span the designer set), **implied** (the solver chains to it), **unknown** (nothing reaches it) — and the three colours that say so on the drawing itself. Identity is by span, as everywhere else, so the four arrises stating one extent all colour the same. |
 | `rectangles.ts` | Minimum partition of a rectilinear polygon (with holes) into axis-aligned rectangles. |
 | `assembly.ts` | CSG union of joined parts, face-topology extraction, outline recovery, solid retessellation, hidden-line splitting, parallel-edge lookup. |
@@ -111,6 +116,8 @@ The stores hold state; the libraries hold the arithmetic.
 | Component | Role |
 | --- | --- |
 | `FileMenu` | All three tabs' file menus, under the tab caret: upload, load from the library, and the two saves — plus the name dialog with its overwrite check. The only place a design is opened or written. Its header comment is the spec for what "overwrite" will mean once there is somewhere to write to. |
+| `ExportBlueprintDialog` | The Lamp tab's fourth way out, below the three saves and not one of them: paper, colours and whether there is a photograph on the front. Deliberately no scale control — a drawing states its scale, and which ratio a lamp fits at is arithmetic rather than taste. |
+| `LampRenderCapture` | The one raster thing in the export: its own canvas for a second, `ShowcaseLamp` in it, the frame read back as JPEG, unmounted. Its own because the grid's canvas has no `preserveDrawingBuffer` and turning that on for the whole app would cost every frame of every slider drag to serve one button. |
 | `FileStatusBar` | The strip above the views: what the last file action did, and what is on the bench. |
 | `LibrarySettings` | The panel behind **Library settings…**: the four fields that turn the saves on at all, checked against GitHub before they are kept. Kept in this browser and nowhere else — which is the whole security model. |
 | `CollapsiblePanel` | One sidebar panel, on every tab. Folds from its header; the state is remembered by `usePanelStore`. |
@@ -325,7 +332,8 @@ These hold everywhere and most of the code depends on them:
 | Laying parts out from joints alone | `useComponentEditorStore.ts` | [assembly-layout](algorithms/assembly-layout.md) |
 | Making a CSG union look like a clean solid | `assembly.ts` | [solid-simplification](algorithms/solid-simplification.md) |
 | Cutting an L/T/notched face into few triangles | `rectangles.ts` | [rectangle-partition](algorithms/rectangle-partition.md) |
-| Drawing a readable blueprint | `OrthographicView.tsx` | [projection-and-dimensions](algorithms/projection-and-dimensions.md) |
+| Drawing a readable blueprint | `OrthographicView.tsx`, `dimensions.ts` | [projection-and-dimensions](algorithms/projection-and-dimensions.md) |
+| Getting the design onto paper somebody can build from | `blueprint.ts`, `blueprintDoc.ts`, `pdf.ts` | [blueprint-export](algorithms/blueprint-export.md) |
 | Copying a part to every place the box's symmetry reaches | `symmetry.ts` | [symmetry-fill](algorithms/symmetry-fill.md) |
 | Keeping a joint on the feature it was picked on | `lamp.ts`, `LampAnchor` | [lamp-assembly](algorithms/lamp-assembly.md) |
 
@@ -345,6 +353,19 @@ recipe for a part, a lamp a recipe for an assembly of them.
   improved since the lamp was saved comes back improved.
 
 → [lamp-file-format.md](lamp-file-format.md)
+
+### And the way out that is not a save
+
+**Export blueprint (PDF)…** sits below those three and is deliberately not one of
+them. The saves write the *recipe* — formulas and anchors, which the app opens
+again and which say nothing about millimetres. The export writes what the recipe
+currently comes out **as**: every piece drawn and dimensioned at one setting of
+the variables, with a cut list. It is the only thing the app produces that cannot
+be opened back into it, and that is the point — it is for a workshop, not for the
+library. Which is also why the first sheet prints the variables: the drawings are
+true at those values and at no others.
+
+→ [algorithms/blueprint-export.md](algorithms/blueprint-export.md)
 
 ## Build-time pieces
 

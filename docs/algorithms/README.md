@@ -106,12 +106,27 @@ Result size is the proven optimum `n − l − h + 1` for a rectilinear polygon 
 | Algorithm | Location | Complexity |
 | --- | --- | --- |
 | **Hidden-line removal by ray sampling** toward the camera | `assembly.ts` `splitVisibleHidden` | O(E·S·log T) with BVH-less raycast |
-| Dimension chain layout (station list → links → margins) | `OrthographicView.tsx` `Dimensions` | O(K) links |
-| Greedy largest-first label placement with AABB rejection | `OrthographicView.tsx` | O(K²) |
+| Dimension chain layout (station list → links → margins) | `dimensions.ts` `planDimensions` | O(K) links |
+| Greedy largest-first label placement with AABB rejection | `dimensions.ts` | O(K²) |
 | Fit-to-cell framing on the projected bounding *box* | `OrthographicView.tsx` | O(1) |
 | Decade grid levels with a minimum on-screen pitch | `OrthographicView.tsx` `BlueprintGrid` | O(lines in view) |
 
 → [projection-and-dimensions.md](projection-and-dimensions.md)
+
+## Drawing on paper
+
+The same three pieces of arithmetic, aimed at a sheet instead of a cell.
+
+| Algorithm | Location | Complexity |
+| --- | --- | --- |
+| Faces per axis, read off the boxes rather than recovered from triangles | `blueprint.ts` `boxStations` | O(B log B) |
+| Projection, and hidden lines by **slab test** rather than raycast — a ray that grazes a corner is not blocked by it | `blueprint.ts` `splitAgainstBoxes` | O(E·S·B) |
+| Largest **standard ratio** at which the drawing and its chains fit | `blueprint.ts` `fitScale` | O(1), 9 candidates |
+| Piece tally, and merge by size with orientation normalised away | `cutlist.ts` `buildCutList` | O(N·B) |
+| Sheet assembly, title blocks numbered once the total is known | `blueprintDoc.ts` `buildBlueprint` | one projection per view per sheet |
+| PDF object graph and cross-reference table | `pdf.ts` `build` | O(objects) |
+
+→ [blueprint-export.md](blueprint-export.md)
 
 ## Wood texture
 

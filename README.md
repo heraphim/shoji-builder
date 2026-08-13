@@ -104,6 +104,7 @@ component instead of the old one at the old size. See
 | [docs/algorithms/solid-simplification.md](docs/algorithms/solid-simplification.md) | CSG union, face topology, outline recovery, retessellation |
 | [docs/algorithms/rectangle-partition.md](docs/algorithms/rectangle-partition.md) | Minimum rectilinear rectangle partition |
 | [docs/algorithms/projection-and-dimensions.md](docs/algorithms/projection-and-dimensions.md) | Hidden-line removal, dimension chain layout, framing |
+| [docs/algorithms/blueprint-export.md](docs/algorithms/blueprint-export.md) | The lamp as printable drawing sheets: the PDF writer, scale, cut list |
 | [docs/algorithms/wood-texture.md](docs/algorithms/wood-texture.md) | Solid (3-D) wood texturing: noise, rings, warp, pores |
 | [docs/joinery-rules.md](docs/joinery-rules.md) | What makes an assembly buildable: the paper's frame, lapped ends, filled mortises |
 | [docs/component-file-format.md](docs/component-file-format.md) | `*.component.json` schema v6, save and load |

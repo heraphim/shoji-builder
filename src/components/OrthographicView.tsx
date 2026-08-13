@@ -30,10 +30,15 @@ import {
   spanKey,
   spanOfEdge,
   stationsAlong,
-  type AxisIndex,
-  type Span,
   type SpanSolver,
 } from "../lib/measure";
+import {
+  dimensionReserve,
+  formatLength,
+  planDimensions,
+  type DimScreenAxis,
+  type DimSeg,
+} from "../lib/dimensions";
 import {
   BLUEPRINT,
   GRID_CELL_MM,
@@ -383,12 +388,17 @@ const DIM_TEXT_PX = 16;
 const DIM_GAP_PX = 22; // drawing edge -> dimension line
 const DIM_ARROW_PX = 9;
 const DIM_OVERRUN_PX = 6; // extension line past the dimension line it serves
+// The four of them as the layout wants them. Screen pixels here; the same
+// numbers divided by the zoom are the world units it works in.
+const DIM_METRICS_PX = {
+  text: DIM_TEXT_PX,
+  gap: DIM_GAP_PX,
+  arrow: DIM_ARROW_PX,
+  overrun: DIM_OVERRUN_PX,
+};
 // how far a chain reaches beyond the drawing — the camera fit gives up this
 // strip on all four sides so no value can fall off the edge of the cell
-export const DIM_RESERVE_PX = DIM_GAP_PX + DIM_TEXT_PX * 2 + DIM_OVERRUN_PX;
-// past this many links a chain is unreadable at any zoom; only the overall
-// size is worth drawing
-const DIM_MAX_LINKS = 12;
+const DIM_RESERVE_PX = dimensionReserve(DIM_METRICS_PX);
 // pick radius for a dimension line, in screen pixels
 const DIM_PICK_PX = 8;
 
@@ -398,12 +408,6 @@ interface Bounds {
   minV: number;
   maxV: number;
   w: number;
-}
-
-interface ScreenAxis {
-  axis: AxisIndex;
-  sign: 1 | -1;
-  values: number[];
 }
 
 // One ad-hoc expression against the current variables, by injecting it under a
@@ -419,10 +423,6 @@ function evaluateFormula(formula: string, raw: Record<string, string>): number |
   } catch {
     return null;
   }
-}
-
-function formatLength(value: number): string {
-  return value.toFixed(1).replace(/\.0$/, "");
 }
 
 // The guides are measurement targets in their own right: a chain link is the
@@ -445,8 +445,8 @@ function Dimensions({
   viewDir: THREE.Vector3;
   zoom: number;
   bounds: Bounds;
-  uAxis: ScreenAxis | null;
-  vAxis: ScreenAxis | null;
+  uAxis: DimScreenAxis | null;
+  vAxis: DimScreenAxis | null;
   geometries: THREE.BufferGeometry[];
 }) {
   const meshes = useComponentEditorStore((state) => state.meshes);
@@ -469,221 +469,83 @@ function Dimensions({
   const separate = useMemo(() => subcomponentCount(meshes, connections) > 1, [meshes, connections]);
 
   const drawing = useMemo(() => {
-    const { minU, maxU, minV, maxV, w } = bounds;
+    const { w } = bounds;
     const world = (u: number, v: number) =>
       new THREE.Vector3()
         .addScaledVector(right, u)
         .addScaledVector(up, v)
         .addScaledVector(viewDir, w);
 
-    const th = DIM_TEXT_PX / zoom;
-    const gap = DIM_GAP_PX / zoom;
-    const arrow = DIM_ARROW_PX / zoom;
-    const overrun = DIM_OVERRUN_PX / zoom;
-
-    const ext: number[] = [];
-    const dim: number[] = [];
-    const pick: number[] = [];
-    const guideEdges: Edge[] = [];
-    const labels: Array<{ text: string; position: Vec3; color: string; underline: boolean }> = [];
-    // labels are placed biggest-feature-first and any that would land on top of
-    // one already placed is dropped — at a zoom where they'd collide the
-    // numbers are unreadable anyway, and zooming in brings them straight back
-    const placed: Array<[number, number, number, number]> = [];
-
-    const line = (out: number[], u0: number, v0: number, u1: number, v1: number) => {
-      const p0 = world(u0, v0);
-      const p1 = world(u1, v1);
-      out.push(p0.x, p0.y, p0.z, p1.x, p1.y, p1.z);
+    // Fixed screen sizes divided by the zoom, which is what the layout wants:
+    // text stays legible at any scale, and a value that has no room at one zoom
+    // simply appears once the user zooms in.
+    const metrics = {
+      text: DIM_METRICS_PX.text / zoom,
+      gap: DIM_METRICS_PX.gap / zoom,
+      arrow: DIM_METRICS_PX.arrow / zoom,
+      overrun: DIM_METRICS_PX.overrun / zoom,
     };
 
-    const isSolid = (span: Span) => isSolidSpan(runs, span);
-
-    // Lay out one axis's chains. Steps:
-    //
-    //   stations -> links   consecutive pairs, plus the overall size; collapse
-    //                       to [lo, hi] past DIM_MAX_LINKS, and drop any link
-    //                       whose span crosses a gap (isSolidSpan)
-    //   extension lines     one per station some value was drawn against
-    //   links, biggest first, so the overall size claims its place before the
-    //                       features: dimension line, arrowheads, label
-    //   labels              dropped on an AABB clash with one already placed
-    //
-    // A chain is laid out in (along, cross): `along` is the axis being
-    // measured, `cross` steps away from the drawing. `horizontal` maps that
-    // back to the view plane, and also decides which way round a label's
-    // footprint sits — text is always upright on screen.
-    //
-    // Each axis gets both of its margins: `nearEdge` is the boundary the
-    // features hang off (the bottom of the drawing, or its left-hand side) and
-    // `farEdge` the one the overall size hangs off, on the opposite side. A link
-    // carries the edge it belongs to and the direction that steps away from the
-    // drawing, so everything downstream works the same either way round.
-    const layout = (
-      screen: ScreenAxis | null,
-      lo: number,
-      hi: number,
-      nearEdge: number,
-      farEdge: number,
-      horizontal: boolean
-    ) => {
-      if (!screen) return;
-      const tol = Math.max(maxU - minU, maxV - minV, 1e-6) * 0.002;
-      const inRange = screen.values.filter((c) => c > lo + tol && c < hi - tol);
-      let stations = [lo, ...inRange, hi];
-      if (stations.length - 1 > DIM_MAX_LINKS) stations = [lo, hi];
-      if (stations.length < 2) return;
-
-      const uv = (along: number, cross: number): [number, number] =>
-        horizontal ? [along, cross] : [cross, along];
-
-      // back to world-axis coordinates: the screen axis may look at the world
-      // axis from the far side, in which case `along` runs the other way
-      const worldSpan = (a: number, b: number): Span => {
-        const wa = a * screen.sign;
-        const wb = b * screen.sign;
-        return { axis: screen.axis, a: Math.min(wa, wb), b: Math.max(wa, wb) };
-      };
-
-      interface Link {
-        a: number;
-        b: number;
-        span: Span;
-        edge: number; // the drawing boundary this link hangs off
-        outward: 1 | -1; // which way it steps away from the drawing
-      }
-      const links: Link[] = [];
-      const pushLink = (a: number, b: number, edge: number, outward: 1 | -1) => {
-        const span = worldSpan(a, b);
-        if (isSolid(span)) links.push({ a, b, span, edge, outward });
-      };
-      for (let i = 0; i + 1 < stations.length; i++) {
-        pushLink(stations[i], stations[i + 1], nearEdge, -1);
-      }
-      // Nothing has an overall size until the parts are one solid — and a chain
-      // that came out as a single link already *is* the overall size, so it
-      // stays with the features rather than being drawn twice.
-      if (links.length > 1 && !separate) {
-        pushLink(stations[0], stations[stations.length - 1], farEdge, 1);
-      }
-      if (links.length === 0) return;
-
-      const lineAt = (link: Link) => link.edge + link.outward * gap;
-
-      // Extension lines carry a value back to the edge it measures, so a station
-      // only earns one if some value was actually drawn against it — the far side
-      // of a gap is a station of the drawing but of no dimension. A station can
-      // be served on both sides, and then it earns one in each margin.
-      const served = new Map<string, Link & { station: number }>();
-      for (const link of links) {
-        for (const station of [link.a, link.b]) {
-          served.set(`${link.outward}:${station}`, { ...link, station });
-        }
-      }
-      for (const { station, edge, outward } of served.values()) {
-        line(
-          ext,
-          ...uv(station, edge + outward * gap * 0.3),
-          ...uv(station, edge + outward * (gap + overrun))
-        );
-      }
-
-      // biggest first, so the overall size claims its place before the features
-      const ordered = [...links].sort((x, y) => y.b - y.a - (x.b - x.a));
-      for (const link of ordered) {
-        const c = lineAt(link);
-        const length = link.b - link.a;
-        const span = link.span;
-
+    const plan = planDimensions({
+      bounds,
+      uAxis,
+      vAxis,
+      metrics,
+      // While the parts are still separate there is no whole, so nothing has an
+      // overall size yet — only the individual parts do. Joining them is what
+      // brings the outer level of the chain into existence.
+      overall: !separate,
+      // A gap between two parts that are not joined yet is not a size — it is
+      // just how far apart they happen to be drawn, and it changes the moment
+      // they are connected.
+      isSolid: (span) => isSolidSpan(runs, span),
+      valueFor: (span, length) => {
         const explicit = solver.known.get(spanKey(span));
         const implied = explicit ? null : solver.imply(span);
         const formula = explicit ?? implied;
-        let text: string;
-        let color: string = BLUEPRINT.dimText;
-        let underline = false;
-        if (formula) {
-          const value = evaluateFormula(formula, raw);
-          text = value === null ? "?" : formatLength(value);
-          // drafting convention: a value the designer sets or derives is
-          // underlined; a derived one is bracketed as a reference dimension.
-          // The colours are the same ones the edges are drawn in — green for a
-          // length that was set, yellow for one that follows from what was —
-          // so a number and the arris it measures always agree.
-          underline = true;
-          if (explicit) {
-            color = BLUEPRINT.known;
-          } else {
-            color = BLUEPRINT.implied;
-            text = `(${text})`;
-          }
-        } else {
-          text = formatLength(length);
+        if (!formula) {
+          return { text: formatLength(length), colour: BLUEPRINT.dimText, underline: false };
         }
+        const value = evaluateFormula(formula, raw);
+        const shown = value === null ? "?" : formatLength(value);
+        // Drafting convention: a value the designer sets or derives is
+        // underlined, and a derived one is bracketed as a reference dimension.
+        // The colours are the same ones the edges are drawn in — green for a
+        // length that was set, yellow for one that follows from what was — so a
+        // number and the arris it measures always agree.
+        return explicit
+          ? { text: shown, colour: BLUEPRINT.known, underline: true }
+          : { text: `(${shown})`, colour: BLUEPRINT.implied, underline: true };
+      },
+    });
 
-        // the picked span sits on the drawing's own boundary, not on the
-        // dimension line — the dimension line moves with zoom, the boundary
-        // does not, and a stored measurement has to stay put
-        const [gu0, gv0] = uv(link.a, link.edge);
-        const [gu1, gv1] = uv(link.b, link.edge);
-        guideEdges.push({
-          start: world(gu0, gv0).toArray() as Vec3,
-          end: world(gu1, gv1).toArray() as Vec3,
-        });
-        line(pick, ...uv(link.a, c), ...uv(link.b, c));
-
-        // arrowheads sit inside a link with room for them and flip to the
-        // outside, pointing in, on one too short to take them
-        const textAlong = horizontal ? th * (0.45 * text.length + 0.3) : th;
-        const textCross = horizontal ? th : th * (0.45 * text.length + 0.3);
-        const inside = length > Math.max(textAlong, arrow * 2.4) * 1.15;
-        const reach = inside ? 0 : arrow * 1.6;
-        line(dim, ...uv(link.a - reach, c), ...uv(link.b + reach, c));
-        for (const [end, sign] of [
-          [link.a, 1],
-          [link.b, -1],
-        ] as const) {
-          const d = sign * (inside ? arrow : -arrow);
-          line(dim, ...uv(end, c), ...uv(end + d, c + arrow * 0.3));
-          line(dim, ...uv(end, c), ...uv(end + d, c - arrow * 0.3));
-        }
-
-        // the value sits on the far side of its dimension line, never between
-        // the line and the part
-        const mid = (link.a + link.b) / 2;
-        const cText = c + link.outward * (textCross * 0.5 + th * 0.3);
-        const [u0, v0] = uv(mid - textAlong / 2, cText - textCross / 2);
-        const [u1, v1] = uv(mid + textAlong / 2, cText + textCross / 2);
-        const box: [number, number, number, number] = [
-          Math.min(u0, u1),
-          Math.min(v0, v1),
-          Math.max(u0, u1),
-          Math.max(v0, v1),
-        ];
-        const clash = placed.some(
-          (q) => box[0] < q[2] && box[2] > q[0] && box[1] < q[3] && box[3] > q[1]
-        );
-        if (clash) continue;
-        placed.push(box);
-        const [lu, lv] = uv(mid, cText);
-        labels.push({ text, position: world(lu, lv).toArray() as Vec3, color, underline });
+    const build = (segments: DimSeg[]) => {
+      const positions: number[] = [];
+      for (const segment of segments) {
+        const a = world(segment.u0, segment.v0);
+        const b = world(segment.u1, segment.v1);
+        positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
       }
-    };
-
-    layout(uAxis, minU, maxU, minV, maxV, true);
-    layout(vAxis, minV, maxV, minU, maxU, false);
-
-    const build = (positions: number[]) => {
       const g = new THREE.BufferGeometry();
       g.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
       return g;
     };
+
     return {
-      ext: build(ext),
-      dim: build(dim),
-      pick: build(pick),
-      guideEdges,
-      labels,
-      textHeight: th,
+      ext: build(plan.extension),
+      dim: build(plan.dimension),
+      pick: build(plan.guides.map((guide) => guide.pick)),
+      guideEdges: plan.guides.map((guide) => ({
+        start: world(guide.boundary.u0, guide.boundary.v0).toArray() as Vec3,
+        end: world(guide.boundary.u1, guide.boundary.v1).toArray() as Vec3,
+      })),
+      labels: plan.labels.map((label) => ({
+        text: label.text,
+        position: world(label.u, label.v).toArray() as Vec3,
+        color: label.colour,
+        underline: label.underline,
+      })),
+      textHeight: metrics.text,
     };
   }, [bounds, right, up, viewDir, zoom, uAxis, vAxis, solver, raw, runs, separate]);
 

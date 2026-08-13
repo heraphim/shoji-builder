@@ -158,6 +158,7 @@ and nowhere else. Nothing in the sidebars opens or saves anything.
 | **Save (overwrite)** | Save over the library file this was opened from. | Same. | Same. |
 | **Save (copy)…** | Save under a new name. | Same. | Same. |
 | **Download** | Put the same file in your downloads. | Same. | Same. |
+| **Export blueprint (PDF)…** | Every piece drawn, dimensioned and counted. | — | — |
 
 Textures has no "nothing on the bench" state — there is always a texture,
 because the parameters have defaults — so nothing there is ever disabled for
@@ -187,6 +188,79 @@ bench alone.
 
 The strip above the views reports what the last file action did, and what is on
 the bench.
+
+### Export blueprint (PDF)…
+
+Below the rule, and not one of the three ways out above. Those write the
+*recipe* — formulas and joints, which the app opens again. This writes what the
+recipe currently comes out **as**: a set of drawing sheets you could take to a
+workshop, and the only thing here that cannot be opened back into the app.
+
+It **opens in a new tab** rather than landing in your downloads — the browser
+already has a PDF viewer, and while you are still deciding what belongs on the
+sheet you want to look at it, not collect copies of it. Save it from the viewer's
+own toolbar when you want to keep one. If a popup blocker refuses the tab it
+falls back to a download and says so.
+
+> **The document is being rebuilt.** It is currently one page: the lamp pictured
+> in one half, and its plan and elevations in the other. The rest goes back a
+> page at a time.
+
+The page carries a picture of the finished lamp in one half. The other half is
+halved again: the **projections** go in the first piece — a top view and one or
+two elevations — and **every distinct piece of timber** in the last, drawn as
+stock and captioned with how many of it you need. Both lines run down the page
+for a standing lamp and along it for one lying down.
+
+A piece here is a **component**, not one of the blocks it is modelled from: a
+rail built as a middle plus two half-thickness stubs is one stick that has been
+lapped at each end, and it is that stick you go and cut. Each gets a 3D view
+showing where its joinery falls, then its top, side and front — two of those
+where the piece is square in section, since the third would be the same drawing.
+
+Scales are exact ratios rather than conventional ones, so a sheet may say
+**1:5.21**. That is deliberate: snapping to 1:5 or 1:10 threw away up to half the
+size of every drawing on the page.
+
+The pieces share one scale, so the stick that is twice as long looks twice as
+long; the price is that the smallest ones come out very small.
+
+Two elevations only when the front and the side actually differ, which for a
+design square in plan they do not; when they match, the one drawing is captioned
+`FRONT & SIDE`. All the projections share a single stated scale, so they can be
+compared with each other.
+
+**The lamp decides which way up the paper is, and it comes out the other way up
+from the lamp.** What has to fit the drawing is not the page but the half of it
+the picture gets, and halving a page across its long axis turns it the other way
+up — a landscape sheet cut down the middle gives two tall halves, a portrait one
+cut across gives two wide ones. So:
+
+| The lamp | The sheet | Picture |
+| --- | --- | --- |
+| taller than it is wide | landscape | left |
+| wider than it is tall | portrait | top |
+
+Three things to know:
+
+- **Every number is a measured millimetre**, at the variables as they stand. That
+  is why sheet 1 prints them — change a slider and the drawings are for a
+  different lamp.
+- **Hidden parts are still on the lamp.** Anything hidden on the bench is drawn
+  and counted; hiding is a way of seeing past a part while working, not a way of
+  removing it. The one thing it does not appear in is the render, and the dialog
+  says so when something is hidden.
+- **The default prints.** Dark ink on white, which comes out of any printer as a
+  drawing. **Negative** gives the white-on-blue version for reading on screen —
+  a PDF has one set of colours, so it cannot be both.
+- **Graph paper is optional, and off by default.** It is most of what makes a
+  sheet read as a blueprint rather than a diagram, and it is also ink on every
+  square millimetre of every page — about 112 lines a sheet — none of which is
+  information. These sheets are for working from, so the working version is the
+  default. Turning it on changes nothing else.
+
+There is no scale control: a drawing states its scale, and which ratio a given
+lamp fits on a given sheet at is arithmetic rather than a preference.
 
 **Library settings…**, at the foot of every file menu, is what turns the saves
 on. Give it a GitHub user, a repository, a branch and a fine-grained token with
