@@ -1,0 +1,42 @@
+{
+  "id": "mahogany-gloss-9562",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "mahogany",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 154.311979,
+    "pith": [
+      0.470633,
+      0.047912
+    ],
+    "seed": 9562,
+    "centerSize": 1.371045,
+    "largeWarpScale": 0.284835,
+    "largeGrainStretch": 0.340092,
+    "smallWarpStrength": 0.045721,
+    "smallWarpScale": 2.590203,
+    "fineWarpStrength": 0.013105,
+    "fineWarpScale": 11.022153,
+    "ringThickness": 0.017365,
+    "ringBias": 0.01,
+    "ringSizeVariance": 0.399713,
+    "ringVarianceScale": 1.329805,
+    "barkThickness": 0.067475,
+    "splotchScale": 0.786093,
+    "splotchIntensity": 0.594716,
+    "cellScale": 1638.877302,
+    "cellSize": 0.225959,
+    "darkGrainColor": "#de8073",
+    "lightGrainColor": "#dca493",
+    "grainContrast": 0.503778,
+    "poreIntensity": 0,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

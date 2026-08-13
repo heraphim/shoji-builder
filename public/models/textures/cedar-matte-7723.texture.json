@@ -1,0 +1,42 @@
+{
+  "id": "cedar-matte-7723",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cedar",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 173.493342,
+    "pith": [
+      1.044652,
+      -0.097931
+    ],
+    "seed": 7723,
+    "centerSize": 1.318502,
+    "largeWarpScale": 0.289955,
+    "largeGrainStretch": 0.102666,
+    "smallWarpStrength": 0.082241,
+    "smallWarpScale": 1.494202,
+    "fineWarpStrength": 0.005291,
+    "fineWarpScale": 4.914553,
+    "ringThickness": 0.035946,
+    "ringBias": 0.01,
+    "ringSizeVariance": 0.042641,
+    "ringVarianceScale": 6.61471,
+    "barkThickness": 0.081081,
+    "splotchScale": 0.638772,
+    "splotchIntensity": 0.729847,
+    "cellScale": 667.686186,
+    "cellSize": 0.26,
+    "darkGrainColor": "#c28a7a",
+    "lightGrainColor": "#d0ad9f",
+    "grainContrast": 0.450737,
+    "poreIntensity": 0.210137,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}

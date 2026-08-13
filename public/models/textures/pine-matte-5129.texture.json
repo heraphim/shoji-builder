@@ -1,0 +1,42 @@
+{
+  "id": "pine-matte-5129",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "pine",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 167.780352,
+    "pith": [
+      0.712089,
+      0.29981
+    ],
+    "seed": 5129,
+    "centerSize": 1.256455,
+    "largeWarpScale": 0.183284,
+    "largeGrainStretch": 0.127147,
+    "smallWarpStrength": 0.045242,
+    "smallWarpScale": 2.831834,
+    "fineWarpStrength": 0.005945,
+    "fineWarpScale": 20.06477,
+    "ringThickness": 0.055881,
+    "ringBias": 0.103658,
+    "ringSizeVariance": 0.061994,
+    "ringVarianceScale": 6.105387,
+    "barkThickness": 0.443967,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.734656,
+    "cellScale": 1700,
+    "cellSize": 0.059188,
+    "darkGrainColor": "#cda383",
+    "lightGrainColor": "#d9b992",
+    "grainContrast": 0.549995,
+    "poreIntensity": 0,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}

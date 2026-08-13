@@ -1,0 +1,42 @@
+{
+  "id": "walnut-matte-6230",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "walnut",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 138.688193,
+    "pith": [
+      0.616688,
+      0.112086
+    ],
+    "seed": 6230,
+    "centerSize": 0.917323,
+    "largeWarpScale": 0.429324,
+    "largeGrainStretch": 0.425469,
+    "smallWarpStrength": 0.019854,
+    "smallWarpScale": 10.949339,
+    "fineWarpStrength": 0.033033,
+    "fineWarpScale": 9.959529,
+    "ringThickness": 0.033913,
+    "ringBias": 0.107851,
+    "ringSizeVariance": 0.026863,
+    "ringVarianceScale": 4.358205,
+    "barkThickness": 0.863996,
+    "splotchScale": 0.959258,
+    "splotchIntensity": 0.516625,
+    "cellScale": 704.061671,
+    "cellSize": 0.22422,
+    "darkGrainColor": "#aa5436",
+    "lightGrainColor": "#c9816a",
+    "grainContrast": 0.589487,
+    "poreIntensity": 0.146817,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}

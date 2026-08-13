@@ -1,0 +1,42 @@
+{
+  "id": "poplar-semigloss-6978",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "poplar",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 193.367415,
+    "pith": [
+      0.615126,
+      -0.219768
+    ],
+    "seed": 6978,
+    "centerSize": 1.256665,
+    "largeWarpScale": 0.267191,
+    "largeGrainStretch": 0.128781,
+    "smallWarpStrength": 0.042694,
+    "smallWarpScale": 3.727625,
+    "fineWarpStrength": 0.005391,
+    "fineWarpScale": 38,
+    "ringThickness": 0.020816,
+    "ringBias": 0.041872,
+    "ringSizeVariance": 0.030297,
+    "ringVarianceScale": 3.137944,
+    "barkThickness": 0.239791,
+    "splotchScale": 1.960406,
+    "splotchIntensity": 0.900021,
+    "cellScale": 686.08519,
+    "cellSize": 0.054284,
+    "darkGrainColor": "#a29560",
+    "lightGrainColor": "#bfb797",
+    "grainContrast": 0.492875,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

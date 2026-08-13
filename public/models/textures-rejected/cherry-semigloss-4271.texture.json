@@ -1,0 +1,42 @@
+{
+  "id": "cherry-semigloss-4271",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cherry",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 196.938525,
+    "pith": [
+      1.14187,
+      0.074225
+    ],
+    "seed": 4271,
+    "centerSize": 1.302649,
+    "largeWarpScale": 0.110166,
+    "largeGrainStretch": 0.245604,
+    "smallWarpStrength": 0.02157,
+    "smallWarpScale": 2.790775,
+    "fineWarpStrength": 0.008247,
+    "fineWarpScale": 16.724553,
+    "ringThickness": 0.02246,
+    "ringBias": 0.024627,
+    "ringSizeVariance": 0.051623,
+    "ringVarianceScale": 4.778441,
+    "barkThickness": 0.066922,
+    "splotchScale": 0.968597,
+    "splotchIntensity": 0.474206,
+    "cellScale": 1246.819599,
+    "cellSize": 0.167914,
+    "darkGrainColor": "#b63426",
+    "lightGrainColor": "#d86f5f",
+    "grainContrast": 0.578882,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "mahogany-raw-314",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "mahogany",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 206.641287,
+    "pith": [
+      0.91458,
+      -0.311645
+    ],
+    "seed": 314,
+    "centerSize": 1.223448,
+    "largeWarpScale": 0.234297,
+    "largeGrainStretch": 0.251934,
+    "smallWarpStrength": 0.038337,
+    "smallWarpScale": 2.488436,
+    "fineWarpStrength": 0.008119,
+    "fineWarpScale": 15.013859,
+    "ringThickness": 0.029827,
+    "ringBias": 0.013699,
+    "ringSizeVariance": 0.398125,
+    "ringVarianceScale": 0.951517,
+    "barkThickness": 0.056782,
+    "splotchScale": 0.627558,
+    "splotchIntensity": 0.602319,
+    "cellScale": 1065.966496,
+    "cellSize": 0.251346,
+    "darkGrainColor": "#692c16",
+    "lightGrainColor": "#a45b31",
+    "grainContrast": 0.412382,
+    "poreIntensity": 0,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}
