@@ -123,11 +123,19 @@ all.
 
 ## The library
 
-`public/models/textures/`, read and written through `lib/library.ts` exactly as
-the component and lamp libraries are: the `library-index` Vite plugin
-(`vite.config.ts`) serves `index.json` for a browser with no token — read per
-request in dev, emitted as a build asset for `dist` — and a browser with one
-reads and commits against the branch through GitHub's contents API.
+`public/models/textures/` on the `library` branch, read and written through
+`lib/library.ts` exactly as the component and lamp libraries are: a browser with
+no token fetches the folder — and the `index.json` beside it, since
+`raw.githubusercontent.com` cannot list one — straight from that branch, and a
+browser with one reads and commits against the same branch through GitHub's
+contents API.
+
+The generator is the reason the listing is not left to callers. It writes textures
+in batches of rejects and keeps, as one commit, every few seconds; a listing
+maintained by hand would be wrong within a minute. `commitFiles` rebuilds it from
+the branch inside that same commit, so a kept wood is listed the moment it lands
+and a reject — which goes to `textures-rejected`, a folder and not a library — is
+not listed at all.
 
 ```
 listLibraryTextures()      → listLibrary("textures")            → string[]

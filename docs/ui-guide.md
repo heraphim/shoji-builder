@@ -263,18 +263,18 @@ There is no scale control: a drawing states its scale, and which ratio a given
 lamp fits on a given sheet at is arithmetic rather than a preference.
 
 **Library settings…**, at the foot of every file menu, is what turns the saves
-on. Give it a GitHub user, a repository, a branch and a fine-grained token with
-*Contents: read and write*, and a save commits the file to `public/models/…`, so
-the design is in the library for good rather than for the session. The row says
-which mode you are in, `connected` or `download only`.
+on. The user, repository and branch already name the library you are reading, so
+the ordinary case is a fine-grained token with *Contents: read and write* and
+nothing else; press Connect and a save commits the file to `public/models/…` on
+that branch, so the design is in the library for good rather than for the session.
+The row says which mode you are in, `connected` or `download only`.
 
-A save does **not** rebuild the site — `public/models/**` is ignored by the
-deploy workflow, because a minute of Actions to publish one JSON file is not
-worth paying per save. Nothing is lost while you are the one working: with a
-token the app reads the branch rather than the built site, so what you just saved
-is what the pickers list. It is the *other* visitor's view that waits, since they
-read the build (Actions → Deploy to GitHub Pages → **Run workflow** publishes the
-library as it stands).
+A save does **not** rebuild the site, and no longer needs to. Everyone reads the
+`library` branch rather than the build, so a design you save is in *every*
+visitor's pickers within the five minutes `raw.githubusercontent.com` caches for —
+no deploy, no Actions minutes, and no hand-run workflow to make the library
+public. You do not wait even that long: with a token the app reads the same branch
+through the API, which no cache has aged.
 
 The settings are checked against GitHub before they are kept, so a token with the
 wrong repository on it is caught there rather than at the first save. They live
@@ -1037,10 +1037,11 @@ you drop into `public/models/…` by hand, and there is no equivalent gesture fo
 taking a file out of a site your browser only reads. Without a token the button
 is greyed and says so.
 
-> A delete is a commit, like a save, and like a save it does **not** rebuild the
-> site — `public/models/**` is ignored by the deploy workflow. With a token you
-> are reading the branch, so the file is gone from your pickers at once; another
-> visitor reads the build and still sees it until the site is next published.
+> A delete is a commit, like a save, and it takes the name with the file: the
+> listing that the pickers are built from is rewritten in the same commit, so a
+> deleted design cannot linger as an entry that opens nothing. With a token it is
+> gone from your own pickers at once; every other visitor stops seeing it within
+> the few minutes their copy of the listing is cached for.
 
 **Refresh** re-reads all three libraries.
 

@@ -1,5 +1,8 @@
 import { useState } from "react";
 import {
+  LIBRARY_BRANCH,
+  LIBRARY_OWNER,
+  LIBRARY_REPO,
   checkRepoConfig,
   readRepoConfig,
   writeRepoConfig,
@@ -14,6 +17,11 @@ import {
  * what turns every "Save" in the app from a download into a commit; clearing
  * them turns it back.
  *
+ * The three that say *where* start on the library everyone is already reading,
+ * so the ordinary case — you, connecting a token to the library in front of you
+ * — is a token and nothing else. Changing them points the app at some other
+ * branch, which is worth being able to do and not worth having to do.
+ *
  * The settings are checked against GitHub before they are kept. A token with the
  * wrong repository on it, or one that has expired, otherwise announces itself at
  * the first save — which is the worst possible moment, because the design is
@@ -21,9 +29,9 @@ import {
  */
 export function LibrarySettings({ onClose }: { onClose: () => void }) {
   const saved = readRepoConfig();
-  const [owner, setOwner] = useState(saved?.owner ?? "");
-  const [repo, setRepo] = useState(saved?.repo ?? "shoji-builder");
-  const [branch, setBranch] = useState(saved?.branch ?? "main");
+  const [owner, setOwner] = useState(saved?.owner ?? LIBRARY_OWNER);
+  const [repo, setRepo] = useState(saved?.repo ?? LIBRARY_REPO);
+  const [branch, setBranch] = useState(saved?.branch ?? LIBRARY_BRANCH);
   const [token, setToken] = useState(saved?.token ?? "");
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,9 +71,11 @@ export function LibrarySettings({ onClose }: { onClose: () => void }) {
       >
         <h2>Library settings</h2>
         <p className="file-dialog-note">
-          With a token, Save commits to the repository and the site rebuilds with
-          it. Without one, Save downloads the file as before. The token is kept in
-          this browser only.
+          Everyone reads the <code>{LIBRARY_BRANCH}</code> branch; a token is what
+          lets you write to it. With one, Save commits, and the design is in the
+          library for everybody within a few minutes. Without one, Save downloads
+          the file as before. The token is kept in this browser only, and is sent
+          nowhere but api.github.com.
         </p>
 
         <label className="file-dialog-field">
@@ -73,7 +83,7 @@ export function LibrarySettings({ onClose }: { onClose: () => void }) {
           <input
             type="text"
             value={owner}
-            placeholder="your-username"
+            placeholder={LIBRARY_OWNER}
             autoComplete="off"
             onChange={(event) => {
               setOwner(event.target.value);
@@ -99,7 +109,7 @@ export function LibrarySettings({ onClose }: { onClose: () => void }) {
           <input
             type="text"
             value={branch}
-            placeholder="main"
+            placeholder={LIBRARY_BRANCH}
             autoComplete="off"
             onChange={(event) => {
               setBranch(event.target.value);

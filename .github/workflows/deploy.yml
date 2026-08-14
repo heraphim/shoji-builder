@@ -1,23 +1,23 @@
 # Build the site and publish it to GitHub Pages.
 #
-# A push of *code* deploys. A push of a design does not — saving a component,
-# lamp or texture from the browser is a commit, and rebuilding the whole site for
-# each one would mean a minute of Actions per save to publish one JSON file.
+# Code only. A design is not code and does not deploy: saving a component, lamp
+# or texture from the browser commits to the `library` branch, which this
+# workflow does not watch and the site does not contain. The library is read
+# from that branch at run time — see the head of src/lib/library.ts — so a save
+# is public within the five minutes raw.githubusercontent.com caches for, and
+# costs no Actions minutes at all.
 #
-# Nothing is lost by skipping it while you are the one working: with a token the
-# app reads the branch rather than the deployed site, so what you just saved is
-# what the pickers list, immediately. What is deferred is the *other* visitor's
-# view — they read the built site, so a design saved since the last code push is
-# not there for them yet. Run this workflow by hand (Actions → Deploy to GitHub
-# Pages → Run workflow) when you want the library as it stands to be public.
+# This used to say something more apologetic. Deploys were filtered with
+# `paths-ignore: public/models/**` so that a save would not spend a minute of
+# Actions republishing the site for one JSON file — which worked, at the price of
+# a visitor seeing the library as it stood at the last *code* push. That trade is
+# gone rather than tuned: nothing to filter, because a save no longer lands on
+# this branch.
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - 'public/models/**'
-  # publish the library as it stands, without an empty commit to trigger it
   workflow_dispatch:
 
 permissions:

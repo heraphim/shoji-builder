@@ -78,7 +78,7 @@ The stores hold state; the libraries hold the arithmetic.
 | `rectangles.ts` | Minimum partition of a rectilinear polygon (with holes) into axis-aligned rectangles. |
 | `assembly.ts` | CSG union of joined parts, face-topology extraction, outline recovery, solid retessellation, hidden-line splitting, parallel-edge lookup. |
 | `picking.ts` | Raycast-hit helpers (nearest vertex, world normal, world triangle), STL island splitting, bounding volumes, orthographic camera basis. |
-| `library.ts` | The one place that knows where the three libraries are read from and written to: the deployed site, or — when this browser has been given a token — the GitHub branch itself, where a save is a commit and a delete is a commit. Holds the settings and all the I/O. `commitFiles` is the exception to one-file-one-commit: any number of files as a single commit, over the git data API. |
+| `library.ts` | The one place that knows where the three libraries are read from and written to — the `library` branch, for everybody: over `raw.githubusercontent.com` without a token, over the contents API with one, which is the same branch read a little fresher. Holds the settings and all the I/O. Every write goes through `commitFiles`, which lands any number of files as one commit over the git data API and folds in the `index.json` that makes them findable, so nothing can land in a library unlisted. |
 | `rollJournal.ts` | Every roll the generator shows, kept or rejected, buffered to localStorage and pushed as one commit five seconds after the clicking stops. Module state rather than component state, so leaving the tab does not strand the batch. Rejects go to `public/models/textures-rejected`. |
 | `componentFile.ts` | Serialise the editor to `*.component.json` and load it back. Owns the file format. |
 | `lampFile.ts` | The same one level up: the `*.lamp.json` format — which components are on the lamp and how each is fixed on. Pure; the store does the fetching. |
@@ -343,10 +343,11 @@ The Lamp tab's file menu is the whole design's file I/O, and it mirrors the
 component library because it is the same idea one level up — a component is a
 recipe for a part, a lamp a recipe for an assembly of them.
 
-- **Save** writes a `*.lamp.json` to `public/models/lamps` as a commit through
-  GitHub's contents API, and needs a token to do it; **Download** hands the same
-  file to the browser, to be dropped in by hand, and needs nothing
-  (`lib/library.ts`). The same round trip a component takes.
+- **Save** writes a `*.lamp.json` to `public/models/lamps` on the `library`
+  branch as a commit — the lamp and the listing that names it, together — and
+  needs a token to do it; **Download** hands the same file to the browser, to be
+  dropped in by hand, and needs nothing (`lib/library.ts`). The same round trip a
+  component takes.
 - **Load…** lists that folder and replaces the bench: instances *and*
   variables, because a lamp is a whole design rather than something added to one.
 - Instances name their components rather than embedding them, so a component
@@ -369,12 +370,22 @@ true at those values and at no others.
 
 ## Build-time pieces
 
-`vite.config.ts` adds a tiny `library-index` plugin. None of
-`public/models/components`, `public/models/lamps` or `public/models/textures`
-has a directory index, so the plugin serves `index.json` for all three in dev and
-emits the same listings as build assets. It is the no-token path only: a browser
-with a token lists the branch through the contents API instead and never asks for
-`index.json` at all (`lib/library.ts`).
+`vite.config.ts` adds a tiny `unpublish-libraries` plugin, which deletes
+`models/components`, `models/lamps` and `models/textures` from the built output
+after `public/` has been copied into it.
+
+It is there to stop the site shipping a library at all. The three folders are read
+at run time from the `library` branch, so a copy in `dist` answers no request —
+but it would be a *published* copy, frozen at the last code push and
+indistinguishable from the real one to anyone who found it. The folders stay in
+the source, where they are what the branch was seeded from.
+
+Which leaves the listing problem the build used to solve: none of the three
+folders has a directory index, and `raw.githubusercontent.com` serves a file and
+never a folder. So each library carries its own `index.json` **on the branch**,
+rebuilt by `commitFiles` inside the same commit that changes that library
+(`lib/library.ts`). A browser with a token skips it and lists the branch through
+the contents API, which is ground truth and no cache has aged.
 
 ### `public/models/generated-components` is not one of them
 

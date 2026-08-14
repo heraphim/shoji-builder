@@ -54,7 +54,7 @@ everything else wears, which needs no UVs and adds nothing to the download.
 
 ### The checks
 
-`src/lib/__*check.ts` are standalone harnesses for the seven things that are worth
+`src/lib/__*check.ts` are standalone harnesses for the eight things that are worth
 asserting numerically rather than eyeballing: that a joint stays on the feature it
 was picked on (`__anchorcheck`), that a saved lamp responds to a slider exactly as
 a rebuilt one does (`__lampfilecheck`), that a union of boxes gives the outline
@@ -63,10 +63,16 @@ agree with the library they describe (`__assetscheck`), that the settings kept
 in `localStorage` survive the round trip — including the malformed blobs, which is
 the half nobody sees fail until the browser has been closed (`__settingscheck`) —
 that the generator's roll journal buffers, survives a reload and lands as one
-commit rather than one per click (`__rollscheck`), and that the showcase's paper
-shell is five faces, all wound to face outwards, at one scale (`__papercheck`):
-none of which can be seen from the code, and all of which are unmistakable the
-moment they are wrong on screen.
+commit rather than one per click (`__rollscheck`), that the visitor and the token
+holder are reading one library and that nothing can land in it unlisted
+(`__librarycheck`), and that the showcase's paper shell is five faces, all wound
+to face outwards, at one scale (`__papercheck`): none of which can be seen from
+the code, and all of which are unmistakable the moment they are wrong on screen.
+
+`__librarycheck` is the odd one, in that its failure is not visible on screen at
+all — it is two people disagreeing about what is in the library and both being
+shown something plausible. So GitHub is a switch statement and the branch is a
+`Map`, and what is asserted is which requests are made and what goes in them.
 
 There is no test runner. Each is bundled to ESM and run under Node, from the
 project root — `__assetscheck` answers `fetch` off `public/`, so it exercises the
@@ -124,11 +130,14 @@ component instead of the old one at the old size. See
   variables, the component editor, the lamp assembly, the texture bench, the
   view chrome, the folded panels, and what the last file action had to say
 
-Data lives as JSON under `public/`: design variables in
-`public/data/variables.json`, and the three libraries in
-`public/models/components/`, `public/models/lamps/` and
-`public/models/textures/` (each listed by a small Vite plugin, see
-`vite.config.ts`).
+Data lives as JSON. Design variables are in `public/data/variables.json` and ship
+with the build. The three libraries — `components`, `lamps` and `textures` — do
+not: they are read at run time from the [`library`
+branch](https://github.com/heraphim/shoji-builder/tree/library), which is the one
+copy everybody sees. The folders under `public/models/` are the source those were
+seeded from and are kept out of the built site on purpose, so that a second,
+staler library cannot be published beside the real one — see `unpublishLibraries`
+in `vite.config.ts`.
 
 ## Deploying
 
@@ -145,17 +154,37 @@ build is given that prefix and the dev server uses it too — the path that gets
 tested is the path that ships. The workflow takes it from the repository name; to
 build for a differently named one by hand, `VITE_BASE=/my-fork/ npm run build`.
 
-### Saving to the library from the deployed site
+### The library branch
+
+Everything the pickers offer lives on one branch, `library`, and everything reads
+it. A visitor fetches it straight from `raw.githubusercontent.com`, which needs no
+credentials and no API quota; the app is a static site with no server, and it does
+not need one, because the branch is already a public file host.
+
+That is the whole point of the arrangement, and it replaces a worse one. The
+libraries used to be *in the build*, so a visitor saw them as they stood at the
+last push of **code** — while whoever held a token read the branch and saw
+something else. Two libraries, one app, and no way to tell which you had. Now
+there is one, and the only thing a token changes is whether you may write to it.
+
+The cost is that a save is public within the five minutes
+`raw.githubusercontent.com` caches for, rather than instantly. The person who just
+saved does not wait — with a token the app reads the same branch through the API,
+which no cache has aged — but everyone else does. It buys back a manual deploy per
+save and every Actions minute those cost.
+
+### Saving to the library
 
 A page has nowhere to write, so saving a component, lamp or texture has always
-been a download you dropped into `public/models/…` by hand. On a deployed site it
-can be better than that, because the site *is* a branch of a repository:
+been a download you dropped into `public/models/…` by hand. With a token it is a
+commit instead:
 
 1. Make a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new)
    with access to this repository only, and **Repository permissions →
    Contents: Read and write**. Nothing else.
-2. Open any file menu → **Library settings…**, fill in the user, repository,
-   branch and token, and press Connect.
+2. Open any file menu → **Library settings…**, and press Connect. The user,
+   repository and branch already point at the library you are reading; only the
+   token is yours to fill in.
 
 Every save now commits the file, so a design is in the library for good rather
 than for the session — and the **Assets** tab can delete one, which is the single
@@ -163,20 +192,27 @@ thing in the app that a token is *required* for: saving falls back to a download
 you drop in by hand, and there is no equivalent gesture for taking a file out of
 a site your browser only reads.
 
-Saving does **not** rebuild the site — `public/models/**` is ignored by the
-workflow, because a minute of Actions to publish one JSON file is not worth
-paying per save. It costs nothing while you are the one working: with a token the
-app reads the branch rather than the built site, so what you just saved is what
-the pickers list. It is only the *other* visitor's view that waits, since they
-read the build. Actions → Deploy to GitHub Pages → **Run workflow** publishes the
-library as it stands whenever you want it seen.
+Each library carries an `index.json` of its own names, because
+`raw.githubusercontent.com` serves a file and never a folder, so a reader without
+a token has no other way to ask what is in one. Nothing maintains it by hand:
+`commitFiles` rebuilds it from the branch inside the same commit that changes a
+library, so a file cannot land unlisted, and a listing that has drifted is
+corrected by the next save.
 
-The token is kept in that
-browser's `localStorage`: it is never in the source, never in the bundle, and
-never sent anywhere but `api.github.com`. Anyone else opening the site has no
-token, reads the same library, and saves by downloading — which is what makes a
-public site with a private save button possible at all.
+The token is kept in that browser's `localStorage`: it is never in the source,
+never in the bundle, and never sent anywhere but `api.github.com`. Anyone else
+opening the site has no token, reads the same library, and saves by downloading —
+which is what makes a public site with a private save button possible at all.
 
-An expiring token is worth choosing deliberately. A leaked one can rewrite the
-files in this repository and nothing else; revoke it at
-Settings → Developer settings and press Connect again with a new one.
+An expiring token is worth choosing deliberately. **A fine-grained token cannot be
+restricted to one branch**, so a token issued for the library can also write to
+`main` — which is worth a ruleset on `main` if more than one person holds one, and
+worth knowing about either way. A leaked token can rewrite the files in this
+repository and nothing else; revoke it at Settings → Developer settings and press
+Connect again with a new one.
+
+To point a fork at its own library, build it with its own address:
+
+```
+VITE_LIBRARY_OWNER=you VITE_LIBRARY_REPO=your-fork npm run build
+```

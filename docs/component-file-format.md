@@ -220,16 +220,20 @@ as set.
 `public/models/components/`, read and written through the one module every
 library goes through — `lib/library.ts`, which has two modes.
 
-**Without a token** the listing comes from `index.json`. The folder has no
-directory index of its own, so the `library-index` Vite plugin
-(`vite.config.ts`) serves one — read per request in dev, so dropping a file in
-shows up on the next open, and emitted as a build asset for `dist`. **Save**
-downloads the file for you to drop into the folder by hand.
+Both modes read the **`library` branch**; what differs is how, and whether you may
+write to it.
+
+**Without a token** the folder is fetched from `raw.githubusercontent.com`, which
+needs no credentials. It serves a file and never a folder, so the listing comes
+from the `index.json` the branch carries beside the components — written by
+whatever last committed one. **Save** downloads the file for you to drop into the
+folder by hand.
 
 **With one** (Library settings, at the foot of the file menu) both directions go
-through GitHub's contents API against the branch: a save is a commit, and a read
-is of the branch rather than of the deployed site, so what you open is what you
-last saved rather than what the last build shipped.
+through GitHub's contents API against that same branch: a save is a commit of the
+component and the listing together, and a read is ground truth rather than an
+answer up to five minutes old — which matters to exactly one person, the one who
+just saved.
 
 ```
 listLibraryComponents()      → listLibrary("components")            → string[]

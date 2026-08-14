@@ -21,23 +21,64 @@
  * api.github.com. Nobody else loading the site has it, which is what makes a
  * public read-only site with a private save button possible at all.
  *
- * ## Two modes, not one with patches
+ * ## One source, two ways of reading it
  *
- * Without a token every read is a plain fetch of what the site serves, and there
- * is nothing to save with: the file menus disable the saves and leave the
- * download — which is exactly what a visitor should get.
+ * The library used to be in two places at once. A visitor read what the *build*
+ * served, which was the library as it stood at the last push of code — and a
+ * save does not push code, so their copy was frozen at a moment that had nothing
+ * to do with the library. Whoever held the token read the branch, and saw
+ * something else. Same app, two libraries, and no way to tell from inside which
+ * one you were looking at.
  *
- * With one, *every* read goes through the API instead, including reads that the
- * site could have served. It is the slower path, and it is the right one: the
- * site is a build, and a saved design does not trigger one, so it goes on
- * serving the library as it stood at the last code push. Reading the branch
- * means what you open is what you last saved, rather than what was there the
- * last time the site was published — worth more than the hundred milliseconds it
- * costs the one person holding a token.
+ * Now there is one: the {@link LIBRARY_BRANCH} branch of this repository, which
+ * everybody reads and only a token writes. What differs is the transport, and
+ * only because the two readers want different things from it:
+ *
+ * - **Without a token** — `raw.githubusercontent.com`, which needs no
+ *   credentials, sends `Access-Control-Allow-Origin: *` so a page may fetch it,
+ *   and is a CDN rather than the API, so it is not spending the sixty
+ *   unauthenticated API requests an hour that every visitor shares. It caches
+ *   for five minutes, which is the whole cost of this design: a save is public
+ *   within five minutes instead of instantly.
+ * - **With one** — the contents API, against that same branch. Not for
+ *   permission, which reading never needs, but for freshness: the person who
+ *   just saved is the one person for whom a five-minute-old answer is obviously
+ *   wrong, because they are looking for the file they just wrote.
+ *
+ * Neither can show the other something the branch does not say.
+ *
+ * ## Listing a folder nobody can list
+ *
+ * `raw` serves a file, never a directory, so a reader without a token cannot ask
+ * what is in a library. Each one therefore carries an `index.json` of its own
+ * names — and the danger with a listing kept beside the things it lists is that
+ * it stops agreeing with them. So no caller maintains it: {@link commitFiles}
+ * rebuilds it from the branch itself inside the very commit that changes a
+ * library, and it is the only way anything here writes. A file cannot land
+ * unlisted, because landing is what lists it.
  */
 
 /** The three libraries, which are the three folders under `public/models`. */
 export type Library = "components" | "lamps" | "textures";
+
+/**
+ * Where the library is when nobody has said otherwise.
+ *
+ * Compiled in rather than configured, because the reader who needs it most is
+ * the one who has configured nothing: a visitor has no settings and must still
+ * know which branch of which repository the pickers are showing. A fork
+ * overrides them at build time —
+ *
+ * ```
+ * VITE_LIBRARY_OWNER=you VITE_LIBRARY_REPO=your-fork npm run build
+ * ```
+ *
+ * — and a token holder overrides them again in the settings panel, which is how
+ * you point the app at a branch to try something out without publishing it.
+ */
+export const LIBRARY_OWNER = import.meta.env.VITE_LIBRARY_OWNER ?? "heraphim";
+export const LIBRARY_REPO = import.meta.env.VITE_LIBRARY_REPO ?? "shoji-builder";
+export const LIBRARY_BRANCH = import.meta.env.VITE_LIBRARY_BRANCH ?? "library";
 
 /** Everything a write needs, as typed into the settings panel. */
 export interface RepoConfig {
@@ -60,7 +101,7 @@ export function readRepoConfig(): RepoConfig | null {
     return {
       owner: saved.owner,
       repo: saved.repo,
-      branch: saved.branch || "main",
+      branch: saved.branch || LIBRARY_BRANCH,
       token: saved.token,
     };
   } catch {
@@ -102,14 +143,43 @@ export function siteUrl(path: string): string {
   return `${import.meta.env.BASE_URL}${path}`;
 }
 
+/**
+ * A path in the library branch, as a URL anyone may fetch.
+ *
+ * The read path for everybody without a token, which is nearly everybody. No
+ * credentials, no API quota, and — the part that makes it usable from a page at
+ * all — `Access-Control-Allow-Origin: *`.
+ *
+ * Deliberately built from the compiled-in constants and not from the settings:
+ * this is the address of the *published* library, so it stays the same for the
+ * token holder and the visitor standing next to them.
+ */
+export function rawUrl(path: string): string {
+  return `https://raw.githubusercontent.com/${LIBRARY_OWNER}/${LIBRARY_REPO}/${LIBRARY_BRANCH}/${encodePath(path)}`;
+}
+
 // ---------------------------------------------------------------------------
 // The repository
 // ---------------------------------------------------------------------------
 
-// The site serves the libraries at `models/…`; in the repository they are the
-// sources under `public/`, which is what the contents API has to be given.
+/** The listing each library carries so that `raw` can be asked what is in it. */
+const INDEX = "index.json";
+
+// Where a library sits in the repository. The site serves them at `models/…`;
+// the branch keeps them where they have always been in the source, under
+// `public/`, so a file is at one path whichever way you arrive at it.
+//
+// The true path, unescaped: the tree API stores exactly the bytes it is handed,
+// so a name escaped on the way in becomes a file called `a%20b.json`. Escaping
+// belongs to the two transports that put a path in a URL, and is theirs to do —
+// see {@link encodePath}.
 const repoPath = (lib: Library, file?: string) =>
-  `public/models/${lib}${file ? `/${encodeURIComponent(file)}` : ""}`;
+  `public/models/${lib}${file ? `/${file}` : ""}`;
+
+const indexPath = (lib: Library) => repoPath(lib, INDEX);
+
+/** A repository path as a URL wants it: escaped, but still a path. */
+const encodePath = (path: string) => path.split("/").map(encodeURIComponent).join("/");
 
 /** One request against this repository, `suffix` being everything after it. */
 function repoApi(
@@ -150,15 +220,6 @@ const json = (body: unknown) => ({
 async function apiError(res: Response): Promise<string> {
   const body = (await res.json().catch(() => null)) as { message?: string } | null;
   return body?.message ? `${body.message} (${res.status})` : `GitHub returned ${res.status}`;
-}
-
-function base64(text: string): string {
-  const bytes = new TextEncoder().encode(text);
-  let binary = "";
-  // one byte at a time rather than spreading the array into fromCharCode, which
-  // blows the argument limit on a file of any size
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  return btoa(binary);
 }
 
 /**
@@ -205,9 +266,10 @@ export async function listLibrary(lib: Library): Promise<string[]> {
       .map((e) => e.name)
       .sort();
   }
-  // Static file serving has no directory index, so a Vite plugin bakes one in
-  // at build time — see vite.config.ts.
-  const res = await fetch(siteUrl(`models/${lib}/index.json`));
+  // No token: the listing the branch carries, because `raw` cannot be asked what
+  // is in a folder. Written by whatever last committed to that folder, so it is
+  // the same set of names the request above would have returned.
+  const res = await fetch(rawUrl(indexPath(lib)), { cache: "no-store" });
   if (!res.ok) throw new Error(`${lib} library unavailable (${res.status})`);
   return (await res.json()) as string[];
 }
@@ -218,13 +280,13 @@ export async function readLibraryFile(lib: Library, file: string): Promise<unkno
   if (config) {
     const res = await contents(
       config,
-      `${repoPath(lib, file)}?ref=${encodeURIComponent(config.branch)}`,
+      `${encodePath(repoPath(lib, file))}?ref=${encodeURIComponent(config.branch)}`,
       { headers: { Accept: "application/vnd.github.raw" } }
     );
     if (!res.ok) throw new Error(`Could not read ${file}: ${await apiError(res)}`);
     return JSON.parse(await res.text());
   }
-  const res = await fetch(siteUrl(`models/${lib}/${encodeURIComponent(file)}`));
+  const res = await fetch(rawUrl(repoPath(lib, file)));
   if (!res.ok) throw new Error(`Could not read ${file} (${res.status})`);
   return await res.json();
 }
@@ -238,9 +300,14 @@ export async function readLibraryFile(lib: Library, file: string): Promise<unkno
  * {@link canWriteToRepo} and disables the button rather than offering one that
  * cannot work, and this refuses outright if it is called anyway.
  *
- * Two requests for the same reason a save is two: the contents API will only
- * delete a blob it is handed the `sha` of, which is also the check that the file
- * is still the one being looked at.
+ * The file goes and the listing that named it is rewritten together, in one
+ * commit, because {@link commitFiles} will not let them go separately — a
+ * delete that landed without its listing would leave a name in the pickers that
+ * opens nothing.
+ *
+ * Still asks whether the file is there first, which the commit does not need:
+ * the answer is the difference between "already gone" and a write the
+ * repository refused, and those want different words.
  *
  * @returns what happened, in the words the Assets tab shows.
  * @throws when there is no token, when the file is already gone, or when the
@@ -254,18 +321,18 @@ export async function deleteLibraryFile(lib: Library, file: string): Promise<str
     );
   }
 
-  const path = repoPath(lib, file);
-  const existing = await contents(config, `${path}?ref=${encodeURIComponent(config.branch)}`);
+  const existing = await contents(
+    config,
+    `${encodePath(repoPath(lib, file))}?ref=${encodeURIComponent(config.branch)}`
+  );
   if (existing.status === 404) throw new Error(`${file} is not in the library any more`);
   if (!existing.ok) throw new Error(`Could not delete ${file}: ${await apiError(existing)}`);
-  const { sha } = (await existing.json()) as { sha: string };
 
-  const res = await contents(config, path, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: `Delete ${lib}/${file}`, sha, branch: config.branch }),
-  });
-  if (!res.ok) throw new Error(`Could not delete ${file}: ${await apiError(res)}`);
+  try {
+    await commitFiles([{ path: repoPath(lib, file), text: null }]);
+  } catch (e) {
+    throw new Error(`Could not delete ${file}: ${e instanceof Error ? e.message : String(e)}`);
+  }
   return `Deleted ${file} from the library`;
 }
 
@@ -348,9 +415,9 @@ function download(file: string, body: string | Blob): void {
 /**
  * Put a design in the library: a commit when there is a token.
  *
- * The write is two requests because the contents API needs the blob's `sha` to
- * agree to replace it — which doubles as the check for whether this is a new
- * file or an overwrite, and so for what the commit should be called.
+ * One commit carrying the design and its library's listing, which is
+ * {@link commitFiles}'s doing rather than this function's — the design and the
+ * name a visitor finds it by land together or not at all.
  *
  * Without a token it falls back to {@link downloadLibraryFile}. The menus no
  * longer reach that: they disable the saves and offer the download as its own
@@ -370,37 +437,92 @@ export async function saveLibraryFile(
   const config = readRepoConfig();
   if (!config) return downloadLibraryFile(lib, file, data);
 
-  const text = JSON.stringify(data, null, 2);
-  const path = repoPath(lib, file);
-  const existing = await contents(
-    config,
-    `${path}?ref=${encodeURIComponent(config.branch)}`
-  );
-  let sha: string | undefined;
-  if (existing.ok) sha = ((await existing.json()) as { sha: string }).sha;
-  else if (existing.status !== 404) {
-    throw new Error(`Could not save ${file}: ${await apiError(existing)}`);
+  try {
+    await commitFiles([{ path: repoPath(lib, file), text: JSON.stringify(data, null, 2) }]);
+  } catch (e) {
+    throw new Error(`Could not save ${file}: ${e instanceof Error ? e.message : String(e)}`);
   }
-
-  const res = await contents(config, path, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message: `${sha ? "Update" : "Add"} ${lib}/${file}`,
-      content: base64(text),
-      branch: config.branch,
-      ...(sha ? { sha } : {}),
-    }),
-  });
-  if (!res.ok) throw new Error(`Could not save ${file}: ${await apiError(res)}`);
   return `Saved ${file} to the library`;
 }
 
 /** A file as a commit wants it: where it goes, and what is in it. */
 export interface RepoFile {
-  /** Full path from the root of the repository. */
+  /** Full path from the root of the repository, unescaped. */
   path: string;
-  text: string;
+  /** What the file should contain, or null to remove it. */
+  text: string | null;
+}
+
+/** `public/models/<lib>/<name>.json`, and nothing nested deeper or beside it. */
+const LIBRARY_FILE = /^public\/models\/(components|lamps|textures)\/([^/]+\.json)$/;
+
+/**
+ * Rewrite the listing of every library this commit disturbs.
+ *
+ * Built from the branch rather than from the last listing: the names are asked
+ * of the folder itself and then this commit's own changes are applied on top,
+ * so a listing that had drifted — a file put there by hand, a commit from
+ * before any of this existed — is corrected by the next save rather than
+ * carried forward. Costs one request per library touched, and a commit touches
+ * one.
+ *
+ * Emitted unconditionally. A listing that was already right compiles to the blob
+ * it already was, and a tree entry identical to its parent's is not a change, so
+ * an unnecessary rewrite costs a comparison on GitHub's side and nothing here.
+ *
+ * @returns the listings to commit, and the names that were already in them —
+ *   which is only good for deciding whether a save reads as `Add` or `Update`.
+ */
+async function reindex(
+  config: RepoConfig,
+  files: RepoFile[]
+): Promise<{ listings: RepoFile[]; before: Set<string> }> {
+  const touched = new Map<Library, { added: string[]; removed: string[] }>();
+  for (const file of files) {
+    const match = LIBRARY_FILE.exec(file.path);
+    if (!match) continue;
+    const [, lib, name] = match as unknown as [string, Library, string];
+    if (name === INDEX) continue;
+    const entry = touched.get(lib) ?? { added: [], removed: [] };
+    (file.text === null ? entry.removed : entry.added).push(name);
+    touched.set(lib, entry);
+  }
+
+  const listings: RepoFile[] = [];
+  const before = new Set<string>();
+  for (const [lib, { added, removed }] of touched) {
+    const res = await contents(
+      config,
+      `${repoPath(lib)}?ref=${encodeURIComponent(config.branch)}`
+    );
+    // git has no empty directories, so a library nothing has ever been saved to
+    // is a 404 and not an empty listing.
+    let current: string[] = [];
+    if (res.ok) {
+      const entries = (await res.json()) as { name: string; type: string }[];
+      current = entries
+        .filter((e) => e.type === "file" && e.name.endsWith(".json") && e.name !== INDEX)
+        .map((e) => e.name);
+    } else if (res.status !== 404) {
+      throw new Error(`Could not read the ${lib} library: ${await apiError(res)}`);
+    }
+    for (const name of current) before.add(`${lib}/${name}`);
+
+    const gone = new Set(removed);
+    const names = [...new Set([...current, ...added])].filter((n) => !gone.has(n)).sort();
+    listings.push({ path: indexPath(lib), text: JSON.stringify(names, null, 2) });
+  }
+  return { listings, before };
+}
+
+/** What to call a commit nobody named: the one thing it did, in the log's voice. */
+function describe(files: RepoFile[], before: Set<string>): string {
+  if (files.length !== 1) return `Save ${files.length} files`;
+  const [file] = files;
+  const match = LIBRARY_FILE.exec(file.path);
+  const what = match ? `${match[1]}/${match[2]}` : file.path;
+  if (file.text === null) return `Delete ${what}`;
+  return `${before.has(what) ? "Update" : "Add"} ${what}`;
 }
 
 /**
@@ -417,19 +539,30 @@ export interface RepoFile {
  * file, which is the per-file round trip this exists to avoid. Against the
  * contents API the same batch would be two requests per file.
  *
+ * **Every** write to a library goes through here, which is the point: this is
+ * where {@link reindex} folds in the listings that make the written files
+ * findable, so no caller has to remember to and none of them can get it wrong.
+ * A save, a delete and a batch of generated woods are all one commit that leaves
+ * the branch describing itself.
+ *
  * No force, and no retry. If the branch moved under us the ref update fails and
  * this throws with the whole batch unwritten, which is exactly what the caller
  * wants: the journal has not dropped anything, so the next flush sends the same
  * files against the new head. Forcing would take somebody else's commit off the
  * branch to land a pile of rejects, which is the wrong trade in every case.
  *
+ * @param message what to call the commit; when left out, {@link describe} names
+ *   it after the one thing it did.
  * @returns what happened, in the words the generator's status line shows.
  * @throws when there is no token, or when any step of the write is refused.
  */
-export async function commitFiles(files: RepoFile[], message: string): Promise<string> {
+export async function commitFiles(files: RepoFile[], message?: string): Promise<string> {
   const config = readRepoConfig();
   if (!config) throw new Error("Pushing needs a connected repository — see Library settings");
   if (files.length === 0) return "Nothing to push";
+
+  const { listings, before } = await reindex(config, files);
+  const subject = message ?? describe(files, before);
 
   // Slashes in a branch name are path separators here, so the ref is not
   // encoded as one component — `heads/feature/x` is the ref `feature/x`.
@@ -448,7 +581,14 @@ export async function commitFiles(files: RepoFile[], message: string): Promise<s
     "git/trees",
     json({
       base_tree: baseTree,
-      tree: files.map((f) => ({ path: f.path, mode: "100644", type: "blob", content: f.text })),
+      // A `sha` of null is how the tree API spells a removal; `content` is how
+      // it spells everything else.
+      tree: [...files, ...listings].map((f) => ({
+        path: f.path,
+        mode: "100644",
+        type: "blob",
+        ...(f.text === null ? { sha: null } : { content: f.text }),
+      })),
     })
   );
   if (!tree.ok) throw new Error(`Could not write the files: ${await apiError(tree)}`);
@@ -457,7 +597,7 @@ export async function commitFiles(files: RepoFile[], message: string): Promise<s
   const commit = await repoApi(
     config,
     "git/commits",
-    json({ message, tree: treeSha, parents: [parent] })
+    json({ message: subject, tree: treeSha, parents: [parent] })
   );
   if (!commit.ok) throw new Error(`Could not commit: ${await apiError(commit)}`);
   const commitSha = ((await commit.json()) as { sha: string }).sha;

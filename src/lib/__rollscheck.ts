@@ -84,6 +84,11 @@ const reply = (body: unknown, ok = true) => ({
   const method = init?.method ?? "GET";
   sent.push({ method, url, body: init?.body ? JSON.parse(init.body as string) : undefined });
   if (failNextPush) return reply({ message: "no" }, false);
+  // The texture library as it stands, which a commit reads so it can rewrite the
+  // listing that goes with it — see `reindex` in lib/library.ts.
+  if (url.includes("/contents/")) {
+    return reply([{ name: "walnut-gloss-9233.texture.json", type: "file" }]);
+  }
   if (url.includes("/git/ref/")) return reply({ object: { sha: "PARENT" } });
   if (url.includes("/git/commits/")) return reply({ tree: { sha: "BASETREE" } });
   if (url.endsWith("/git/trees")) return reply({ sha: "NEWTREE" });
@@ -127,6 +132,9 @@ check("both are held", rollStatus().pending === 2, `pending ${rollStatus().pendi
 
 advance(1);
 await settle();
+// Five, the whole cost of a commit. Both of these are rejects, which land in a
+// folder that is not a library, so there is no listing to rebuild and nothing is
+// read to rebuild it from — see the keeps below, which do cost the extra read.
 check("the batch lands once the rolling stops", sent.length === 5, `${sent.length} requests`);
 check("as one commit", sent.filter((s) => s.url.endsWith("/git/commits")).length === 1);
 check("and the buffer is empty", rollStatus().pending === 0);
@@ -152,7 +160,12 @@ check(
   wrote.includes("public/models/textures-rejected/turned-down.texture.json"),
   wrote.join(" ")
 );
-check("both in the one tree", wrote.length === 2, `${wrote.length} files`);
+check(
+  "and the listing that makes the keep findable goes with them, in that same tree",
+  wrote.includes("public/models/textures/index.json"),
+  wrote.join(" ")
+);
+check("all three in the one tree", wrote.length === 3, `${wrote.length} files`);
 
 const commit = sent.find((s) => s.url.endsWith("/git/commits"))?.body as { message: string };
 check("the commit says what it did", commit?.message === "Keep 1 and reject 1", commit?.message);
@@ -181,7 +194,12 @@ failNextPush = false;
 reset();
 advance(IDLE_MS);
 await settle();
-check("the next window retries the same two", paths().length === 2, paths().join(" "));
+check(
+  "the next window retries the same two",
+  paths().includes("public/models/textures-rejected/w-5.texture.json") &&
+    paths().includes("public/models/textures/w-6.texture.json"),
+  paths().join(" ")
+);
 check("and clears them", rollStatus().pending === 0);
 
 // ---------------------------------------------------------------------------

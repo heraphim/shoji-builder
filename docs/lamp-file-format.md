@@ -177,18 +177,20 @@ Lamps live in `public/models/lamps`, exactly as components live in
 `public/models/components`, and all three libraries are read and written through
 one module — `lib/library.ts` — which has two modes.
 
-**Without a token** the listing comes from `index.json`. The folder has no
-directory index of its own, so a Vite plugin (`library-index` in
-`vite.config.ts`) serves one — read per request in dev, baked into `dist` on
-build — and **Save** downloads the file for you to drop into the folder by hand.
+Both modes read the **`library` branch**, which is the part worth stating: there
+used to be two libraries — the one baked into the build, which a visitor saw as it
+stood at the last push of *code*, and the branch, which the token holder saw. Same
+app, different lamps, and nothing on screen to say which you had. There is now one.
+
+**Without a token** the folder is fetched from `raw.githubusercontent.com`, which
+needs no credentials and no API quota. It serves a file and never a folder, so the
+listing comes from the `index.json` the branch carries beside the lamps. **Save**
+downloads the file for you to drop into the folder by hand.
 
 **With one** (Library settings, at the foot of the file menu) both directions go
-through GitHub's contents API against the branch: a save is a commit, and a read
-is of the branch rather than of the deployed site. That second half is the part
-worth stating — the site is a build, and a saved design does not trigger one
-(`public/models/**` is ignored by the deploy workflow), so the site goes on
-serving the library as it stood at the last code push. Reading the branch is
-slower and correct.
+through GitHub's contents API against that same branch: a save is a commit of the
+lamp and the listing together, and a read is ground truth rather than an answer up
+to five minutes old.
 
 Either way the picker re-lists on every open, so a lamp saved since the page
 loaded is there the next time you look; the dev server needs no restart.

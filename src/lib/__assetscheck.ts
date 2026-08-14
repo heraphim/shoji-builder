@@ -36,9 +36,17 @@ function check(name: string, ok: boolean, detail = "") {
 }
 
 const BASE = "/shoji-builder/";
+// The three libraries are read from the library branch now, not from the site,
+// so the addresses arriving here are raw.githubusercontent.com URLs whose tail
+// is already the repository path — which is this working copy's own path, since
+// the branch is these files. Everything else is still a path into `public/`.
+const RAW = /^https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/[^/]+\//;
 globalThis.fetch = (async (input: RequestInfo | URL) => {
+  const raw = RAW.exec(String(input));
   const url = String(input).replace(BASE, "");
-  const path = `public/${decodeURIComponent(url)}`;
+  const path = raw
+    ? decodeURIComponent(String(input).slice(raw[0].length))
+    : `public/${decodeURIComponent(url)}`;
   const dir = path.replace(/\/index\.json$/, "");
   if (path.endsWith("/index.json") && fs.existsSync(dir)) {
     const listing = fs
