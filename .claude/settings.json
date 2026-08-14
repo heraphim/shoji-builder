@@ -17,5 +17,9 @@
       "Bash(git push -f:*)",
       "Bash(git filter-branch:*)"
     ]
+  },
+  "worktree": {
+    "symlinkDirectories": ["node_modules"],
+    "baseRef": "head"
   }
 }
