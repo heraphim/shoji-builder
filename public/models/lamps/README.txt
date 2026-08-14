@@ -18,20 +18,34 @@ basic          the lamp this project started from, built by hand out of leg,
                joinery rules were measured off, and the control they are checked
                against, so it is the one file here not to change casually.
 
-andon-*        eight carcasses built from the generated kit in
-               ../components, structural only — no kumiko and no paper. Each is
-               a different *structure*, not a different size: proportions are
-               variables, so a lamp that differs only in its numbers is the same
-               lamp and is not kept twice.
+andon-*        fourteen carcasses built from the generated kit in
+               ../components, structural only — no paper. Each is a different
+               *structure*, not a different size: proportions are variables, so
+               a lamp that differs only in its numbers is the same lamp and is
+               not kept twice.
+
+               The carcass — what the sticks do:
 
                classic          posts, two rings of horned rails, a frame per face
                flush            rails stopping flush with the post's outer face
                stub             the same outline, mortised only at the corner
-               divided          each face split by a rail in the frame
                capped           a cap ring over the post heads
-               capped-divided   both of those
-               open-front       one face left unframed, to reach the light
+               pagoda           a second, longer-horned ring above the cap
+               plinth           the lowest ring at the very foot, so it stands on it
                tower            tall, split by a structural ring into two panels
+               twin             a sixth post mid-face, the rings threaded through it
+
+               The face — what closes it:
+
+               divided          each face split by a rail in the frame
+               capped-divided   a cap ring and divided faces together
+               latticed         a bar and a middle rail, four panes to a face
+               barred           three full-height bars, no middle rail
+               open-front       one face left unframed, to reach the light
+
+               And one that is neither:
+
+               grate            a floor of five slats notched into the bottom ring
 
 Every one of them satisfies docs/joinery-rules.md at eight different sets of
 variables. Anything added here should too.

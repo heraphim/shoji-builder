@@ -1,12 +1,18 @@
 [
+  "andon-barred.lamp.json",
   "andon-capped-divided.lamp.json",
   "andon-capped.lamp.json",
   "andon-classic.lamp.json",
   "andon-divided.lamp.json",
   "andon-flush.lamp.json",
+  "andon-grate.lamp.json",
+  "andon-latticed.lamp.json",
   "andon-open-front.lamp.json",
+  "andon-pagoda.lamp.json",
+  "andon-plinth.lamp.json",
   "andon-stub.lamp.json",
   "andon-tower.lamp.json",
+  "andon-twin.lamp.json",
   "basic-lamp-square.lamp.json",
   "basic-lamp-wide.lamp.json",
   "basic.lamp.json"

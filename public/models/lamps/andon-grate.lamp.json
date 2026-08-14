@@ -1,0 +1,1563 @@
+{
+  "id": "andon-grate",
+  "description": "A floor inside the lamp. The bottom ring's two depth rails are notched five times along their top edges and five slats of frame stock drop into them, coming out flush with the outside of the ring at both ends. It is the only lamp here with anything to set a light *on*: the others are open underneath and the candle stands on the table through them.",
+  "type": "lamp",
+  "format": 2,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "beamExtra": "20",
+    "beamHeight": "15",
+    "frameHeight": "#frameWidth",
+    "frameWidth": "7",
+    "innerDepth": "#innerWidth",
+    "innerHeight": "370",
+    "innerWidth": "200",
+    "legExtraBottom": "40",
+    "legExtraTop": "20",
+    "legThickness": "20"
+  },
+  "paired": {
+    "innerWidth": true,
+    "frameWidth": true
+  },
+  "stashed": {
+    "innerDepth": "200",
+    "frameHeight": "7"
+  },
+  "instances": [
+    {
+      "id": "post1",
+      "label": "post — back right",
+      "component": "postBT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "post2",
+      "label": "post — back left",
+      "component": "postBT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 90
+      }
+    },
+    {
+      "id": "post3",
+      "label": "post — front left",
+      "component": "postBT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "post4",
+      "label": "post — front right",
+      "component": "postBT.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-1-foot"
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "postBT-3-shaft-1"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 270
+      }
+    },
+    {
+      "id": "r01",
+      "label": "bottom rail — right",
+      "component": "railDeepGrate.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railDeepGrate-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railDeepGrate-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r02",
+      "label": "bottom rail — left",
+      "component": "railDeepGrate.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railDeepGrate-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railDeepGrate-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r03",
+      "label": "bottom rail — back",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r04",
+      "label": "bottom rail — front",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railWide-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r11",
+      "label": "top rail — right",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r12",
+      "label": "top rail — left",
+      "component": "railDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-1-horn"
+          },
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": "railDeep-3-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "r13",
+      "label": "top rail — back",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "r14",
+      "label": "top rail — front",
+      "component": "railWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "railWide-1-horn"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "railWide-2-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0s1",
+      "label": "frame stile — right 1",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0s2",
+      "label": "frame stile — right 2",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f0r1",
+      "label": "frame rail — right bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f0r2",
+      "label": "frame rail — right top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                1,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f1s1",
+      "label": "frame stile — left 1",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1s2",
+      "label": "frame stile — left 2",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1r1",
+      "label": "frame rail — left bottom",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f1r2",
+      "label": "frame rail — left top",
+      "component": "frameRailDeep.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailDeep-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                1,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2s1",
+      "label": "frame stile — back 1",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2s2",
+      "label": "frame stile — back 2",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2r1",
+      "label": "frame rail — back bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                0,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f2r2",
+      "label": "frame rail — back top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                1,
+                1
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3s1",
+      "label": "frame stile — front 1",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3s2",
+      "label": "frame stile — front 2",
+      "component": "frameStile.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              1
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": "frameStile-1-lap"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                1
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f3r1",
+      "label": "frame rail — front bottom",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                0,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                0,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "f3r2",
+      "label": "frame rail — front top",
+      "component": "frameRailWide.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "block": null
+          },
+          {
+            "at": [
+              0.5,
+              0,
+              0
+            ],
+            "block": "frameRailWide-2-middle"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                1,
+                0
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                1,
+                1,
+                0
+              ],
+              "block": null
+            }
+          ]
+        },
+        "roll": 180
+      }
+    },
+    {
+      "id": "slat1",
+      "label": "floor slat 1",
+      "component": "grateSlat.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              1,
+              0
+            ],
+            "block": "grateSlat-1-slat"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "grateSlat-1-slat"
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "r01",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-4-notch-1"
+            },
+            {
+              "at": [
+                1,
+                1,
+                1
+              ],
+              "block": "railDeepGrate-3-middle"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "slat2",
+      "label": "floor slat 2",
+      "component": "grateSlat.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "grateSlat-1-slat"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "grateSlat-1-slat"
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "r01",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-6-notch-2"
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-4-notch-1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "slat3",
+      "label": "floor slat 3",
+      "component": "grateSlat.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              0,
+              1,
+              0.5
+            ],
+            "block": "grateSlat-1-slat"
+          },
+          {
+            "at": [
+              0.5,
+              1,
+              0.5
+            ],
+            "block": "grateSlat-1-slat"
+          }
+        ],
+        "target": {
+          "kind": "mainBox",
+          "anchors": [
+            {
+              "at": [
+                0.5,
+                0,
+                0.5
+              ],
+              "block": null
+            },
+            {
+              "at": [
+                0,
+                0,
+                0.5
+              ],
+              "block": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "slat4",
+      "label": "floor slat 4",
+      "component": "grateSlat.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "grateSlat-1-slat"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "grateSlat-1-slat"
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "r01",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-10-notch-4"
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-4-notch-1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "slat5",
+      "label": "floor slat 5",
+      "component": "grateSlat.component.json",
+      "connection": {
+        "source": [
+          {
+            "at": [
+              1,
+              0,
+              1
+            ],
+            "block": "grateSlat-1-slat"
+          },
+          {
+            "at": [
+              1,
+              0,
+              0
+            ],
+            "block": "grateSlat-1-slat"
+          }
+        ],
+        "target": {
+          "kind": "instance",
+          "id": "r01",
+          "anchors": [
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-12-notch-5"
+            },
+            {
+              "at": [
+                0,
+                0,
+                1
+              ],
+              "block": "railDeepGrate-4-notch-1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "grateSlat",
+  "description": "One bar of the floor: a plain stick of frame stock long enough to cross the lamp and both rails that carry it, so its ends finish flush with the outside of the bottom ring.",
+  "type": "component",
+  "format": 6,
+  "units": "mm",
+  "variables": {
+    "beamDepth": "10",
+    "frameWidth": "7",
+    "innerWidth": "200"
+  },
+  "blocks": [
+    {
+      "id": "grateSlat-1-slat",
+      "name": "slat",
+      "size": {
+        "x": "#innerWidth + 2*#beamDepth",
+        "y": "#frameWidth",
+        "z": "#frameWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "connections": [],
+  "measurements": [],
+  "appearance": {
+    "solidColor": "#1e4179",
+    "texture": "basic-pine.texture.json",
+    "grainAxis": "x"
+  },
+  "preview": {
+    "variables": {
+      "beamDepth": 10,
+      "frameWidth": 7,
+      "innerWidth": 200
+    },
+    "solids": [
+      {
+        "vertices": [
+          0,
+          0,
+          0,
+          220,
+          0,
+          0,
+          220,
+          7,
+          0,
+          0,
+          7,
+          0,
+          0,
+          0,
+          7,
+          220,
+          0,
+          7,
+          220,
+          7,
+          7,
+          0,
+          7,
+          7
+        ],
+        "triangles": [
+          4,
+          5,
+          6,
+          4,
+          6,
+          7,
+          1,
+          0,
+          3,
+          1,
+          3,
+          2,
+          5,
+          1,
+          2,
+          5,
+          2,
+          6,
+          0,
+          4,
+          7,
+          0,
+          7,
+          3,
+          3,
+          7,
+          6,
+          3,
+          6,
+          2,
+          0,
+          1,
+          5,
+          0,
+          5,
+          4
+        ]
+      }
+    ]
+  }
+}
