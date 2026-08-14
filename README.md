@@ -173,6 +173,28 @@ saved does not wait — with a token the app reads the same branch through the A
 which no cache has aged — but everyone else does. It buys back a manual deploy per
 save and every Actions minute those cost.
 
+**It is an orphan branch, and holds data only.** No source, no workflows, no
+build — it shares no history with `main` and never merges into it. It carries a
+README of its own saying so, four folders, and nothing else:
+
+```
+public/models/
+  components/  lamps/  textures/      the three the app reads
+  textures-rejected/                  where the generator puts the woods it turned down
+```
+
+The `public/models/` prefix is kept because that is where these files sit in the
+source on `main`, which the branch was seeded from — a file is at one path
+whichever way you arrive at it. `props/`, `stl/` and `generated-components/` are
+deliberately *not* there: the first two are served by the site itself and the
+third is not a library the app can reach.
+
+Being data-only is worth more than tidiness. A branch that looks like the app
+invites somebody to fix the app on it, and nothing here can be edited into a
+broken build. It also means a leaked write token reaches designs and not source —
+which matters, because a fine-grained token cannot be scoped to one branch, so
+that is a matter of what is *on* the branch rather than of what the token permits.
+
 ### Saving to the library
 
 A page has nowhere to write, so saving a component, lamp or texture has always

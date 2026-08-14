@@ -91,6 +91,22 @@ export interface RepoConfig {
 
 const CONFIG_KEY = "shoji-builder.repo";
 
+/**
+ * The branch the library was on before it had one of its own.
+ *
+ * Settings saved then still name it, and a browser that was connected before the
+ * move goes on quietly committing designs to the branch the *app* is deployed
+ * from: they land as source changes, they are not in the library anybody reads,
+ * and each one spends a deploy publishing a site whose content did not change.
+ * That is not a setting to be honoured, it is a setting left over, so it is
+ * corrected on the way out rather than waiting to be noticed.
+ *
+ * Left alone if a build genuinely puts its library on `main` — a fork with no
+ * branch of its own is pointing there on purpose, and this is only ever meant to
+ * catch a stale value.
+ */
+const BRANCH_BEFORE_THE_MOVE = "main";
+
 /** The saved settings, or null when this browser has never been given a token. */
 export function readRepoConfig(): RepoConfig | null {
   try {
@@ -98,10 +114,14 @@ export function readRepoConfig(): RepoConfig | null {
     if (!raw) return null;
     const saved = JSON.parse(raw) as Partial<RepoConfig>;
     if (!saved.owner || !saved.repo || !saved.token) return null;
+    const branch = saved.branch || LIBRARY_BRANCH;
     return {
       owner: saved.owner,
       repo: saved.repo,
-      branch: saved.branch || LIBRARY_BRANCH,
+      branch:
+        branch === BRANCH_BEFORE_THE_MOVE && LIBRARY_BRANCH !== BRANCH_BEFORE_THE_MOVE
+          ? LIBRARY_BRANCH
+          : branch,
       token: saved.token,
     };
   } catch {

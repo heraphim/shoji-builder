@@ -368,6 +368,28 @@ true at those values and at no others.
 
 → [algorithms/blueprint-export.md](algorithms/blueprint-export.md)
 
+## The `library` branch
+
+An orphan branch holding data only — no source, no workflows, no build, and no
+shared history with `main`. It carries a README of its own explaining that, and:
+
+```
+public/models/
+  components/  lamps/  textures/      read by the app
+  textures-rejected/                  written by the generator, read by nothing
+```
+
+`props/`, `stl/` and `generated-components/` are not on it: the first two are
+served by the site out of `dist`, and the third is a staging area no picker can
+reach. The `public/models/` prefix survives because it is the path these files
+have in the source, so `repoPath` in `lib/library.ts` needs no translation and a
+file is at one path whichever way it is reached.
+
+That it holds no code is a property worth keeping deliberately. A fine-grained
+token cannot be scoped to a branch, so what a leaked one can damage is decided by
+what is *on* the branch rather than by the token — and there is nothing here to
+edit into a broken build.
+
 ## Build-time pieces
 
 `vite.config.ts` adds a tiny `unpublish-libraries` plugin, which deletes
@@ -394,9 +416,10 @@ committed `index.json` and a README of its own. **Nothing in the app can reach
 it.** `Library` in `lib/library.ts` is the closed union
 `"components" | "lamps" | "textures"`, every path is built as
 `public/models/<lib>`, and `LIBRARIES` in `vite.config.ts` names the same three —
-so the folder is neither listed by the plugin, nor listable through the contents
-API, nor offered by any picker. It is still copied into `dist/` on every build,
-which is where most of the deployed site's weight now is.
+so the folder has no `index.json` on the library branch, is not listable through
+the contents API, and is offered by no picker. It is not on the library branch at
+all. It is still copied into `dist/` on every build, which is where most of the
+deployed site's weight now is.
 
 It is a staging area, not a library, and it should end one of two ways: the files
 move into `public/models/components` where the app can see them, or the folder

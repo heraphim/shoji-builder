@@ -276,6 +276,14 @@ no deploy, no Actions minutes, and no hand-run workflow to make the library
 public. You do not wait even that long: with a token the app reads the same branch
 through the API, which no cache has aged.
 
+A browser that was connected **before** the library moved to its own branch had
+`main` saved in these settings, and went on committing designs to the branch the
+app is deployed from: they landed as source changes, they were not in the library
+anybody reads, and each one spent a deploy republishing a site whose content had
+not changed. `lib/library.ts` now reads that particular stale value as the library
+branch instead, so such a browser corrects itself on the next save with nothing to
+retype. A branch you have chosen on purpose is left alone.
+
 The settings are checked against GitHub before they are kept, so a token with the
 wrong repository on it is caught there rather than at the first save. They live
 in this browser's `localStorage` and nowhere else: anyone else opening the site

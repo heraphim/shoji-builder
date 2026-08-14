@@ -7,6 +7,7 @@ import {
   listLibrary,
   rawUrl,
   readLibraryFile,
+  readRepoConfig,
   saveLibraryFile,
   writeRepoConfig,
   type RepoFile,
@@ -198,6 +199,35 @@ asHolder();
   const theirs = await listLibrary("components");
   check("and is shown the same library as the visitor", same(mine, theirs), `${mine.join(",")} vs ${theirs.join(",")}`);
   asHolder();
+}
+
+// ---------------------------------------------------------------------------
+
+console.log("\nSettings left over from before the library had a branch");
+seed();
+
+{
+  // exactly what a browser connected before the move is holding
+  store.set(
+    "shoji-builder.repo",
+    JSON.stringify({ owner: "heraphim", repo: "shoji-builder", branch: "main", token: "t" })
+  );
+  check("a saved branch of main is read as the library branch", readRepoConfig()?.branch === LIBRARY_BRANCH, readRepoConfig()?.branch ?? "null");
+
+  asked = [];
+  await saveLibraryFile("lamps", "moved.lamp.json", { id: "moved" });
+  check(
+    "so a design saved from that browser goes to the library and not to the app's own branch",
+    asked.every((u) => !u.includes("heads/main")) && asked.some((u) => u.includes("heads/library")),
+    asked.filter((u) => u.includes("heads/")).join(" ")
+  );
+
+  // a branch deliberately chosen is still honoured — only the stale value moves
+  store.set(
+    "shoji-builder.repo",
+    JSON.stringify({ owner: "heraphim", repo: "shoji-builder", branch: "try-something", token: "t" })
+  );
+  check("a branch chosen on purpose is left alone", readRepoConfig()?.branch === "try-something", readRepoConfig()?.branch ?? "null");
 }
 
 // ---------------------------------------------------------------------------

@@ -7,17 +7,26 @@
 # is public within the five minutes raw.githubusercontent.com caches for, and
 # costs no Actions minutes at all.
 #
-# This used to say something more apologetic. Deploys were filtered with
-# `paths-ignore: public/models/**` so that a save would not spend a minute of
-# Actions republishing the site for one JSON file — which worked, at the price of
-# a visitor seeing the library as it stood at the last *code* push. That trade is
-# gone rather than tuned: nothing to filter, because a save no longer lands on
-# this branch.
+# `paths-ignore` is still here, and the reason has changed. It used to be the
+# whole mechanism — a save landed on this branch and had to be stopped from
+# spending a minute of Actions to publish one JSON file, at the price of a
+# visitor seeing the library as it stood at the last *code* push. Now a save goes
+# to the `library` branch and this filter should never fire.
+#
+# It stays because "should never" was already wrong once. A browser connected
+# before the library moved still had `main` in its settings and went on
+# committing designs here, and each one deployed the site. `lib/library.ts`
+# corrects that setting now, but the filter is the cheaper half of the defence:
+# it costs nothing, and it means a design landing on this branch by any route at
+# all is a file in a folder rather than a deploy.
 name: Deploy to GitHub Pages
 
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'public/models/**'
+  # publish by hand when a code change is not what you are waiting for
   workflow_dispatch:
 
 permissions:
