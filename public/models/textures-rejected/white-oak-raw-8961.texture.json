@@ -1,0 +1,42 @@
+{
+  "id": "white-oak-raw-8961",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "white_oak",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 139.376714,
+    "pith": [
+      0.757939,
+      0.024657
+    ],
+    "seed": 8961,
+    "centerSize": 1.444012,
+    "largeWarpScale": 0.236328,
+    "largeGrainStretch": 0.206026,
+    "smallWarpStrength": 0.025196,
+    "smallWarpScale": 2.729724,
+    "fineWarpStrength": 0.009964,
+    "fineWarpScale": 13.887653,
+    "ringThickness": 0.034898,
+    "ringBias": 0.905913,
+    "ringSizeVariance": 0.144576,
+    "ringVarianceScale": 1.60094,
+    "barkThickness": 0.601744,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.41771,
+    "cellScale": 729.076946,
+    "cellSize": 0.174638,
+    "darkGrainColor": "#4f2a12",
+    "lightGrainColor": "#744723",
+    "grainContrast": 0.321107,
+    "poreIntensity": 0.219303,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

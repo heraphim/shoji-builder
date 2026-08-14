@@ -1,0 +1,42 @@
+{
+  "id": "mahogany-semigloss-6514",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "mahogany",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 126.340761,
+    "pith": [
+      0.657972,
+      -0.097435
+    ],
+    "seed": 6514,
+    "centerSize": 1.139336,
+    "largeWarpScale": 0.244944,
+    "largeGrainStretch": 0.20409,
+    "smallWarpStrength": 0.037925,
+    "smallWarpScale": 1.924881,
+    "fineWarpStrength": 0.010471,
+    "fineWarpScale": 14.087031,
+    "ringThickness": 0.030286,
+    "ringBias": 0.01,
+    "ringSizeVariance": 0.427707,
+    "ringVarianceScale": 0.87548,
+    "barkThickness": 0.061079,
+    "splotchScale": 0.81824,
+    "splotchIntensity": 0.513714,
+    "cellScale": 1543.054468,
+    "cellSize": 0.26,
+    "darkGrainColor": "#d1694f",
+    "lightGrainColor": "#daaa96",
+    "grainContrast": 0.594443,
+    "poreIntensity": 0.139453,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

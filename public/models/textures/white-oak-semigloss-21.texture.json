@@ -1,0 +1,42 @@
+{
+  "id": "white-oak-semigloss-21",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "white_oak",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 201.981787,
+    "pith": [
+      0.509395,
+      -0.001128
+    ],
+    "seed": 21,
+    "centerSize": 1.221777,
+    "largeWarpScale": 0.158699,
+    "largeGrainStretch": 0.218427,
+    "smallWarpStrength": 0.040506,
+    "smallWarpScale": 2.672251,
+    "fineWarpStrength": 0.010486,
+    "fineWarpScale": 14.937705,
+    "ringThickness": 0.038858,
+    "ringBias": 0.504917,
+    "ringSizeVariance": 0.228496,
+    "ringVarianceScale": 0.940654,
+    "barkThickness": 0.627209,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.379506,
+    "cellScale": 737.970051,
+    "cellSize": 0.252691,
+    "darkGrainColor": "#d99055",
+    "lightGrainColor": "#dfb790",
+    "grainContrast": 0.410241,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

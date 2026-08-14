@@ -1,0 +1,42 @@
+{
+  "id": "poplar-gloss-7225",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "poplar",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 206.361196,
+    "pith": [
+      0.493179,
+      -0.195492
+    ],
+    "seed": 7225,
+    "centerSize": 1.250139,
+    "largeWarpScale": 0.40563,
+    "largeGrainStretch": 0.156325,
+    "smallWarpStrength": 0.037673,
+    "smallWarpScale": 3.34096,
+    "fineWarpStrength": 0.00275,
+    "fineWarpScale": 35.249801,
+    "ringThickness": 0.030673,
+    "ringBias": 0.039396,
+    "ringSizeVariance": 0.033467,
+    "ringVarianceScale": 3.90867,
+    "barkThickness": 0.368177,
+    "splotchScale": 1.494966,
+    "splotchIntensity": 0.493748,
+    "cellScale": 972.489412,
+    "cellSize": 0.024737,
+    "darkGrainColor": "#c2ae8f",
+    "lightGrainColor": "#cabda5",
+    "grainContrast": 0.543758,
+    "poreIntensity": 0.159618,
+    "roughness": 0.5,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.1,
+    "clearcoatDarken": 0.2
+  }
+}

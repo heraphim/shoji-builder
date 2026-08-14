@@ -1,0 +1,22 @@
+[
+  "beam.component.json",
+  "frameHorizontal.component.json",
+  "frameRailDeep.component.json",
+  "frameRailWide.component.json",
+  "frameStile.component.json",
+  "frameStileHalf.component.json",
+  "frameStileMid.component.json",
+  "frameVertical.component.json",
+  "leg.component.json",
+  "postBMT.component.json",
+  "postBMTC.component.json",
+  "postBT.component.json",
+  "postBTC.component.json",
+  "postBTStub.component.json",
+  "railDeep.component.json",
+  "railDeepFlush.component.json",
+  "railDeepStub.component.json",
+  "railWide.component.json",
+  "railWideFlush.component.json",
+  "railWideStub.component.json"
+]

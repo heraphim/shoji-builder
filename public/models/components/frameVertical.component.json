@@ -1,0 +1,344 @@
+{
+  "id": "frameVertical",
+  "type": "component",
+  "format": 6,
+  "units": "mm",
+  "variables": {
+    "frameHeight": "#frameWidth",
+    "frameWidth": "7",
+    "innerHeight": "370"
+  },
+  "blocks": [
+    {
+      "id": "035fdc52-1caa-41eb-ae2e-42d4bc7c9359",
+      "name": "frame.stl (1)",
+      "size": {
+        "x": "#frameHeight",
+        "y": "#frameWidth",
+        "z": "1/2*#frameWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        0,
+        0,
+        3.5
+      ]
+    },
+    {
+      "id": "48b37deb-670b-438e-ae6b-a36c826a7573",
+      "name": "frame.stl (2)",
+      "size": {
+        "x": "#frameHeight",
+        "y": "-(#frameWidth) + (#innerHeight) - (#frameWidth)",
+        "z": "(1/2*#frameWidth) + (1/2*#frameWidth)"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "implied",
+        "z": "implied"
+      },
+      "origin": [
+        0,
+        7,
+        0
+      ]
+    },
+    {
+      "id": "f490810c-57ee-4156-8dba-006732421880",
+      "name": "frame.stl (3)",
+      "size": {
+        "x": "#frameHeight",
+        "y": "#frameWidth",
+        "z": "1/2*#frameWidth"
+      },
+      "sizeSource": {
+        "x": "set",
+        "y": "set",
+        "z": "set"
+      },
+      "origin": [
+        0,
+        363,
+        3.5
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "469776bc-d372-4fb4-bfad-32b66303692b",
+      "a": {
+        "block": "f490810c-57ee-4156-8dba-006732421880",
+        "anchor": [
+          0,
+          0,
+          1
+        ]
+      },
+      "b": {
+        "block": "48b37deb-670b-438e-ae6b-a36c826a7573",
+        "anchor": [
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "id": "30c6a175-fa0b-4348-94ad-7a5e882f71d2",
+      "a": {
+        "block": "035fdc52-1caa-41eb-ae2e-42d4bc7c9359",
+        "anchor": [
+          0,
+          1,
+          1
+        ]
+      },
+      "b": {
+        "block": "48b37deb-670b-438e-ae6b-a36c826a7573",
+        "anchor": [
+          0,
+          0,
+          1
+        ]
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "id": "b14bf7d7-0015-439e-93da-9054b0ee7fa4",
+      "formula": "1/2*#frameWidth",
+      "edges": [
+        {
+          "start": [
+            7,
+            363,
+            0
+          ],
+          "end": [
+            7,
+            363,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            7,
+            7,
+            0
+          ],
+          "end": [
+            7,
+            7,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            0,
+            363,
+            0
+          ],
+          "end": [
+            0,
+            363,
+            3.5
+          ]
+        },
+        {
+          "start": [
+            0,
+            7,
+            0
+          ],
+          "end": [
+            0,
+            7,
+            3.5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22b277c6-5a86-44d1-8f4a-a3f300ef004c",
+      "formula": "#innerHeight",
+      "edges": [
+        {
+          "start": [
+            0,
+            0,
+            7
+          ],
+          "end": [
+            0,
+            370,
+            7
+          ]
+        },
+        {
+          "start": [
+            7,
+            0,
+            7
+          ],
+          "end": [
+            7,
+            370,
+            7
+          ]
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "solidColor": "#1e4179",
+    "texture": "basic-pine.texture.json",
+    "grainAxis": "y"
+  },
+  "preview": {
+    "variables": {
+      "innerWidth": 200,
+      "innerDepth": 200,
+      "innerHeight": 370,
+      "legThickness": 20,
+      "legExtraTop": 20,
+      "legExtraBottom": 40,
+      "beamHeight": 15,
+      "beamDepth": 10,
+      "beamExtra": 20,
+      "frameWidth": 7,
+      "frameHeight": 7
+    },
+    "solids": [
+      {
+        "vertices": [
+          7,
+          7,
+          0,
+          7,
+          363,
+          0,
+          7,
+          363,
+          3.5,
+          7,
+          7,
+          3.5,
+          7,
+          0,
+          3.5,
+          7,
+          370,
+          3.5,
+          7,
+          370,
+          7,
+          7,
+          0,
+          7,
+          0,
+          0,
+          7,
+          0,
+          370,
+          7,
+          0,
+          370,
+          3.5,
+          0,
+          0,
+          3.5,
+          0,
+          7,
+          3.5,
+          0,
+          363,
+          3.5,
+          0,
+          363,
+          0,
+          0,
+          7,
+          0
+        ],
+        "triangles": [
+          0,
+          1,
+          2,
+          0,
+          2,
+          3,
+          4,
+          5,
+          6,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          8,
+          10,
+          11,
+          12,
+          13,
+          14,
+          12,
+          14,
+          15,
+          8,
+          7,
+          6,
+          8,
+          6,
+          9,
+          11,
+          4,
+          7,
+          11,
+          7,
+          8,
+          12,
+          3,
+          4,
+          12,
+          4,
+          11,
+          13,
+          2,
+          1,
+          13,
+          1,
+          14,
+          15,
+          0,
+          3,
+          15,
+          3,
+          12,
+          14,
+          1,
+          0,
+          14,
+          0,
+          15,
+          9,
+          6,
+          5,
+          9,
+          5,
+          10,
+          10,
+          5,
+          2,
+          10,
+          2,
+          13
+        ]
+      }
+    ]
+  }
+}

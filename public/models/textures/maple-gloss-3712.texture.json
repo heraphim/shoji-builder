@@ -1,0 +1,42 @@
+{
+  "id": "maple-gloss-3712",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "maple",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 141.423665,
+    "pith": [
+      1.10757,
+      -0.000116
+    ],
+    "seed": 3712,
+    "centerSize": 1.433596,
+    "largeWarpScale": 0.447498,
+    "largeGrainStretch": 0.193383,
+    "smallWarpStrength": 0.070985,
+    "smallWarpScale": 3.027136,
+    "fineWarpStrength": 0.004275,
+    "fineWarpScale": 30.254506,
+    "ringThickness": 0.033664,
+    "ringBias": 0.110944,
+    "ringSizeVariance": 0.104314,
+    "ringVarianceScale": 4.78402,
+    "barkThickness": 0.610998,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.673645,
+    "cellScale": 677.832303,
+    "cellSize": 0.03287,
+    "darkGrainColor": "#c5a48c",
+    "lightGrainColor": "#d0b7a0",
+    "grainContrast": 0.516916,
+    "poreIntensity": 0,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

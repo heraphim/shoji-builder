@@ -1,0 +1,42 @@
+{
+  "id": "pine-semigloss-4375",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "pine",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 158.631661,
+    "pith": [
+      0.378462,
+      0.124796
+    ],
+    "seed": 4375,
+    "centerSize": 1.452617,
+    "largeWarpScale": 0.186884,
+    "largeGrainStretch": 0.194543,
+    "smallWarpStrength": 0.053525,
+    "smallWarpScale": 2.109826,
+    "fineWarpStrength": 0.007378,
+    "fineWarpScale": 23.884027,
+    "ringThickness": 0.039147,
+    "ringBias": 0.11284,
+    "ringSizeVariance": 0.075324,
+    "ringVarianceScale": 3.672874,
+    "barkThickness": 0.308454,
+    "splotchScale": 0.565291,
+    "splotchIntensity": 0.761669,
+    "cellScale": 1700,
+    "cellSize": 0.052575,
+    "darkGrainColor": "#d39368",
+    "lightGrainColor": "#deaf7a",
+    "grainContrast": 0.584186,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

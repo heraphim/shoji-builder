@@ -1,0 +1,42 @@
+{
+  "id": "teak-semigloss-9005",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "teak",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 218.995821,
+    "pith": [
+      0.367302,
+      0.002908
+    ],
+    "seed": 9005,
+    "centerSize": 1.177282,
+    "largeWarpScale": 0.405945,
+    "largeGrainStretch": 0.223424,
+    "smallWarpStrength": 0.076682,
+    "smallWarpScale": 2.278856,
+    "fineWarpStrength": 0.003397,
+    "fineWarpScale": 26.260583,
+    "ringThickness": 0.022188,
+    "ringBias": 0.027984,
+    "ringSizeVariance": 0.0418,
+    "ringVarianceScale": 5.39018,
+    "barkThickness": 0.232511,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.425901,
+    "cellScale": 795.804629,
+    "cellSize": 0.096809,
+    "darkGrainColor": "#090303",
+    "lightGrainColor": "#a76e56",
+    "grainContrast": 0.423002,
+    "poreIntensity": 0,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

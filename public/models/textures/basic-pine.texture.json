@@ -1,0 +1,42 @@
+{
+  "id": "basic-pine",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "pine",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 145,
+    "pith": [
+      0.84,
+      0.36
+    ],
+    "seed": 1,
+    "centerSize": 1.23,
+    "ringThickness": 0.041667,
+    "ringBias": 0.1,
+    "ringSizeVariance": 0.07,
+    "ringVarianceScale": 5,
+    "barkThickness": 0.35,
+    "grainContrast": 0.5,
+    "largeWarpScale": 0.21,
+    "largeGrainStretch": 0.06,
+    "smallWarpStrength": 0.041,
+    "smallWarpScale": 2.44,
+    "fineWarpStrength": 0.006,
+    "fineWarpScale": 23.2,
+    "splotchScale": 0.51,
+    "splotchIntensity": 0.32,
+    "cellScale": 1480,
+    "cellSize": 0.07,
+    "poreIntensity": 0.407,
+    "darkGrainColor": "#c58355",
+    "lightGrainColor": "#d19d61",
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

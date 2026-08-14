@@ -1,0 +1,42 @@
+{
+  "id": "teak-gloss-1074",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "teak",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 154.397885,
+    "pith": [
+      0.648701,
+      0.142048
+    ],
+    "seed": 1074,
+    "centerSize": 1.076458,
+    "largeWarpScale": 0.226369,
+    "largeGrainStretch": 0.171372,
+    "smallWarpStrength": 0.044155,
+    "smallWarpScale": 2.452022,
+    "fineWarpStrength": 0.007383,
+    "fineWarpScale": 35.667794,
+    "ringThickness": 0.022705,
+    "ringBias": 0.043116,
+    "ringSizeVariance": 0.023244,
+    "ringVarianceScale": 4.272381,
+    "barkThickness": 0.389029,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.317389,
+    "cellScale": 800.711457,
+    "cellSize": 0.105081,
+    "darkGrainColor": "#0a0303",
+    "lightGrainColor": "#bc9483",
+    "grainContrast": 0.525376,
+    "poreIntensity": 0.187238,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

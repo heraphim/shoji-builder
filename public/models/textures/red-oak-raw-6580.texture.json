@@ -1,0 +1,42 @@
+{
+  "id": "red-oak-raw-6580",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "red_oak",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 136.87988,
+    "pith": [
+      0.949545,
+      0.31255
+    ],
+    "seed": 6580,
+    "centerSize": 1.190629,
+    "largeWarpScale": 0.290368,
+    "largeGrainStretch": 0.193339,
+    "smallWarpStrength": 0.03147,
+    "smallWarpScale": 2.498242,
+    "fineWarpStrength": 0.010703,
+    "fineWarpScale": 18.361749,
+    "ringThickness": 0.029525,
+    "ringBias": 0.760316,
+    "ringSizeVariance": 0.033659,
+    "ringVarianceScale": 5.187901,
+    "barkThickness": 1.072349,
+    "splotchScale": 0.220697,
+    "splotchIntensity": 2.474809,
+    "cellScale": 925.341965,
+    "cellSize": 0.309505,
+    "darkGrainColor": "#6e4421",
+    "lightGrainColor": "#b77125",
+    "grainContrast": 0.52962,
+    "poreIntensity": 0.377112,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

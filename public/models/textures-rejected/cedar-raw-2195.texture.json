@@ -1,0 +1,42 @@
+{
+  "id": "cedar-raw-2195",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cedar",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 160.077264,
+    "pith": [
+      0.736891,
+      -0.105064
+    ],
+    "seed": 2195,
+    "centerSize": 1.234544,
+    "largeWarpScale": 0.498797,
+    "largeGrainStretch": 0.121109,
+    "smallWarpStrength": 0.074526,
+    "smallWarpScale": 1.887912,
+    "fineWarpStrength": 0.006886,
+    "fineWarpScale": 4.061845,
+    "ringThickness": 0.028241,
+    "ringBias": 0.01,
+    "ringSizeVariance": 0.052886,
+    "ringVarianceScale": 5.211166,
+    "barkThickness": 0.09388,
+    "splotchScale": 0.626586,
+    "splotchIntensity": 0.777945,
+    "cellScale": 570.865587,
+    "cellSize": 0.136725,
+    "darkGrainColor": "#89443a",
+    "lightGrainColor": "#995546",
+    "grainContrast": 0.627431,
+    "poreIntensity": 0.265712,
+    "roughness": 0.92,
+    "clearcoat": 0,
+    "clearcoatRoughness": 0,
+    "clearcoatDarken": 1
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "maple-matte-9231",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "maple",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 178.517259,
+    "pith": [
+      0.614528,
+      -0.087899
+    ],
+    "seed": 9231,
+    "centerSize": 1.394406,
+    "largeWarpScale": 0.306236,
+    "largeGrainStretch": 0.28389,
+    "smallWarpStrength": 0.061353,
+    "smallWarpScale": 2.461703,
+    "fineWarpStrength": 0.005005,
+    "fineWarpScale": 38,
+    "ringThickness": 0.032859,
+    "ringBias": 0.082633,
+    "ringSizeVariance": 0.066475,
+    "ringVarianceScale": 4.678457,
+    "barkThickness": 0.648287,
+    "splotchScale": 0.530166,
+    "splotchIntensity": 0.584533,
+    "cellScale": 992.832646,
+    "cellSize": 0.021557,
+    "darkGrainColor": "#b59983",
+    "lightGrainColor": "#c2ac95",
+    "grainContrast": 0.365216,
+    "poreIntensity": 0.093997,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}

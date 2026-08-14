@@ -1,0 +1,42 @@
+{
+  "id": "cedar-gloss-3083",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "cedar",
+  "finish": "gloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 150.905338,
+    "pith": [
+      0.5967,
+      -0.105474
+    ],
+    "seed": 3083,
+    "centerSize": 0.961154,
+    "largeWarpScale": 0.485164,
+    "largeGrainStretch": 0.107064,
+    "smallWarpStrength": 0.05906,
+    "smallWarpScale": 2.39905,
+    "fineWarpStrength": 0.006802,
+    "fineWarpScale": 5.246334,
+    "ringThickness": 0.036089,
+    "ringBias": 0.011942,
+    "ringSizeVariance": 0.04245,
+    "ringVarianceScale": 7.580287,
+    "barkThickness": 0.096289,
+    "splotchScale": 0.650954,
+    "splotchIntensity": 0.752869,
+    "cellScale": 550.09707,
+    "cellSize": 0.182665,
+    "darkGrainColor": "#c59e8c",
+    "lightGrainColor": "#cdb2a2",
+    "grainContrast": 0.383573,
+    "poreIntensity": 0,
+    "roughness": 0.66,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.4,
+    "clearcoatDarken": 0.4
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "weird-white",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "white_oak",
+  "finish": "raw",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 160,
+    "pith": [
+      0.62,
+      0.15
+    ],
+    "seed": 5420,
+    "centerSize": 1.23,
+    "largeWarpScale": 0.21,
+    "largeGrainStretch": 0.21,
+    "smallWarpStrength": 0.034,
+    "smallWarpScale": 2.44,
+    "fineWarpStrength": 0.01,
+    "fineWarpScale": 14.3,
+    "ringThickness": 0.029412,
+    "ringBias": 0.82,
+    "ringSizeVariance": 0.16,
+    "ringVarianceScale": 1.4,
+    "barkThickness": 0.7,
+    "splotchScale": 0.88,
+    "splotchIntensity": 0.56,
+    "cellScale": 100,
+    "cellSize": 0.6,
+    "darkGrainColor": "#000000",
+    "lightGrainColor": "#ffffff",
+    "grainContrast": 0.24,
+    "poreIntensity": 0.63,
+    "roughness": 0.41,
+    "clearcoat": 0.48,
+    "clearcoatRoughness": 0.48,
+    "clearcoatDarken": 0.96
+  }
+}

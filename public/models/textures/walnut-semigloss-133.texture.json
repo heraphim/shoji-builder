@@ -1,0 +1,42 @@
+{
+  "id": "walnut-semigloss-133",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "walnut",
+  "finish": "semigloss",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 153.7974,
+    "pith": [
+      1.074717,
+      -0.046032
+    ],
+    "seed": 133,
+    "centerSize": 1.079453,
+    "largeWarpScale": 0.323205,
+    "largeGrainStretch": 0.268036,
+    "smallWarpStrength": 0.010181,
+    "smallWarpScale": 8.161447,
+    "fineWarpStrength": 0.029583,
+    "fineWarpScale": 16.272524,
+    "ringThickness": 0.027321,
+    "ringBias": 0.087299,
+    "ringSizeVariance": 0.033693,
+    "ringVarianceScale": 5.275764,
+    "barkThickness": 0.842817,
+    "splotchScale": 0.991587,
+    "splotchIntensity": 0.527302,
+    "cellScale": 853.523409,
+    "cellSize": 0.26,
+    "darkGrainColor": "#815d3a",
+    "lightGrainColor": "#cfb7a0",
+    "grainContrast": 0.385256,
+    "poreIntensity": 0.284324,
+    "roughness": 0.73,
+    "clearcoat": 1,
+    "clearcoatRoughness": 0.7,
+    "clearcoatDarken": 0.5
+  }
+}

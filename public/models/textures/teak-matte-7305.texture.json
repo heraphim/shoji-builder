@@ -1,0 +1,42 @@
+{
+  "id": "teak-matte-7305",
+  "type": "texture",
+  "format": 2,
+  "units": "mm",
+  "model": "wood",
+  "species": "teak",
+  "finish": "matte",
+  "params": {
+    "grainAxis": "x",
+    "grainScale": 213.265094,
+    "pith": [
+      1.194593,
+      -0.055787
+    ],
+    "seed": 7305,
+    "centerSize": 1.138375,
+    "largeWarpScale": 0.304551,
+    "largeGrainStretch": 0.23367,
+    "smallWarpStrength": 0.070775,
+    "smallWarpScale": 2.535576,
+    "fineWarpStrength": 0.006476,
+    "fineWarpScale": 37.812734,
+    "ringThickness": 0.020001,
+    "ringBias": 0.032429,
+    "ringSizeVariance": 0.02176,
+    "ringVarianceScale": 3.742387,
+    "barkThickness": 0.375515,
+    "splotchScale": 0.45,
+    "splotchIntensity": 0.383861,
+    "cellScale": 1097.019038,
+    "cellSize": 0.068447,
+    "darkGrainColor": "#0a0504",
+    "lightGrainColor": "#b8a38d",
+    "grainContrast": 0.686416,
+    "poreIntensity": 0,
+    "roughness": 0.8,
+    "clearcoat": 1,
+    "clearcoatRoughness": 1,
+    "clearcoatDarken": 0.6
+  }
+}
